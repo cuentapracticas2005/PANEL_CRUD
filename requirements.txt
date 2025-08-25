@@ -1,2 +1,2 @@
-Flask>=2.3,<4
-mysql-connector-python>=9,<10
+Flask
+mysql-connector-python==8.0.29
