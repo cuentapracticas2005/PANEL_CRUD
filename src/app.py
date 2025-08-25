@@ -50,18 +50,18 @@ def addUser():
 
 
 # Ruta para eliminar documentos de la db_h
-@app.route('/delete/<string:id_plano>')
-def delete(id_plano):
+@app.route('/delete/<string:id>')
+def delete(id):
     cursor = db.database.cursor()
     sql = "DELETE FROM planos WHERE id_plano=%s"
-    data = (id_plano,)
+    data = (id,)
     cursor.execute(sql, data)
     db.database.commit()
     return redirect(url_for('home'))
 
 # Ruta para actualizar documentos en la db_h
-@app.route('/edit/<string:id_plano>', methods=['POST'])
-def edit (id_plano):
+@app.route('/edit/<string:id>', methods=['POST'])
+def edit (id):
     anio = request.form['anio']
     mes = request.form['mes']
     descripcion = request.form['descripcion']
@@ -74,7 +74,7 @@ def edit (id_plano):
     if id and anio and mes and descripcion and numero_plano and tamano and version and dibujante and dibujado_en:
         cursor = db.database.cursor()
         sql = "UPDATE planos SET anio=%s, mes=%s, descripcion=%s, num_plano=%s, tamanio=%s, version=%s, dibujante=%s, dibujado_en=%s WHERE id_plano=%s"
-        data = (anio, mes, descripcion, numero_plano, tamano, version, dibujante, dibujado_en, id_plano)
+        data = (anio, mes, descripcion, numero_plano, tamano, version, dibujante, dibujado_en, id)
         cursor.execute(sql, data)
         db.database.commit()
         cursor.close()

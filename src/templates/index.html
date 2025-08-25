@@ -162,8 +162,8 @@
                         <td class="border px-4 py-2">{{d.dibujante}}</td>
                         <td class="border px-4 py-2">{{d.dibujado_en}}</td>
                         <td class="border px-4 py-2 text-center">
-                            <button class="bg-blue-600 text-white px-2 py-1 rounded hover:bg-blue-700"
-                                onclick="document.getElementById('modal{{d.id}}').classList.remove('hidden')">
+                            <button class="bg-blue-600 text-white px-2 py-1 rounded hover:bg-blue-700" id="btn-edit{{d.id}}"
+                                onclick="document.getElementById('#modal{{d.id}}').classList.remove('hidden')">
                                 Editar
                             </button>
                         </td>
@@ -271,7 +271,7 @@
                     <div id="modal{{d.id}}"
                         class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 hidden">
                         <div class="bg-white p-8 rounded shadow-lg w-full max-w-lg relative">
-                            <button onclick="document.getElementById('modal{{d.id}}').classList.add('hidden')"
+                            <button onclick="document.getElementById('#{{d.id}}').classList.add('hidden')"
                                 class="absolute top-2 right-2 text-gray-500 hover:text-gray-800"><img
                                     src="../../../../static/assets/img/equis.png" width="20px" height="20px"
                                     alt="X"></button>
@@ -322,7 +322,7 @@
 
                                 <div class="mb-2">
                                     <label class="block text-sm font-medium mb-1">Tamaño</label>
-                                    <select name="tamano" class="border rounded px-2 py-1 w-full" value="{{d.tamano}}"
+                                    <select name="tamano" class="border rounded px-2 py-1 w-full" value="{{d.tamanio}}"
                                         required>
                                         <option value="A0">A0</option>
                                         <option value="A1">A1</option>
@@ -392,6 +392,7 @@
                             </div>
                         </div>
                     </div>
+                    
                     {% endfor %}
                 </tbody>
             </table>
