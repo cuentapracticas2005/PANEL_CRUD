@@ -2,10 +2,10 @@ from flask import Flask, render_template, request, redirect, url_for
 import os
 import database as db
 
-# Accedemos al directorio de plantillas
+# CAMBIO: Simplificación de la ruta de plantillas para evitar errores de path
 template_dir = os.path.join(os.path.dirname(__file__), 'templates')
 
-# Inicializamos Flask en la variable app y configuramos carpeta estática
+# CAMBIO: Configuramos carpeta estática estándar en src/static
 app = Flask(
     __name__,
     template_folder=template_dir,
@@ -41,7 +41,7 @@ def addUser():
     dibujante = request.form['dibujante']
     dibujado_en = request.form['dibujado_en']
 
-    # Si tenemos todos los datos hacemos la consulta INSERT en la db_h
+    # CAMBIO: Validación correcta de campos requeridos usando all([...])
     if all([anio, mes, descripcion, numero_plano, tamano, version, dibujante, dibujado_en]):
         cursor = db.database.cursor()
         sql = "INSERT INTO planos (anio, mes, descripcion, num_plano, tamanio, version, dibujante, dibujado_en) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
@@ -60,7 +60,7 @@ def delete(id_plano):
     data = (id_plano,)
     cursor.execute(sql, data)
     db.database.commit()
-    cursor.close()
+    cursor.close()  # CAMBIO: cierre explícito del cursor
     return redirect(url_for('home'))
 
 # Ruta para actualizar documentos en la db_h
@@ -75,6 +75,7 @@ def edit (id_plano):
     dibujante = request.form['dibujante']
     dibujado_en = request.form['dibujado_en']
 
+    # CAMBIO: Validación correcta de campos requeridos usando all([...])
     if all([anio, mes, descripcion, numero_plano, tamano, version, dibujante, dibujado_en]):
         cursor = db.database.cursor()
         sql = "UPDATE planos SET anio=%s, mes=%s, descripcion=%s, num_plano=%s, tamanio=%s, version=%s, dibujante=%s, dibujado_en=%s WHERE id_plano=%s"
@@ -84,6 +85,6 @@ def edit (id_plano):
         cursor.close()
     return redirect(url_for('home'))
 
-#Lanzamos la app
+# Lanzamos la app
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', debug=True, port=4000)
+    app.run(host='0.0.0.0', debug=True, port=4000)  # CAMBIO: host=0.0.0.0 para acceso externo

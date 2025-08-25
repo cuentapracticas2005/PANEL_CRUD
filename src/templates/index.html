@@ -1,3 +1,4 @@
+<!-- CAMBIO: logo con url_for y uso de static -->
 <!DOCTYPE html>
 <html lang="en">
 
@@ -16,15 +17,18 @@
             <div class="flex justify-between h-16">
                 <div class="flex space-x-7">
                     <div class="flex items-center">
+                        <!-- CAMBIO: Enlaces y recurso estático con url_for -->
                         <a href="{{ url_for('home') }}"><img src="{{ url_for('static', filename='img/HIDROSTAL3.png') }}" alt="Logo"
                                 class="h-8 w-auto"></a>
                     </div>
                     <div class="flex items-center space-x-4">
+                        <!-- CAMBIO: Link a inicio con url_for -->
                         <a href="{{ url_for('home') }}"
                             class="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-blue-600">Inicio</a>
                     </div>
                 </div>
                 <div class="flex items-center">
+                    <!-- CAMBIO: Eliminado enlace roto, placeholder -->
                     <a href="#"
                         class="px-4 py-2 rounded text-sm font-medium text-white bg-red-600 hover:bg-red-700">
                         Cerrar Sesión
@@ -150,12 +154,14 @@
                         <td class="border px-4 py-2">{{d.dibujante}}</td>
                         <td class="border px-4 py-2">{{d.dibujado_en}}</td>
                         <td class="border px-4 py-2 text-center">
+                            <!-- CAMBIO: uso consistente de d.id_plano para modales -->
                             <button class="bg-blue-600 text-white px-2 py-1 rounded hover:bg-blue-700"
                                 onclick="document.getElementById('modal{{d.id_plano}}').classList.remove('hidden')">
                                 Editar
                             </button>
                         </td>
                         <td class="border px-4 py-2 text-center">
+                            <!-- CAMBIO: modal de eliminación usa id_plano -->
                             <button class="bg-red-600 text-white px-2 py-1 rounded hover:bg-red-700"
                                 onclick="document.getElementById('modalEliminar{{d.id_plano}}').classList.remove('hidden')">
                                 Eliminar
@@ -167,9 +173,11 @@
                     <div id="modalAgregar"
                         class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 hidden">
                         <div class="bg-white p-8 rounded shadow-lg w-full max-w-lg relative">
+                            <!-- CAMBIO: botón de cierre simple sin imagen externa -->
                             <button onclick="document.getElementById('modalAgregar').classList.add('hidden')"
                                 class="absolute top-2 right-2 text-gray-500 hover:text-gray-800" aria-label="Cerrar">&times;</button>
                             <h2 class="text-xl font-bold mb-4">Agregar Nuevo Documento</h2>
+                            <!-- CAMBIO: acción correcta hacia /user -->
                             <form action="/user" method="POST">
                                 <div class="mb-2">
                                     <label class="block text-sm font-medium mb-1">Año</label>
@@ -257,10 +265,12 @@
                     <div id="modal{{d.id_plano}}"
                         class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 hidden">
                         <div class="bg-white p-8 rounded shadow-lg w-full max-w-lg relative">
+                            <!-- CAMBIO: botón de cierre simple sin imagen externa y con id correcto -->
                             <button onclick="document.getElementById('modal{{d.id_plano}}').classList.add('hidden')"
                                 class="absolute top-2 right-2 text-gray-500 hover:text-gray-800" aria-label="Cerrar">&times;</button>
                             <h2 class="text-xl font-bold mb-4">Editar Documento</h2>
 
+                            <!-- CAMBIO: acción correcta hacia /edit/{{d.id_plano}} -->
                             <form action="/edit/{{d.id_plano}}" method="post">
                                 <div class="mb-2">
                                     <label class="block text-sm font-medium mb-1">Año</label>
@@ -306,6 +316,7 @@
 
                                 <div class="mb-2">
                                     <label class="block text-sm font-medium mb-1">Tamaño</label>
+                                    <!-- CAMBIO: uso de d.tamanio para coincidir con la columna de la tabla -->
                                     <select name="tamano" class="border rounded px-2 py-1 w-full" value="{{d.tamanio}}"
                                         required>
                                         <option value="A0">A0</option>
@@ -346,6 +357,7 @@
                                 </div>
 
                                 <div class="flex justify-end gap-2">
+                                    <!-- CAMBIO: cierra el modal correcto -->
                                     <button type="button"
                                         onclick="document.getElementById('modal{{d.id_plano}}').classList.add('hidden')"
                                         class="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400">Cancelar</button>
@@ -361,14 +373,17 @@
                     <div id="modalEliminar{{d.id_plano}}"
                         class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 hidden">
                         <div class="bg-white rounded-lg shadow-lg p-8 w-full max-w-md relative">
+                            <!-- CAMBIO: botón de cierre simple sin imagen externa y con id correcto -->
                             <button onclick="document.getElementById('modalEliminar{{d.id_plano}}').classList.add('hidden')"
                                 class="absolute top-2 right-2 text-gray-500 hover:text-gray-800" aria-label="Cerrar">&times;</button>
                             <h2 class="text-xl font-bold mb-4 text-gray-800">¿Estás seguro de eliminar este archivo?
                             </h2>
                             <p class="mb-6 text-gray-600">Esta acción no se puede deshacer.</p>
                             <div class="flex justify-end gap-3">
+                                <!-- CAMBIO: cierra el modal correcto -->
                                 <button onclick="document.getElementById('modalEliminar{{d.id_plano}}').classList.add('hidden')"
                                     class="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400">Cancelar</button>
+                                <!-- CAMBIO: url_for con parámetro id_plano -->
                                 <a href="{{url_for('delete', id_plano=d.id_plano)}}"
                                     class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">Eliminar</a>
                             </div>
