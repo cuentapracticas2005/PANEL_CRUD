@@ -16,28 +16,26 @@
             <div class="flex justify-between h-16">
                 <div class="flex space-x-7">
                     <div class="flex items-center">
-                        <a href="../admin/interac_admin.html"><img src="img/HIDROSTAL3.png" alt="Logo"
+                        <a href="{{ url_for('home') }}"><img src="{{ url_for('static', filename='img/HIDROSTAL3.png') }}" alt="Logo"
                                 class="h-8 w-auto"></a>
                     </div>
                     <div class="flex items-center space-x-4">
-                        <a href="interac_admin.html"
+                        <a href="{{ url_for('home') }}"
                             class="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-blue-600">Inicio</a>
 
-                        <a href="../dashboard/admin_user.html"
+                        <a href="#"
                             class="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-blue-600">Administración
                             de Usuarios</a>
-
                         <div>
                             <button class="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-blue-600"
                                 onclick="document.getElementById('modalCreateUser').classList.remove('hidden')">
                                 Crear Nuevo Usuario
                             </button>
                         </div>
-
                     </div>
                 </div>
                 <div class="flex items-center">
-                    <a href="../../../../../index.html"
+                    <a href="#"
                         class="px-4 py-2 rounded text-sm font-medium text-white bg-red-600 hover:bg-red-700">
                         Cerrar Sesión
                     </a>
@@ -162,14 +160,14 @@
                         <td class="border px-4 py-2">{{d.dibujante}}</td>
                         <td class="border px-4 py-2">{{d.dibujado_en}}</td>
                         <td class="border px-4 py-2 text-center">
-                            <button class="bg-blue-600 text-white px-2 py-1 rounded hover:bg-blue-700" id="btn-edit{{d.id}}"
-                                onclick="document.getElementById('#modal{{d.id}}').classList.remove('hidden')">
+                            <button class="bg-blue-600 text-white px-2 py-1 rounded hover:bg-blue-700"
+                                onclick="document.getElementById('modal{{d.id_plano}}').classList.remove('hidden')">
                                 Editar
                             </button>
                         </td>
                         <td class="border px-4 py-2 text-center">
                             <button class="bg-red-600 text-white px-2 py-1 rounded hover:bg-red-700"
-                                onclick="document.getElementById('modalEliminar').classList.remove('hidden')">
+                                onclick="document.getElementById('modalEliminar{{d.id_plano}}').classList.remove('hidden')">
                                 Eliminar
                             </button>
                         </td>
@@ -268,16 +266,16 @@
                     </div>
 
                     <!--------------------------------------------------------------- Modal para editar documento -------------------------------------------------------------------->
-                    <div id="modal{{d.id}}"
+                    <div id="modal{{d.id_plano}}"
                         class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 hidden">
                         <div class="bg-white p-8 rounded shadow-lg w-full max-w-lg relative">
-                            <button onclick="document.getElementById('#{{d.id}}').classList.add('hidden')"
+                            <button onclick="document.getElementById('modal{{d.id_plano}}').classList.add('hidden')"
                                 class="absolute top-2 right-2 text-gray-500 hover:text-gray-800"><img
                                     src="../../../../static/assets/img/equis.png" width="20px" height="20px"
                                     alt="X"></button>
                             <h2 class="text-xl font-bold mb-4">Editar Documento</h2>
 
-                            <form action="/edit/{{d.id}}" method="post">
+                            <form action="/edit/{{d.id_plano}}" method="post">
                                 <div class="mb-2">
                                     <label class="block text-sm font-medium mb-1">Año</label>
                                     <select name="anio" class="border rounded px-2 py-1 w-full" value="{{d.anio}}"
@@ -363,7 +361,7 @@
 
                                 <div class="flex justify-end gap-2">
                                     <button type="button"
-                                        onclick="document.getElementById('modalEditar').classList.add('hidden')"
+                                        onclick="document.getElementById('modal{{d.id_plano}}').classList.add('hidden')"
                                         class="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400">Cancelar</button>
                                     <button type="submit"
                                         class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Guardar
@@ -374,10 +372,10 @@
                     </div>
 
                     <!------------------------------------------------------------ Modal para eliminar documento ------------------------------------------------------------------->
-                    <div id="modalEliminar"
+                    <div id="modalEliminar{{d.id_plano}}"
                         class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 hidden">
                         <div class="bg-white rounded-lg shadow-lg p-8 w-full max-w-md relative">
-                            <button onclick="document.getElementById('modalEliminar').classList.add('hidden')"
+                            <button onclick="document.getElementById('modalEliminar{{d.id_plano}}').classList.add('hidden')"
                                 class="absolute top-2 right-2 text-gray-500 hover:text-gray-800"><img
                                     src="../../../../static/assets/img/equis.png" width="20px" height="20px"
                                     alt="X"></button>
@@ -385,9 +383,9 @@
                             </h2>
                             <p class="mb-6 text-gray-600">Esta acción no se puede deshacer.</p>
                             <div class="flex justify-end gap-3">
-                                <button onclick="document.getElementById('modalEliminar').classList.add('hidden')"
+                                <button onclick="document.getElementById('modalEliminar{{d.id_plano}}').classList.add('hidden')"
                                     class="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400">Cancelar</button>
-                                <a href="{{url_for('delete', id=d.id)}}"
+                                <a href="{{url_for('delete', id=d.id_plano)}}"
                                     class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">Eliminar</a>
                             </div>
                         </div>
@@ -400,3 +398,5 @@
         <br>
 
     </div>
+</body>
+</html>

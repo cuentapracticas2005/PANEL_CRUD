@@ -39,7 +39,7 @@ def addUser():
     dibujado_en = request.form['dibujado_en']
 
     # Si tenemos todos los datos hacemos la consulta INSERT en la db_h
-    if id and anio and mes and descripcion and numero_plano and tamano and version and dibujante and dibujado_en:
+    if anio and mes and descripcion and numero_plano and tamano and version and dibujante and dibujado_en:
         cursor = db.database.cursor()
         sql = "INSERT INTO planos (anio, mes, descripcion, num_plano, tamanio, version, dibujante, dibujado_en) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
         data = (anio, mes, descripcion, numero_plano, tamano, version, dibujante, dibujado_en)
@@ -57,6 +57,7 @@ def delete(id):
     data = (id,)
     cursor.execute(sql, data)
     db.database.commit()
+    cursor.close()
     return redirect(url_for('home'))
 
 # Ruta para actualizar documentos en la db_h
