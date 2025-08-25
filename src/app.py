@@ -2,12 +2,15 @@ from flask import Flask, render_template, request, redirect, url_for
 import os
 import database as db
 
-# Accedemos al archivo index.html para poder lanzarlo a un puerto del servidor
-template_dir = os.path.dirname(os.path.abspath(os.path.dirname(__file__)))#Con este comando accedemos al archivo del proyecto
-template_dir = os.path.join(template_dir,'src','templates')#Con el join unimos los directorios par aacceder a nuestro index.html
+# Accedemos al directorio de plantillas
+template_dir = os.path.join(os.path.dirname(__file__), 'templates')
 
-#Inicializamos Flask en la variable app
-app = Flask(__name__, template_folder = template_dir)
+# Inicializamos Flask en la variable app y configuramos carpeta estática
+app = Flask(
+    __name__,
+    template_folder=template_dir,
+    static_folder=os.path.join(os.path.dirname(__file__), 'static')
+)
 
 #Rutas de la app
 @app.route('/')
@@ -25,7 +28,7 @@ def home():
     return render_template('index.html', data=insertObject) # Pasamos el array de diccionarios a la plantilla index.html
 
 
-# Ruta para guardar usuarios en la db_h
+# Ruta para guardar documentos en la db_h
 @app.route('/user', methods=['POST'])
 def addUser():
     # A traves de request.form obtenemos los datos del formulario
@@ -39,7 +42,7 @@ def addUser():
     dibujado_en = request.form['dibujado_en']
 
     # Si tenemos todos los datos hacemos la consulta INSERT en la db_h
-    if id and anio and mes and descripcion and numero_plano and tamano and version and dibujante and dibujado_en:
+    if all([anio, mes, descripcion, numero_plano, tamano, version, dibujante, dibujado_en]):
         cursor = db.database.cursor()
         sql = "INSERT INTO planos (anio, mes, descripcion, num_plano, tamanio, version, dibujante, dibujado_en) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
         data = (anio, mes, descripcion, numero_plano, tamano, version, dibujante, dibujado_en)
@@ -57,6 +60,7 @@ def delete(id_plano):
     data = (id_plano,)
     cursor.execute(sql, data)
     db.database.commit()
+    cursor.close()
     return redirect(url_for('home'))
 
 # Ruta para actualizar documentos en la db_h
@@ -71,7 +75,7 @@ def edit (id_plano):
     dibujante = request.form['dibujante']
     dibujado_en = request.form['dibujado_en']
 
-    if id and anio and mes and descripcion and numero_plano and tamano and version and dibujante and dibujado_en:
+    if all([anio, mes, descripcion, numero_plano, tamano, version, dibujante, dibujado_en]):
         cursor = db.database.cursor()
         sql = "UPDATE planos SET anio=%s, mes=%s, descripcion=%s, num_plano=%s, tamanio=%s, version=%s, dibujante=%s, dibujado_en=%s WHERE id_plano=%s"
         data = (anio, mes, descripcion, numero_plano, tamano, version, dibujante, dibujado_en, id_plano)
@@ -82,4 +86,4 @@ def edit (id_plano):
 
 #Lanzamos la app
 if __name__ == '__main__':
-    app.run(debug=True, port=4000)
+    app.run(host='0.0.0.0', debug=True, port=4000)
