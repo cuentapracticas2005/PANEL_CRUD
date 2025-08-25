@@ -2,10 +2,10 @@ from flask import Flask, render_template, request, redirect, url_for
 import os
 import database as db
 
-# CAMBIO: Simplificación de la ruta de plantillas para evitar errores de path
+# CAMBIO: Simplificación de la ruta de templates para evitar errores de path
 template_dir = os.path.join(os.path.dirname(__file__), 'templates')
 
-# CAMBIO: Configuramos carpeta estática estándar en src/static
+# CAMBIO: Configuramos carpeta static estándar en src/static
 app = Flask(
     __name__,
     template_folder=template_dir,
@@ -58,14 +58,15 @@ def delete(id_plano):
     cursor = db.database.cursor()
     sql = "DELETE FROM planos WHERE id_plano=%s"
     data = (id_plano,)
-    cursor.execute(sql, data)
-    db.database.commit()
+    cursor.execute(sql, data) # Envía la consulta SQL al servidor, pero no la guarda todavía de forma permanente en la base de datos.
+    db.database.commit() # Confirma (commit) los cambios hechos por la consulta, y los hace definitivos.
     cursor.close()  # CAMBIO: cierre explícito del cursor
     return redirect(url_for('home'))
 
 # Ruta para actualizar documentos en la db_h
 @app.route('/edit/<string:id_plano>', methods=['POST'])
 def edit (id_plano):
+    # Recogemos los datos que vienen del formulario HTML
     anio = request.form['anio']
     mes = request.form['mes']
     descripcion = request.form['descripcion']
@@ -77,7 +78,7 @@ def edit (id_plano):
 
     # CAMBIO: Validación correcta de campos requeridos usando all([...])
     if all([anio, mes, descripcion, numero_plano, tamano, version, dibujante, dibujado_en]):
-        cursor = db.database.cursor()
+        cursor = db.database.cursor() # Permite ejecutas consultas SQL sobre la base de datos
         sql = "UPDATE planos SET anio=%s, mes=%s, descripcion=%s, num_plano=%s, tamanio=%s, version=%s, dibujante=%s, dibujado_en=%s WHERE id_plano=%s"
         data = (anio, mes, descripcion, numero_plano, tamano, version, dibujante, dibujado_en, id_plano)
         cursor.execute(sql, data)
