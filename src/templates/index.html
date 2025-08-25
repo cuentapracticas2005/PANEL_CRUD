@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-50 p-8">
+
+    <!--Barra de Navegación-->
+    <nav class="bg-white shadow-lg mb-8">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between h-16">
+                <div class="flex space-x-7">
+                    <div class="flex items-center">
+                        <a href="../admin/interac_admin.html"><img src="img/HIDROSTAL3.png" alt="Logo"
+                                class="h-8 w-auto"></a>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <a href="interac_admin.html"
+                            class="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-blue-600">Inicio</a>
+
+                        <a href="../dashboard/admin_user.html"
+                            class="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-blue-600">Administración
+                            de Usuarios</a>
+
+                        <div>
+                            <button class="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-blue-600"
+                                onclick="document.getElementById('modalCreateUser').classList.remove('hidden')">
+                                Crear Nuevo Usuario
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="flex items-center">
+                    <a href="../../../../../index.html"
+                        class="px-4 py-2 rounded text-sm font-medium text-white bg-red-600 hover:bg-red-700">
+                        Cerrar Sesión
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <div class="max-w-7x2 mx-auto">
+        <div>
+            <label class="block text-sm font-medium mb-1">SELECCIONE EL TIPO DE DOCUMENTO A BUSCAR: </label>
+            <select name="tipo_documento" class="border rounded px-2 py-1 w-32" required>
+                <option value="" disabled selected>Seleccionar</option>
+                <option value="P_bombas">Plano-Bombas</option>
+                <option value="P_componentes">Plano-Componentes</option>
+                <option value="P_partes">Planos-Partes</option>
+            </select>
+        </div><br>
+
+        <!-- Botones de administración -->
+        <div class="flex gap-4 mb-4">
+            <button class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+                onclick="document.getElementById('modalAgregar').classList.remove('hidden')">
+                Agregar Nuevo Documento
+            </button>
+        </div>
+
+        <!-- Filtros -->
+        <form class="bg-white p-6 rounded shadow mb-8 flex flex-wrap gap-4 items-end">
+            <div>
+                <label class="block text-sm font-medium mb-1">Año</label>
+                <input type="text" name="anio" class="border rounded px-2 py-1 w-40" placeholder="Año">
+            </div>
+            <div>
+                <label class="block text-sm font-medium mb-1">Mes</label>
+                <select name="mes" class="border rounded px-2 py-1 w-40" required>
+                    <option value="" disabled selected>Selecciona mes</option>
+                    <option value="Enero">Enero</option>
+                    <option value="Febrero">Febrero</option>
+                    <option value="Marzo">Marzo</option>
+                    <option value="Abril">Abril</option>
+                    <option value="Mayo">Mayo</option>
+                    <option value="Junio">Junio</option>
+                    <option value="Julio">Julio</option>
+                    <option value="Agosto">Agosto</option>
+                    <option value="Septiembre">Septiembre</option>
+                    <option value="Octubre">Octubre</option>
+                    <option value="Noviembre">Noviembre</option>
+                    <option value="Diciembre">Diciembre</option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-sm font-medium mb-1">Descripción</label>
+                <input type="text" name="descripcion" class="border rounded px-2 py-1 w-40" placeholder="Descripción">
+            </div>
+            <div>
+                <label class="block text-sm font-medium mb-1">Número de Plano</label>
+                <input type="text" name="numero_plano" class="border rounded px-2 py-1 w-32" placeholder="N° Plano">
+            </div>
+            <div>
+                <label class="block text-sm font-medium mb-1">Tamaño</label>
+                <select name="tamano" class="border rounded px-2 py-1 w-46" required>
+                    <option value="" disabled selected>Selecciona tamaño</option>
+                    <option value="A0">A0</option>
+                    <option value="A1">A1</option>
+                    <option value="A2">A2</option>
+                    <option value="A3">A3</option>
+                    <option value="A4">A4</option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-sm font-medium mb-1">Versión</label>
+                <input type="text" name="version" class="border rounded px-2 py-1 w-20" placeholder="Versión">
+            </div>
+            <div>
+                <label class="block text-sm font-medium mb-1">Nombre del Dibujante</label>
+                <input type="text" name="dibujante" class="border rounded px-2 py-1 w-40" placeholder="Dibujante">
+            </div>
+            <div>
+                <label class="block text-sm font-medium mb-1">Dibujado en</label>
+                <select name="dibujado_en" class="border rounded px-2 py-1 w-38" required>
+                    <option value="" disabled selected>Seleccionar</option>
+                    <option value="AC">AC</option>
+                    <option value="SketchUp">SketchUp</option>
+                </select>
+            </div><br><br>
+            <div class="flex gap-2">
+                <button type="submit"
+                    class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Buscar</button><br>
+                <button type="reset"
+                    class="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400">Limpiar</button>
+            </div>
+        </form>
+
+        <!-- Tabla de resultados -->
+        <div class="overflow-x-auto">
+            <table class="min-w-full bg-white rounded shadow">
+                <thead>
+                    <tr class="bg-gray-200 text-gray-700">
+                        <th class="px-4 py-2">#</th>
+                        <th class="px-4 py-2">Año</th>
+                        <th class="px-4 py-2">Mes</th>
+                        <th class="px-4 py-2">Descripción</th>
+                        <th class="px-4 py-2">Número de Plano</th>
+                        <th class="px-4 py-2">Tamaño</th>
+                        <th class="px-4 py-2">Versión</th>
+                        <th class="px-4 py-2">Nombre del Dibujante</th>
+                        <th class="px-4 py-2">Dibujado en</th>
+                        <th class="px-4 py-2">Actualizar</th>
+                        <th class="px-4 py-2">Eliminar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for d in data %}
+                    <tr>
+                        <td class="border px-4 py-2">{{d.id_plano}}</td>
+                        <td class="border px-4 py-2">{{d.anio}}</td>
+                        <td class="border px-4 py-2">{{d.mes}}</td>
+                        <td class="border px-4 py-2">{{d.descripcion}}</td>
+                        <td class="border px-4 py-2">{{d.num_plano}}</td>
+                        <td class="border px-4 py-2">{{d.tamanio}}</td>
+                        <td class="border px-4 py-2">{{d.version}}</td>
+                        <td class="border px-4 py-2">{{d.dibujante}}</td>
+                        <td class="border px-4 py-2">{{d.dibujado_en}}</td>
+                        <td class="border px-4 py-2 text-center">
+                            <button class="bg-blue-600 text-white px-2 py-1 rounded hover:bg-blue-700"
+                                onclick="document.getElementById('modal{{d.id}}').classList.remove('hidden')">
+                                Editar
+                            </button>
+                        </td>
+                        <td class="border px-4 py-2 text-center">
+                            <button class="bg-red-600 text-white px-2 py-1 rounded hover:bg-red-700"
+                                onclick="document.getElementById('modalEliminar').classList.remove('hidden')">
+                                Eliminar
+                            </button>
+                        </td>
+                    </tr>
+
+                    <!---------------------------------------------------------- Modal para agregar nuevo documento ----------------------------------------------------------------->
+                    <div id="modalAgregar"
+                        class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 hidden">
+                        <div class="bg-white p-8 rounded shadow-lg w-full max-w-lg relative">
+                            <button onclick="document.getElementById('modalAgregar').classList.add('hidden')"
+                                class="absolute top-2 right-2 text-gray-500 hover:text-gray-800"><img
+                                    src="../../../../static/assets/img/equis.png" width="20px" height="20px"
+                                    alt="X"></button>
+                            <h2 class="text-xl font-bold mb-4">Agregar Nuevo Documento</h2>
+                            <form action="/user" method="POST">
+                                <div class="mb-2">
+                                    <label class="block text-sm font-medium mb-1">Año</label>
+                                    <select name="anio" class="border rounded px-2 py-1 w-full" required>
+                                        <option value="" disabled selected>Selecciona año</option>
+                                        <option value="2020">2020</option>
+                                        <option value="2021">2021</option>
+                                        <option value="2022">2022</option>
+                                        <option value="2023">2023</option>
+                                    </select>
+                                </div>
+                                <div class="mb-2">
+                                    <label class="block text-sm font-medium mb-1">Mes</label>
+                                    <select name="mes" class="border rounded px-2 py-1 w-full" required>
+                                        <option value="" disabled selected>Selecciona mes</option>
+                                        <option value="Enero">Enero</option>
+                                        <option value="Febrero">Febrero</option>
+                                        <option value="Marzo">Marzo</option>
+                                        <option value="Abril">Abril</option>
+                                        <option value="Mayo">Mayo</option>
+                                        <option value="Junio">Junio</option>
+                                        <option value="Julio">Julio</option>
+                                        <option value="Agosto">Agosto</option>
+                                        <option value="Septiembre">Septiembre</option>
+                                        <option value="Octubre">Octubre</option>
+                                        <option value="Noviembre">Noviembre</option>
+                                        <option value="Diciembre">Diciembre</option>
+                                    </select>
+                                </div>
+                                <div class="mb-2">
+                                    <label class="block text-sm font-medium mb-1">Descripción</label>
+                                    <input type="text" name="descripcion" class="border rounded px-2 py-1 w-full"
+                                        required>
+                                </div>
+                                <div class="mb-2">
+                                    <label class="block text-sm font-medium mb-1">Número de Plano</label>
+                                    <input type="text" name="numero_plano" class="border rounded px-2 py-1 w-full"
+                                        required>
+                                </div>
+                                <div class="mb-2">
+                                    <label class="block text-sm font-medium mb-1">Tamaño</label>
+                                    <select name="tamano" class="border rounded px-2 py-1 w-full" required>
+                                        <option value="" disabled selected>Selecciona tamaño</option>
+                                        <option value="A0">A0</option>
+                                        <option value="A1">A1</option>
+                                        <option value="A2">A2</option>
+                                        <option value="A3">A3</option>
+                                        <option value="A4">A4</option>
+                                    </select>
+                                </div>
+                                <div class="mb-2">
+                                    <label class="block text-sm font-medium mb-1">Versión</label>
+                                    <input type="text" name="version" class="border rounded px-2 py-1 w-full" required>
+                                </div>
+                                <div class="mb-2">
+                                    <label class="block text-sm font-medium mb-1">Nombre del Dibujante</label>
+                                    <input type="text" name="dibujante" class="border rounded px-2 py-1 w-full"
+                                        required>
+                                </div>
+                                <div class="mb-2">
+                                    <label class="block text-sm font-medium mb-1">Dibujado en</label>
+                                    <select name="dibujado_en" class="border rounded px-2 py-1 w-full" required>
+                                        <option value="" disabled selected>Seleccionar</option>
+                                        <option value="AC">CAD</option>
+                                        <option value="SketchUp">Lapiz</option>
+                                    </select>
+                                </div>
+                                <div class="mb-4">
+                                    <label class="block text-sm font-medium mb-1">Archivo PDF</label>
+                                    <input type="file" name="pdf" accept="application/pdf"
+                                        class="border rounded px-2 py-1 w-full">
+                                </div>
+                                <div class="flex justify-end gap-2">
+                                    <button type="button"
+                                        onclick="document.getElementById('modalAgregar').classList.add('hidden')"
+                                        class="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400">Cancelar</button>
+                                    <button type="submit"
+                                        class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Agregar</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!--------------------------------------------------------------- Modal para editar documento -------------------------------------------------------------------->
+                    <div id="modal{{d.id}}"
+                        class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 hidden">
+                        <div class="bg-white p-8 rounded shadow-lg w-full max-w-lg relative">
+                            <button onclick="document.getElementById('modal{{d.id}}').classList.add('hidden')"
+                                class="absolute top-2 right-2 text-gray-500 hover:text-gray-800"><img
+                                    src="../../../../static/assets/img/equis.png" width="20px" height="20px"
+                                    alt="X"></button>
+                            <h2 class="text-xl font-bold mb-4">Editar Documento</h2>
+
+                            <form action="/edit/{{d.id}}" method="post">
+                                <div class="mb-2">
+                                    <label class="block text-sm font-medium mb-1">Año</label>
+                                    <select name="anio" class="border rounded px-2 py-1 w-full" value="{{d.anio}}"
+                                        required>
+                                        <option value="2020">2020</option>
+                                        <option value="2021">2021</option>
+                                        <option value="2022">2022</option>
+                                        <option value="2023">2023</option>
+                                    </select>
+                                </div>
+
+                                <div class="mb-2">
+                                    <label class="block text-sm font-medium mb-1">Mes</label>
+                                    <select name="mes" class="border rounded px-2 py-1 w-full" value="{{d.mes}}"
+                                        required>
+                                        <option value="Enero">Enero</option>
+                                        <option value="Febrero">Febrero</option>
+                                        <option value="Marzo">Marzo</option>
+                                        <option value="Abril">Abril</option>
+                                        <option value="Mayo">Mayo</option>
+                                        <option value="Junio">Junio</option>
+                                        <option value="Julio">Julio</option>
+                                        <option value="Agosto">Agosto</option>
+                                        <option value="Septiembre">Septiembre</option>
+                                        <option value="Octubre">Octubre</option>
+                                        <option value="Noviembre">Noviembre</option>
+                                        <option value="Diciembre">Diciembre</option>
+                                    </select>
+                                </div>
+
+                                <div class="mb-2">
+                                    <label class="block text-sm font-medium mb-1">Descripción</label>
+                                    <input type="text" name="descripcion" class="border rounded px-2 py-1 w-full"
+                                        value="{{d.descripcion}}" required>
+                                </div>
+
+                                <div class="mb-2">
+                                    <label class="block text-sm font-medium mb-1">Número de Plano</label>
+                                    <input type="text" name="numero_plano" class="border rounded px-2 py-1 w-full"
+                                        value="{{d.num_plano}}" required>
+                                </div>
+
+                                <div class="mb-2">
+                                    <label class="block text-sm font-medium mb-1">Tamaño</label>
+                                    <select name="tamano" class="border rounded px-2 py-1 w-full" value="{{d.tamano}}"
+                                        required>
+                                        <option value="A0">A0</option>
+                                        <option value="A1">A1</option>
+                                        <option value="A2">A2</option>
+                                        <option value="A3">A3</option>
+                                        <option value="A4">A4</option>
+                                    </select>
+                                </div>
+
+                                <div class="mb-2">
+                                    <label class="block text-sm font-medium mb-1">Versión</label>
+                                    <input type="text" name="version" class="border rounded px-2 py-1 w-full"
+                                        value="{{d.version}}" required>
+                                </div>
+
+                                <div class="mb-2">
+                                    <label class="block text-sm font-medium mb-1">Nombre del Dibujante</label>
+                                    <input type="text" name="dibujante" class="border rounded px-2 py-1 w-full"
+                                        value="{{d.dibujante}}" required>
+                                </div>
+
+                                <div class="mb-2">
+                                    <label class="block text-sm font-medium mb-1">Dibujado en</label>
+                                    <select name="dibujado_en" class="border rounded px-2 py-1 w-full"
+                                        value="{{d.dibujado_en}}" required>
+                                        <option value="AC">CAD</option>
+                                        <option value="SketchUp">Lapiz</option>
+                                    </select>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label class="block text-sm font-medium mb-1">Actualizar PDF</label>
+                                    <input type="file" name="pdf" accept="application/pdf"
+                                        class="border rounded px-2 py-1 w-full">
+                                    <p class="text-sm text-gray-500 mt-1">Dejar en blanco para mantener el PDF actual
+                                    </p>
+                                </div>
+
+                                <div class="flex justify-end gap-2">
+                                    <button type="button"
+                                        onclick="document.getElementById('modalEditar').classList.add('hidden')"
+                                        class="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400">Cancelar</button>
+                                    <button type="submit"
+                                        class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Guardar
+                                        Cambios</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!------------------------------------------------------------ Modal para eliminar documento ------------------------------------------------------------------->
+                    <div id="modalEliminar"
+                        class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 hidden">
+                        <div class="bg-white rounded-lg shadow-lg p-8 w-full max-w-md relative">
+                            <button onclick="document.getElementById('modalEliminar').classList.add('hidden')"
+                                class="absolute top-2 right-2 text-gray-500 hover:text-gray-800"><img
+                                    src="../../../../static/assets/img/equis.png" width="20px" height="20px"
+                                    alt="X"></button>
+                            <h2 class="text-xl font-bold mb-4 text-gray-800">¿Estás seguro de eliminar este archivo?
+                            </h2>
+                            <p class="mb-6 text-gray-600">Esta acción no se puede deshacer.</p>
+                            <div class="flex justify-end gap-3">
+                                <button onclick="document.getElementById('modalEliminar').classList.add('hidden')"
+                                    class="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400">Cancelar</button>
+                                <a href="{{url_for('delete', id=d.id)}}"
+                                    class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">Eliminar</a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <br>
+
+    </div>

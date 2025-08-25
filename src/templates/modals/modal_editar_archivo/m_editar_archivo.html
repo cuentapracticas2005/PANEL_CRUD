@@ -1,0 +1,90 @@
+<!-- Modal para editar documento -->
+<div id="modalEditar" class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 hidden">
+    <div class="bg-white p-8 rounded shadow-lg w-full max-w-lg relative">
+        <button onclick="document.getElementById('modalEditar').classList.add('hidden')"
+            class="absolute top-2 right-2 text-gray-500 hover:text-gray-800"><img src="../../../../static/assets/img/equis.png" width="20px" height="20px" alt="X"></button>
+        <h2 class="text-xl font-bold mb-4">Editar Documento</h2>
+        
+        <form>
+            <div class="mb-2">
+                <label class="block text-sm font-medium mb-1">Año</label>
+                <select name="anio" class="border rounded px-2 py-1 w-full" required>
+                    <option value="2020">2020</option>
+                    <option value="2021">2021</option>
+                    <option value="2022">2022</option>
+                    <option value="2023">2023</option>
+                </select>
+            </div>
+
+            <div class="mb-2">
+                <label class="block text-sm font-medium mb-1">Mes</label>
+                <select name="mes" class="border rounded px-2 py-1 w-full" required>
+                    <option value="Enero">Enero</option>
+                    <option value="Febrero">Febrero</option>
+                    <option value="Marzo">Marzo</option>
+                    <option value="Abril">Abril</option>
+                    <option value="Mayo">Mayo</option>
+                    <option value="Junio">Junio</option>
+                    <option value="Julio">Julio</option>
+                    <option value="Agosto">Agosto</option>
+                    <option value="Septiembre">Septiembre</option>
+                    <option value="Octubre">Octubre</option>
+                    <option value="Noviembre">Noviembre</option>
+                    <option value="Diciembre">Diciembre</option>
+                </select>
+            </div>
+
+            <div class="mb-2">
+                <label class="block text-sm font-medium mb-1">Descripción</label>
+                <input type="text" name="descripcion" class="border rounded px-2 py-1 w-full" required>
+            </div>
+
+            <div class="mb-2">
+                <label class="block text-sm font-medium mb-1">Número de Plano</label>
+                <input type="text" name="numero_plano" class="border rounded px-2 py-1 w-full" required>
+            </div>
+
+            <div class="mb-2">
+                <label class="block text-sm font-medium mb-1">Tamaño</label>
+                <select name="tamano" class="border rounded px-2 py-1 w-full" required>
+                    <option value="A0">A0</option>
+                    <option value="A1">A1</option>
+                    <option value="A2">A2</option>
+                    <option value="A3">A3</option>
+                    <option value="A4">A4</option>
+                </select>
+            </div>
+
+            <div class="mb-2">
+                <label class="block text-sm font-medium mb-1">Versión</label>
+                <input type="text" name="version" class="border rounded px-2 py-1 w-full" required>
+            </div>
+
+            <div class="mb-2">
+                <label class="block text-sm font-medium mb-1">Nombre del Dibujante</label>
+                <input type="text" name="dibujante" class="border rounded px-2 py-1 w-full" required>
+            </div>
+
+            <div class="mb-2">
+                <label class="block text-sm font-medium mb-1">Dibujado en</label>
+                <select name="dibujado_en" class="border rounded px-2 py-1 w-full" required>
+                    <option value="AC">CAD</option>
+                    <option value="SketchUp">Lapiz</option>
+                </select>
+            </div>
+
+            <div class="mb-4">
+                <label class="block text-sm font-medium mb-1">Actualizar PDF</label>
+                <input type="file" name="pdf" accept="application/pdf" class="border rounded px-2 py-1 w-full">
+                <p class="text-sm text-gray-500 mt-1">Dejar en blanco para mantener el PDF actual</p>
+            </div>
+
+            <div class="flex justify-end gap-2">
+                <button type="button" onclick="document.getElementById('modalEditar').classList.add('hidden')"
+                    class="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400">Cancelar</button>
+                <button type="submit"
+                class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Guardar Cambios</button>
+            </div>
+        </form>
+    </div>
+</div>
