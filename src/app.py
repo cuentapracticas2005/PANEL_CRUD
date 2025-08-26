@@ -2,10 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for
 import os
 import database as db
 
-# CAMBIO: Simplificación de la ruta de templates para evitar errores de path
 template_dir = os.path.join(os.path.dirname(__file__), 'templates')
-
-# CAMBIO: Configuramos carpeta static estándar en src/static
 app = Flask(
     __name__,
     template_folder=template_dir,
@@ -27,7 +24,6 @@ def home():
     cursor.close()
     return render_template('index.html', data=insertObject) # Pasamos el array de diccionarios a la plantilla index.html
 
-
 # Ruta para guardar documentos en la db_h
 @app.route('/user', methods=['POST'])
 def addUser():
@@ -41,11 +37,32 @@ def addUser():
     dibujante = request.form['dibujante']
     dibujado_en = request.form['dibujado_en']
 
-    # CAMBIO: Validación correcta de campos requeridos usando all([...])
     if all([anio, mes, descripcion, numero_plano, tamano, version, dibujante, dibujado_en]):
-        cursor = db.database.cursor()
+        cursor = db.database.cursor() # Permite ejecutas consultas SQL sobre la base de datos
         sql = "INSERT INTO planos (anio, mes, descripcion, num_plano, tamanio, version, dibujante, dibujado_en) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
         data = (anio, mes, descripcion, numero_plano, tamano, version, dibujante, dibujado_en)
+        cursor.execute(sql, data) # Envía la consulta SQL al servidor, pero no la guarda todavía de forma permanente en la base de datos.
+        db.database.commit() # Confirma (commit) los cambios hechos por la consulta, y los hace definitivos.
+        cursor.close() # CAMBIO: cierre explícito del cursor
+    return redirect(url_for('home'))
+
+
+# Ruta para actualizar documentos en la db_h
+@app.route('/edit/<string:id_plano>', methods=['POST'])
+def edit (id_plano):
+    anio = request.form['anio']
+    mes = request.form['mes']
+    descripcion = request.form['descripcion']
+    numero_plano = request.form['numero_plano']
+    tamano = request.form['tamano']
+    version = request.form['version']
+    dibujante = request.form['dibujante']
+    dibujado_en = request.form['dibujado_en']
+
+    if all([anio, mes, descripcion, numero_plano, tamano, version, dibujante, dibujado_en]):
+        cursor = db.database.cursor() 
+        sql = "UPDATE planos SET anio=%s, mes=%s, descripcion=%s, num_plano=%s, tamanio=%s, version=%s, dibujante=%s, dibujado_en=%s WHERE id_plano=%s"
+        data = (anio, mes, descripcion, numero_plano, tamano, version, dibujante, dibujado_en, id_plano)
         cursor.execute(sql, data)
         db.database.commit()
         cursor.close()
@@ -58,34 +75,11 @@ def delete(id_plano):
     cursor = db.database.cursor()
     sql = "DELETE FROM planos WHERE id_plano=%s"
     data = (id_plano,)
-    cursor.execute(sql, data) # Envía la consulta SQL al servidor, pero no la guarda todavía de forma permanente en la base de datos.
-    db.database.commit() # Confirma (commit) los cambios hechos por la consulta, y los hace definitivos.
-    cursor.close()  # CAMBIO: cierre explícito del cursor
-    return redirect(url_for('home'))
-
-# Ruta para actualizar documentos en la db_h
-@app.route('/edit/<string:id_plano>', methods=['POST'])
-def edit (id_plano):
-    # Recogemos los datos que vienen del formulario HTML
-    anio = request.form['anio']
-    mes = request.form['mes']
-    descripcion = request.form['descripcion']
-    numero_plano = request.form['numero_plano']
-    tamano = request.form['tamano']
-    version = request.form['version']
-    dibujante = request.form['dibujante']
-    dibujado_en = request.form['dibujado_en']
-
-    # CAMBIO: Validación correcta de campos requeridos usando all([...])
-    if all([anio, mes, descripcion, numero_plano, tamano, version, dibujante, dibujado_en]):
-        cursor = db.database.cursor() # Permite ejecutas consultas SQL sobre la base de datos
-        sql = "UPDATE planos SET anio=%s, mes=%s, descripcion=%s, num_plano=%s, tamanio=%s, version=%s, dibujante=%s, dibujado_en=%s WHERE id_plano=%s"
-        data = (anio, mes, descripcion, numero_plano, tamano, version, dibujante, dibujado_en, id_plano)
-        cursor.execute(sql, data)
-        db.database.commit()
-        cursor.close()
+    cursor.execute(sql, data)
+    db.database.commit() 
+    cursor.close()  
     return redirect(url_for('home'))
 
 # Lanzamos la app
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', debug=True, port=4000)  # CAMBIO: host=0.0.0.0 para acceso externo
+    app.run(host='0.0.0.0', debug=True, port=4000)  # host=0.0.0.0 para acceso externo
