@@ -34,16 +34,6 @@
         </div>
     </nav>
     <div class="max-w-7x2 mx-auto">
-        <div>
-            <label class="block text-sm font-medium mb-1">SELECCIONE EL TIPO DE DOCUMENTO A BUSCAR: </label>
-            <select name="tipo_documento" class="border rounded px-2 py-1 w-32" required>
-                <option value="" disabled selected>Seleccionar</option>
-                <option value="P_bombas">Plano-Bombas</option>
-                <option value="P_componentes">Plano-Componentes</option>
-                <option value="P_partes">Planos-Partes</option>
-            </select>
-        </div><br>
-
         <!-- Botones de administración -->
         <div class="flex gap-4 mb-4">
             <button class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
@@ -108,7 +98,7 @@
                 <select name="dibujado_en" class="border rounded px-2 py-1 w-38" required>
                     <option value="" disabled selected>Seleccionar</option>
                     <option value="AC">AC</option>
-                    <option value="SketchUp">SketchUp</option>
+                    <option value="SketchUp">Lapiz</option>
                 </select>
             </div><br><br>
             <div class="flex gap-2">
@@ -193,13 +183,7 @@
                             <form action="/user" method="POST" enctype="multipart/form-data">
                                 <div class="mb-2">
                                     <label class="block text-sm font-medium mb-1">Año</label>
-                                    <select name="anio" class="border rounded px-2 py-1 w-full" required>
-                                        <option value="" disabled selected>Selecciona año</option>
-                                        <option value="2020">2020</option>
-                                        <option value="2021">2021</option>
-                                        <option value="2022">2022</option>
-                                        <option value="2023">2023</option>
-                                    </select>
+                                    <input type="text" name="anio" class="border rounded px-2 py-1 w-full">
                                 </div>
                                 <div class="mb-2">
                                     <label class="block text-sm font-medium mb-1">Mes</label>

@@ -1,11 +1,10 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, send_from_directory, abort
 import os
 import database as db
-# CAMBIO: Añadimos utilidades para manejo de archivos y descarga
-from flask import send_from_directory, abort
 from werkzeug.utils import secure_filename
 import uuid
-
+from dotenv import load_dotenv
+load_dotenv()
 
 template_dir = os.path.join(os.path.dirname(__file__), 'templates')
 app = Flask(
@@ -14,14 +13,66 @@ app = Flask(
     static_folder=os.path.join(os.path.dirname(__file__), 'static')
 )
 
-# CAMBIO: Configuración de subida de archivos
-UPLOAD_FOLDER = os.path.join(os.path.dirname(__file__), 'umploads')
-ALLOWED_EXTENSIONS = {"pdf", "png", "jpg", "jpeg", "gif"}
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+# Configuración de subida de archivos
+def get_upload_folder():
+    """Obtiene la carpeta de uploads con validaciones"""
+    upload_path = os.environ.get('UPLOAD_FOLDER')
+    
+    if not upload_path:
+        # Fallback para desarrollo local
+        upload_path = os.path.join(os.path.dirname(__file__), 'uploads')
+        print("⚠️  UPLOAD_FOLDER no definido, usando carpeta local")
+    
+    # Verificar que la carpeta existe y es accesible
+    try:
+        os.makedirs(upload_path, exist_ok=True)
+        # Prueba de escritura
+        test_file = os.path.join(upload_path, 'test_write.tmp')
+        with open(test_file, 'w') as f:
+            f.write('test')
+        os.remove(test_file)
+        print(f"✅ Carpeta de uploads configurada: {upload_path}")
+    except PermissionError:
+        print(f"❌ Sin permisos de escritura en: {upload_path}")
+        raise
+    except Exception as e:
+        print(f"❌ Error al acceder a la carpeta: {e}")
+        raise
+    
+    return upload_path
 
-# CAMBIO: Garantizamos columnas para archivo en la tabla si no existen
+# Puedes agregar esta función para verificar permisos
+def verificarPermisos(folder_path):
+    """Verifica permisos de la carpeta"""
+    try:
+        # Verificar lectura
+        os.listdir(folder_path)
+        print(f"✅ Permisos de lectura OK en: {folder_path}")
+        
+        # Verificar escritura
+        test_file = os.path.join(folder_path, 'permission_test.tmp')
+        with open(test_file, 'w') as f:
+            f.write('test')
+        os.remove(test_file)
+        print(f"✅ Permisos de escritura OK en: {folder_path}")
+        
+        return True
+    except PermissionError as e:
+        print(f"❌ Error de permisos en {folder_path}: {e}")
+        return False
+    except Exception as e:
+        print(f"❌ Error al verificar {folder_path}: {e}")
+        return False
+
+
+UPLOAD_FOLDER = get_upload_folder()
+verificarPermisos(UPLOAD_FOLDER)
+ALLOWED_EXTENSIONS = {"pdf", "png", "jpg", "jpeg", "gif"}
+os.makedirs(UPLOAD_FOLDER, exist_ok=True) # Crear acrpeta umploads si es que no existe
+
+# Garantizamos columnas para archivo en la tabla si no existen
 try:
-    cursor = db.database.cursor()
+    cursor = db.database.cursor() # Abrimos un cursor para la base de datos
     cursor.execute(
         """
         ALTER TABLE planos
@@ -47,12 +98,11 @@ except Exception:
             except Exception:
                 pass
         cursor.close()
-    except Exception:
+    except Exception: # Si ambos casos fallan se ignoran los errores
         pass
 
-
-def allowed_file(filename: str) -> bool:
-    return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
+def allowed_file(filename: str) -> bool: # Verifica si el archivo tiene una extensión permitida
+    return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS # Verifica si la extensión del archivo es permitida
 
 
 #Rutas de la app
@@ -70,6 +120,7 @@ def home():
     cursor.close()
     return render_template('index.html', data=insertObject) # Pasamos el array de diccionarios a la plantilla index.html
 
+
 # Ruta para guardar documentos en la db_h
 @app.route('/user', methods=['POST'])
 def addUser():
@@ -83,7 +134,7 @@ def addUser():
     dibujante = request.form['dibujante']
     dibujado_en = request.form['dibujado_en']
 
-    # CAMBIO: procesamiento de archivo (pdf o imagen)
+    #Procesamiento de archivo (pdf o imagen)
     archivo_nombre = None
     archivo_path = None
     archivo_mime = None
@@ -110,7 +161,7 @@ def addUser():
 
     if all([anio, mes, descripcion, numero_plano, tamano, version, dibujante, dibujado_en]):
         cursor = db.database.cursor() # Permite ejecutas consultas SQL sobre la base de datos
-        # CAMBIO: incluimos columnas de archivo si se subió algo
+        # Incluimos columnas de archivo si se subió algo
         if archivo_nombre and archivo_path:
             sql = "INSERT INTO planos (anio, mes, descripcion, num_plano, tamanio, version, dibujante, dibujado_en, archivo_nombre, archivo_path, archivo_mime) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
             data = (anio, mes, descripcion, numero_plano, tamano, version, dibujante, dibujado_en, archivo_nombre, archivo_path, archivo_mime)
