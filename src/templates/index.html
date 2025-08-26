@@ -152,10 +152,20 @@
                         <td class="border px-4 py-2">{{d.dibujante}}</td>
                         <td class="border px-4 py-2">{{d.dibujado_en}}</td>
                         <td class="border px-4 py-2 text-center">
-                            <a href="#" target="_blank" class="text-blue-600 underline">Ver</a>
+                            {# CAMBIO: mostrar enlace Ver si hay archivo #}
+                            {% if d.archivo_path %}
+                            <a href="{{ url_for('view_file', id_plano=d.id_plano) }}" target="_blank" class="text-blue-600 underline">Ver</a>
+                            {% else %}
+                            <span class="text-gray-400">-</span>
+                            {% endif %}
                         </td>
                         <td class="border px-4 py-2 text-center">
-                            <a href="#" download class="text-green-600 underline">Descargar</a>
+                            {# CAMBIO: mostrar enlace Descargar si hay archivo #}
+                            {% if d.archivo_path %}
+                            <a href="{{ url_for('download_file', id_plano=d.id_plano) }}" class="text-green-600 underline">Descargar</a>
+                            {% else %}
+                            <span class="text-gray-400">-</span>
+                            {% endif %}
                         </td>
                         <td class="border px-4 py-2 text-center">
                             <button class="bg-blue-600 text-white px-2 py-1 rounded hover:bg-blue-700"
@@ -179,7 +189,8 @@
                                 class="absolute top-2 right-2 text-gray-500 hover:text-gray-800"
                                 aria-label="Cerrar">&times;</button>
                             <h2 class="text-xl font-bold mb-4">Agregar Nuevo Documento</h2>
-                            <form action="/user" method="POST">
+                            {# CAMBIO: enctype multipart para subir archivo #}
+                            <form action="/user" method="POST" enctype="multipart/form-data">
                                 <div class="mb-2">
                                     <label class="block text-sm font-medium mb-1">Año</label>
                                     <select name="anio" class="border rounded px-2 py-1 w-full" required>
@@ -200,7 +211,7 @@
                                         <option value="Abril">Abril</option>
                                         <option value="Mayo">Mayo</option>
                                         <option value="Junio">Junio</option>
-                                        <option value="Julio">Julio</option>
+                                                                                <option value="Julio">Julio</option>
                                         <option value="Agosto">Agosto</option>
                                         <option value="Septiembre">Septiembre</option>
                                         <option value="Octubre">Octubre</option>
@@ -247,8 +258,9 @@
                                     </select>
                                 </div>
                                 <div class="mb-4">
-                                    <label class="block text-sm font-medium mb-1">Archivo PDF</label>
-                                    <input type="file" name="pdf" accept="application/pdf"
+                                    <label class="block text-sm font-medium mb-1">Archivo (PDF o Imagen)</label>
+                                    {# CAMBIO: permitimos PDF e imagen #}
+                                    <input type="file" name="pdf" accept="application/pdf,image/*"
                                         class="border rounded px-2 py-1 w-full">
                                 </div>
                                 <div class="flex justify-end gap-2">
@@ -271,7 +283,8 @@
                                 aria-label="Cerrar">&times;</button>
                             <h2 class="text-xl font-bold mb-4">Editar Documento</h2>
 
-                            <form action="/edit/{{d.id_plano}}" method="post">
+                            {# CAMBIO: enctype multipart para subir archivo en edición #}
+                            <form action="/edit/{{d.id_plano}}" method="post" enctype="multipart/form-data">
                                 <div class="mb-2">
                                     <label class="block text-sm font-medium mb-1">Año</label>
                                     <select name="anio" class="border rounded px-2 py-1 w-full" value="{{d.anio}}"
@@ -348,10 +361,10 @@
                                 </div>
 
                                 <div class="mb-4">
-                                    <label class="block text-sm font-medium mb-1">Actualizar PDF</label>
-                                    <input type="file" name="pdf" accept="application/pdf"
+                                    <label class="block text-sm font-medium mb-1">Actualizar Archivo (PDF o Imagen)</label>
+                                    <input type="file" name="pdf" accept="application/pdf,image/*"
                                         class="border rounded px-2 py-1 w-full">
-                                    <p class="text-sm text-gray-500 mt-1">Dejar en blanco para mantener el PDF actual
+                                    <p class="text-sm text-gray-500 mt-1">Dejar en blanco para mantener el archivo actual
                                     </p>
                                 </div>
 
