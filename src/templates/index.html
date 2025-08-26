@@ -43,62 +43,66 @@
         </div>
 
         <!-- Filtros -->
-        <form class="bg-white p-6 rounded shadow mb-8 flex flex-wrap gap-4 items-end">
+        {# CAMBIO: El formulario usa GET y mantiene los valores seleccionados #}
+        <form method="get" class="bg-white p-6 rounded shadow mb-8 flex flex-wrap gap-4 items-end">
             <div>
                 <label class="block text-sm font-medium mb-1">Año</label>
-                <input type="text" name="anio" class="border rounded px-2 py-1 w-40" placeholder="Año">
+                <input type="text" name="anio" class="border rounded px-2 py-1 w-40" placeholder="Año" value="{{ request.args.get('anio','') }}">
             </div>
             <div>
                 <label class="block text-sm font-medium mb-1">Mes</label>
                 <select name="mes" class="border rounded px-2 py-1 w-40">
-                    <option value="" disabled selected>Selecciona mes</option>
-                    <option value="Enero">Enero</option>
-                    <option value="Febrero">Febrero</option>
-                    <option value="Marzo">Marzo</option>
-                    <option value="Abril">Abril</option>
-                    <option value="Mayo">Mayo</option>
-                    <option value="Junio">Junio</option>
-                    <option value="Julio">Julio</option>
-                    <option value="Agosto">Agosto</option>
-                    <option value="Septiembre">Septiembre</option>
-                    <option value="Octubre">Octubre</option>
-                    <option value="Noviembre">Noviembre</option>
-                    <option value="Diciembre">Diciembre</option>
+                    <option value="" {% if not request.args.get('mes') %}selected{% endif %}>Todos</option>
+                    {% set mes_sel = request.args.get('mes','') %}
+                    <option value="Enero" {% if mes_sel=='Enero' %}selected{% endif %}>Enero</option>
+                    <option value="Febrero" {% if mes_sel=='Febrero' %}selected{% endif %}>Febrero</option>
+                    <option value="Marzo" {% if mes_sel=='Marzo' %}selected{% endif %}>Marzo</option>
+                    <option value="Abril" {% if mes_sel=='Abril' %}selected{% endif %}>Abril</option>
+                    <option value="Mayo" {% if mes_sel=='Mayo' %}selected{% endif %}>Mayo</option>
+                    <option value="Junio" {% if mes_sel=='Junio' %}selected{% endif %}>Junio</option>
+                    <option value="Julio" {% if mes_sel=='Julio' %}selected{% endif %}>Julio</option>
+                    <option value="Agosto" {% if mes_sel=='Agosto' %}selected{% endif %}>Agosto</option>
+                    <option value="Septiembre" {% if mes_sel=='Septiembre' %}selected{% endif %}>Septiembre</option>
+                    <option value="Octubre" {% if mes_sel=='Octubre' %}selected{% endif %}>Octubre</option>
+                    <option value="Noviembre" {% if mes_sel=='Noviembre' %}selected{% endif %}>Noviembre</option>
+                    <option value="Diciembre" {% if mes_sel=='Diciembre' %}selected{% endif %}>Diciembre</option>
                 </select>
             </div>
             <div>
                 <label class="block text-sm font-medium mb-1">Descripción</label>
-                <input type="text" name="descripcion" class="border rounded px-2 py-1 w-40" placeholder="Descripción">
+                <input type="text" name="descripcion" class="border rounded px-2 py-1 w-40" placeholder="Descripción" value="{{ request.args.get('descripcion','') }}">
             </div>
             <div>
                 <label class="block text-sm font-medium mb-1">Número de Plano</label>
-                <input type="text" name="numero_plano" class="border rounded px-2 py-1 w-32" placeholder="N° Plano">
+                <input type="text" name="numero_plano" class="border rounded px-2 py-1 w-32" placeholder="N° Plano" value="{{ request.args.get('numero_plano','') }}">
             </div>
             <div>
                 <label class="block text-sm font-medium mb-1">Tamaño</label>
                 <select name="tamano" class="border rounded px-2 py-1 w-46">
-                    <option value="" disabled selected>Selecciona tamaño</option>
-                    <option value="A0">A0</option>
-                    <option value="A1">A1</option>
-                    <option value="A2">A2</option>
-                    <option value="A3">A3</option>
-                    <option value="A4">A4</option>
+                    <option value="" {% if not request.args.get('tamano') %}selected{% endif %}>Todos</option>
+                    {% set tam_sel = request.args.get('tamano','') %}
+                    <option value="A0" {% if tam_sel=='A0' %}selected{% endif %}>A0</option>
+                    <option value="A1" {% if tam_sel=='A1' %}selected{% endif %}>A1</option>
+                    <option value="A2" {% if tam_sel=='A2' %}selected{% endif %}>A2</option>
+                    <option value="A3" {% if tam_sel=='A3' %}selected{% endif %}>A3</option>
+                    <option value="A4" {% if tam_sel=='A4' %}selected{% endif %}>A4</option>
                 </select>
             </div>
             <div>
                 <label class="block text-sm font-medium mb-1">Versión</label>
-                <input type="text" name="version" class="border rounded px-2 py-1 w-20" placeholder="Versión">
+                <input type="text" name="version" class="border rounded px-2 py-1 w-20" placeholder="Versión" value="{{ request.args.get('version','') }}">
             </div>
             <div>
                 <label class="block text-sm font-medium mb-1">Nombre del Dibujante</label>
-                <input type="text" name="dibujante" class="border rounded px-2 py-1 w-40" placeholder="Dibujante">
+                <input type="text" name="dibujante" class="border rounded px-2 py-1 w-40" placeholder="Dibujante" value="{{ request.args.get('dibujante','') }}">
             </div>
             <div>
                 <label class="block text-sm font-medium mb-1">Dibujado en</label>
                 <select name="dibujado_en" class="border rounded px-2 py-1 w-38">
-                    <option value="" disabled selected>Seleccionar</option>
-                    <option value="AC">AC</option>
-                    <option value="SketchUp">Lapiz</option>
+                    <option value="" {% if not request.args.get('dibujado_en') %}selected{% endif %}>Todos</option>
+                    {% set dib_sel = request.args.get('dibujado_en','') %}
+                    <option value="AC" {% if dib_sel=='AC' %}selected{% endif %}>AC</option>
+                    <option value="SketchUp" {% if dib_sel=='SketchUp' %}selected{% endif %}>Lapiz</option>
                 </select>
             </div><br><br>
             <div class="flex gap-2">
@@ -271,31 +275,34 @@
                             <form action="/edit/{{d.id_plano}}" method="post" enctype="multipart/form-data">
                                 <div class="mb-2">
                                     <label class="block text-sm font-medium mb-1">Año</label>
-                                    <select name="anio" class="border rounded px-2 py-1 w-full" value="{{d.anio}}"
-                                        required>
-                                        <option value="2020">2020</option>
-                                        <option value="2021">2021</option>
-                                        <option value="2022">2022</option>
-                                        <option value="2023">2023</option>
+                                    {# CAMBIO: mantener seleccionado el año actual del registro #}
+                                    {% set anio_sel = d.anio %}
+                                    <select name="anio" class="border rounded px-2 py-1 w-full" required>
+                                        <option value="2020" {% if anio_sel=='2020' %}selected{% endif %}>2020</option>
+                                        <option value="2021" {% if anio_sel=='2021' %}selected{% endif %}>2021</option>
+                                        <option value="2022" {% if anio_sel=='2022' %}selected{% endif %}>2022</option>
+                                        <option value="2023" {% if anio_sel=='2023' %}selected{% endif %}>2023</option>
+                                        <option value="2024" {% if anio_sel=='2024' %}selected{% endif %}>2024</option>
                                     </select>
                                 </div>
 
                                 <div class="mb-2">
                                     <label class="block text-sm font-medium mb-1">Mes</label>
-                                    <select name="mes" class="border rounded px-2 py-1 w-full" value="{{d.mes}}"
-                                        required>
-                                        <option value="Enero">Enero</option>
-                                        <option value="Febrero">Febrero</option>
-                                        <option value="Marzo">Marzo</option>
-                                        <option value="Abril">Abril</option>
-                                        <option value="Mayo">Mayo</option>
-                                        <option value="Junio">Junio</option>
-                                        <option value="Julio">Julio</option>
-                                        <option value="Agosto">Agosto</option>
-                                        <option value="Septiembre">Septiembre</option>
-                                        <option value="Octubre">Octubre</option>
-                                        <option value="Noviembre">Noviembre</option>
-                                        <option value="Diciembre">Diciembre</option>
+                                    {# CAMBIO: mantener seleccionado el mes actual del registro #}
+                                    {% set mes_actual = d.mes %}
+                                    <select name="mes" class="border rounded px-2 py-1 w-full" required>
+                                        <option value="Enero" {% if mes_actual=='Enero' %}selected{% endif %}>Enero</option>
+                                        <option value="Febrero" {% if mes_actual=='Febrero' %}selected{% endif %}>Febrero</option>
+                                        <option value="Marzo" {% if mes_actual=='Marzo' %}selected{% endif %}>Marzo</option>
+                                        <option value="Abril" {% if mes_actual=='Abril' %}selected{% endif %}>Abril</option>
+                                        <option value="Mayo" {% if mes_actual=='Mayo' %}selected{% endif %}>Mayo</option>
+                                        <option value="Junio" {% if mes_actual=='Junio' %}selected{% endif %}>Junio</option>
+                                        <option value="Julio" {% if mes_actual=='Julio' %}selected{% endif %}>Julio</option>
+                                        <option value="Agosto" {% if mes_actual=='Agosto' %}selected{% endif %}>Agosto</option>
+                                        <option value="Septiembre" {% if mes_actual=='Septiembre' %}selected{% endif %}>Septiembre</option>
+                                        <option value="Octubre" {% if mes_actual=='Octubre' %}selected{% endif %}>Octubre</option>
+                                        <option value="Noviembre" {% if mes_actual=='Noviembre' %}selected{% endif %}>Noviembre</option>
+                                        <option value="Diciembre" {% if mes_actual=='Diciembre' %}selected{% endif %}>Diciembre</option>
                                     </select>
                                 </div>
 
@@ -313,13 +320,13 @@
 
                                 <div class="mb-2">
                                     <label class="block text-sm font-medium mb-1">Tamaño</label>
-                                    <select name="tamano" class="border rounded px-2 py-1 w-full" value="{{d.tamanio}}"
-                                        required>
-                                        <option value="A0">A0</option>
-                                        <option value="A1">A1</option>
-                                        <option value="A2">A2</option>
-                                        <option value="A3">A3</option>
-                                        <option value="A4">A4</option>
+                                    {% set tam_actual = d.tamanio %}
+                                    <select name="tamano" class="border rounded px-2 py-1 w-full" required>
+                                        <option value="A0" {% if tam_actual=='A0' %}selected{% endif %}>A0</option>
+                                        <option value="A1" {% if tam_actual=='A1' %}selected{% endif %}>A1</option>
+                                        <option value="A2" {% if tam_actual=='A2' %}selected{% endif %}>A2</option>
+                                        <option value="A3" {% if tam_actual=='A3' %}selected{% endif %}>A3</option>
+                                        <option value="A4" {% if tam_actual=='A4' %}selected{% endif %}>A4</option>
                                     </select>
                                 </div>
 
@@ -337,10 +344,10 @@
 
                                 <div class="mb-2">
                                     <label class="block text-sm font-medium mb-1">Dibujado en</label>
-                                    <select name="dibujado_en" class="border rounded px-2 py-1 w-full"
-                                        value="{{d.dibujado_en}}" required>
-                                        <option value="AC">CAD</option>
-                                        <option value="SketchUp">Lapiz</option>
+                                    {% set dib_actual = d.dibujado_en %}
+                                    <select name="dibujado_en" class="border rounded px-2 py-1 w-full" required>
+                                        <option value="AC" {% if dib_actual=='AC' %}selected{% endif %}>CAD</option>
+                                        <option value="SketchUp" {% if dib_actual=='SketchUp' %}selected{% endif %}>Lapiz</option>
                                     </select>
                                 </div>
 

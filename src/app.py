@@ -108,9 +108,48 @@ def allowed_file(filename: str) -> bool: # Verifica si el archivo tiene una exte
 #Rutas de la app
 @app.route('/')
 def home():
-    # Consulta en la base de datos
+    # CAMBIO: Soporte de filtros opcionales via query params (GET)
+    # Doc: Ahora puedes buscar con cualquier combinación de criterios. 
+    # Si no envías nada, se listan todos.
+    anio = request.args.get('anio', '').strip()
+    mes = request.args.get('mes', '').strip()
+    descripcion = request.args.get('descripcion', '').strip()
+    numero_plano = request.args.get('numero_plano', '').strip()
+    tamano = request.args.get('tamano', '').strip()
+    version = request.args.get('version', '').strip()
+    dibujante = request.args.get('dibujante', '').strip()
+    dibujado_en = request.args.get('dibujado_en', '').strip()
+
+    # Construcción dinámica del WHERE con parámetros para evitar inyección SQL
+    query = "SELECT * FROM planos WHERE 1=1"
+    params = []
+    if anio:
+        query += " AND anio = %s"  # igualdad exacta para año
+        params.append(anio)
+    if mes:
+        query += " AND mes = %s"   # igualdad exacta para mes
+        params.append(mes)
+    if descripcion:
+        query += " AND descripcion LIKE %s"  # búsqueda parcial en descripción
+        params.append(f"%{descripcion}%")
+    if numero_plano:
+        query += " AND num_plano LIKE %s"    # permite búsqueda parcial por número de plano
+        params.append(f"%{numero_plano}%")
+    if tamano:
+        query += " AND tamanio = %s"         # igualdad exacta para tamaño
+        params.append(tamano)
+    if version:
+        query += " AND version LIKE %s"      # búsqueda parcial para versión
+        params.append(f"%{version}%")
+    if dibujante:
+        query += " AND dibujante LIKE %s"    # búsqueda parcial por dibujante
+        params.append(f"%{dibujante}%")
+    if dibujado_en:
+        query += " AND dibujado_en = %s"     # igualdad exacta para herramienta
+        params.append(dibujado_en)
+
     cursor = db.database.cursor() # Usamos la funcion cursor para la conexion a la base de datos
-    cursor.execute("SELECT * FROM planos")
+    cursor.execute(query, tuple(params))
     myresult = cursor.fetchall() # fetchall() obtiene todos los registros de la consulta
     # Convertir los datos a diccionario
     insertObject = [] # Declaramos un array vacio para poder almacenar los registros de planos

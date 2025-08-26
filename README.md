@@ -15,6 +15,8 @@ Este documento describe los cambios realizados para limpiar y corregir el proyec
   - Corrección de IDs: uso de `d.id_plano` en modales y enlaces.
   - Corrección de `tamanio` en selección de tamaño.
   - Eliminación de enlaces a HTMLs inexistentes y recursos externos para cerrar modales.
+  - CAMBIO: Filtros opcionales por `anio`, `mes`, `descripcion`, `numero_plano`, `tamano`, `version`, `dibujante`, `dibujado_en` usando método GET, con persistencia de valores en el formulario.
+  - CAMBIO: En el modal de edición, los `select` ahora conservan el valor actual del registro mediante `selected` condicional en Jinja.
 
 - Estructura de estáticos
   - Logo movido a `src/static/img/HIDROSTAL3.png`.
@@ -26,6 +28,15 @@ Este documento describe los cambios realizados para limpiar y corregir el proyec
 
 - Dependencias
   - Añadido `requirements.txt` con Flask y mysql-connector-python.
+
+## Documentación de nuevas funcionalidades
+
+1) Filtros opcionales en la página de inicio
+- Backend (`src/app.py` ruta `/`): Se construye la consulta SQL dinámicamente, agregando condiciones solo para los parámetros presentes. Se usa parametrización para evitar inyección SQL. Campos admitidos: `anio` (igual), `mes` (igual), `descripcion` (LIKE), `numero_plano` (LIKE), `tamano` (igual), `version` (LIKE), `dibujante` (LIKE), `dibujado_en` (igual).
+- Frontend (`src/templates/index.html`): El formulario usa `method="get"` y los inputs se rellenan con `request.args`. Las listas desplegables muestran opción "Todos" y mantienen selección.
+
+2) Retención de selección en modal de edición
+- En `index.html`, los `select` de Año, Mes, Tamaño y Dibujado en utilizan variables temporales (`anio_sel`, `mes_actual`, `tam_actual`, `dib_actual`) para marcar la opción correspondiente con `selected`.
 
 ## Requisitos
 
