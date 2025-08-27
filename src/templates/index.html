@@ -119,7 +119,6 @@
             <table class="min-w-full bg-white rounded shadow">
                 <thead>
                     <tr class="bg-gray-200 text-gray-700">
-                        <th class="px-4 py-2">#</th>
                         <th class="px-4 py-2">Año</th>
                         <th class="px-4 py-2">Mes</th>
                         <th class="px-4 py-2">Descripción</th>
@@ -137,7 +136,6 @@
                 <tbody>
                     {% for d in data %}
                     <tr>
-                        <td class="border px-4 py-2">{{d.id_plano}}</td>
                         <td class="border px-4 py-2">{{d.anio}}</td>
                         <td class="border px-4 py-2">{{d.mes}}</td>
                         <td class="border px-4 py-2">{{d.descripcion}}</td>
@@ -240,16 +238,7 @@
                                 </div>
                                 <div class="mb-2">
                                     <label class="block text-sm font-medium mb-1">Nombre del Dibujante</label>
-                                    <input type="text" name="dibujante" class="border rounded px-2 py-1 w-full"
-                                        required>
-                                </div>
-                                <div class="mb-2">
-                                    <label class="block text-sm font-medium mb-1">Dibujado en</label>
-                                    <select name="dibujado_en" class="border rounded px-2 py-1 w-full" required>
-                                        <option value="" disabled selected>Seleccionar</option>
-                                        <option value="CAD">CAD</option>
-                                        <option value="Lapiz">Lapiz</option>
-                                    </select>
+                                    <input type="text" name="dibujante" class="border rounded px-2 py-1 w-full">
                                 </div>
                                 <div class="mb-4">
                                     <label class="block text-sm font-medium mb-1">Archivo PDF</label>
@@ -325,13 +314,12 @@
                                 <div class="mb-2">
                                     <label class="block text-sm font-medium mb-1">Tamaño</label>
                                     <!-- CAMBIO: uso de d.tamanio para coincidir con la columna de la tabla -->
-                                    <select name="tamano" class="border rounded px-2 py-1 w-full"
-                                        required>
-                                        <option value="A0" {% if d.tamanio == "A0" %}selected{% endif %}>A0</option>
-                                        <option value="A1" {% if d.tamanio == "A1" %}selected{% endif %}>A1</option>
-                                        <option value="A2" {% if d.tamanio == "A2" %}selected{% endif %}>A2</option>
-                                        <option value="A3" {% if d.tamanio == "A3" %}selected{% endif %}>A3</option>
-                                        <option value="A4" {% if d.tamanio == "A4" %}selected{% endif %}>A4</option>
+                                    <select name="tamano" class="border rounded px-2 py-1 w-full" required>
+                                        <option value="A0" {% if d.tamanio=="A0" %}selected{% endif %}>A0</option>
+                                        <option value="A1" {% if d.tamanio=="A1" %}selected{% endif %}>A1</option>
+                                        <option value="A2" {% if d.tamanio=="A2" %}selected{% endif %}>A2</option>
+                                        <option value="A3" {% if d.tamanio=="A3" %}selected{% endif %}>A3</option>
+                                        <option value="A4" {% if d.tamanio=="A4" %}selected{% endif %}>A4</option>
                                     </select>
                                 </div>
 
@@ -345,14 +333,6 @@
                                     <label class="block text-sm font-medium mb-1">Nombre del Dibujante</label>
                                     <input type="text" name="dibujante" class="border rounded px-2 py-1 w-full"
                                         value="{{d.dibujante}}" required>
-                                </div>
-
-                                <div class="mb-2">
-                                    <label class="block text-sm font-medium mb-1">Dibujado en</label>
-                                    <select name="dibujado_en" class="border rounded px-2 py-1 w-full">
-                                        <option value="CAD" {% if d.dibujado_en == "CAD" %}selected{% endif %}>CAD</option>
-                                        <option value="Lapiz" {% if d.dibujado_en == "Lapiz" %}selected{% endif %}>Lapiz</option>
-                                    </select>
                                 </div>
 
                                 <div class="mb-4">
@@ -399,7 +379,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     {% endfor %}
                 </tbody>
             </table>
