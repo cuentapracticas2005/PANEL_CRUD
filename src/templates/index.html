@@ -182,69 +182,152 @@
                     <div id="modalAgregar"
                         class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 hidden">
                         <div class="bg-white p-8 rounded shadow-lg w-full max-w-lg relative">
-                            <!-- CAMBIO: botón de cierre simple sin imagen externa -->
                             <button onclick="document.getElementById('modalAgregar').classList.add('hidden')"
                                 class="absolute top-2 right-2 text-gray-500 hover:text-gray-800"
                                 aria-label="Cerrar">&times;</button>
                             <h2 class="text-xl font-bold mb-4">Agregar Nuevo Documento</h2>
-                            <!-- CAMBIO: acción correcta hacia /user -->
+
                             <form action="/user" method="POST" enctype="multipart/form-data">
+                                <!-- Numero de plano -->
                                 <div class="mb-2">
-                                    <label class="block text-sm font-medium mb-1">Año</label>
-                                    <input type="text" name="anio" class="border rounded px-2 py-1 w-full" required>
+                                    <label class="block text-sm font-medium mb-1">Número de Plano</label>
+                                    <input id="numero_plano" type="text" name="numero_plano" class="border rounded px-2 py-1 w-full" readonly>
+                                </div>
+
+                                <!-- Botón para mostrar más opciones -->
+                                <div class="space-y-2 border rounded p-3 bg-gray-50 mt-2">
+                                    <div>
+                                        <label class="block text-sm font-medium mb-1">Tipo de Plano</label>
+                                        <select name="numero_plano" class="border rounded px-2 py-1 w-full">
+                                            <option value="">-- Seleccionar --</option>
+                                            <option value="esquema_general">04 - ESQUEMA GENERAL</option>
+                                            <option value="tablas_de_produccion">06 - TABLAS DE PRODUCCIÓN</option>
+                                            <option value="conjunto_phidraulica">11 - CONJUNTO P.HIDRÁULICA</option>
+                                            <option value="piezas_phidraulica">12 - PIEZAS P.HIDRÁULICA</option>
+                                            <option value="curvas_hidraulicas">14 - CURVAS HIDRÁULICAS</option>
+                                            <option value="conjunto_psoporte">21 - CONJUNTO P.SOPORTE</option>
+                                            <option value="pieza_psoporte">22 - PIEZA P.SOPORTE</option>
+                                            <option value="conjunto_ccmm">31 - CONJUNTO CCMM</option>
+                                            <option value="piezas_ccmm">32 - PIEZAS CCMM</option>
+                                            <option value="croquis_conjuntos">41 - CROQUIS DE CONJUNTOS</option>
+                                            <option value="croquis_piezas">42 - CROQUIS DE PIEZAS</option>
+                                            <option value="terceros_general">50 - TERCEROS GENERAL</option>
+                                            <option value="conjunto_terceros">51 - CONJUNTO TERCEROS</option>
+                                            <option value="piezas_terceros">52 - PIEZAS TERCEROS</option>
+                                            <option value="croquis_terceros">53 - CROQUIS TERCEROS</option>
+                                            <option value="modelo_terceros">54 - MODELO TERCEROS</option>
+                                            <option value="funda_terceros">55 - FUNDA TERCEROS</option>
+                                            <option value="modelo_hidrostal">56 - MODELO HIDROSTAL</option>
+                                            <option value="desarrollo_conjuntos">71 - DESARROLLO CONJUNTOS</option>
+                                            <option value="desarrollo_piezas">72 - DESARROLLO PIEZAS</option>
+                                            <option value="control_internamiento">CI - CONTROL DE INTERNAMIENTO</option>
+                                            <option value="laboratorio_pruebas">LP - LABORATORIO DE PRUEBAS</option>
+                                            <option value="turbina_sumergible">TS - TURBINA SUMERGIBLE</option>
+                                            <option value="otro">Z0 - OTRO</option>
+                                        </select>
+                                    </div>
+
+                                    <div>
+                                        <label class="block text-sm font-medium mb-1">Tamaño</label>
+                                        <select name="tamano" class="border rounded px-2 py-1 w-full">
+                                            <option value="">-- Seleccionar --</option>
+                                            <option value="A0">A0</option>
+                                            <option value="A1">A1</option>
+                                            <option value="A2">A2</option>
+                                            <option value="A3">A3</option>
+                                            <option value="A4">A4</option>
+                                        </select>
+                                    </div>
+
+                                    <div>
+                                        <label class="block text-sm font-medium mb-1">Revision</label>
+                                        <select name="revision" class="border rounded px-2 py-1 w-full">
+                                            <option value="">-- Seleccionar --</option>
+                                            <option value="_">_</option>
+                                            <option value="z">Z</option>
+                                            <option value="y">Y</option>
+                                            <option value="x">X</option>
+                                            <option value="w">W</option>
+                                            <option value="v">V</option>
+                                            <option value="u">U</option>
+                                            <option value="t">T</option>
+                                            <option value="s">S</option>
+                                            <option value="r">R</option>
+                                            <option value="q">Q</option>
+                                            <option value="p">P</option>
+                                            <option value="o">O</option>
+                                            <option value="n">N</option>
+                                            <option value="m">M</option>
+                                            <option value="l">L</option>
+                                            <option value="k">K</option>
+                                            <option value="j">J</option>
+                                            <option value="i">I</option>
+                                            <option value="h">H</option>
+                                            <option value="g">G</option>
+                                            <option value="f">F</option>
+                                            <option value="e">E</option>
+                                            <option value="d">D</option>
+                                            <option value="c">C</option>
+                                            <option value="b">B</option>
+                                            <option value="a">A</option>
+                                        </select>
+                                    </div>
+
+                                    <div>
+                                        <label class="block text-sm font-medium mb-1">Sub-Revision</label>
+                                        <select name="subrevision" class="border rounded px-2 py-1 w-full">
+                                            <option value="">-- Seleccionar --</option>
+                                            <option value=" ">Ninguno</option>
+                                            <option value="1">1</option>
+                                            <option value="2">2</option>
+                                            <option value="3">3</option>
+                                            <option value="4">4</option>
+                                            <option value="5">5</option>
+                                            <option value="6">6</option>
+                                            <option value="7">7</option>
+                                            <option value="8">8</option>
+                                            <option value="9">9</option>
+                                            <option value="10">10</option>
+                                        </select>
+                                    </div>
                                 </div>
                                 <div class="mb-2">
-                                    <label class="block text-sm font-medium mb-1">Mes</label>
-                                    <select name="mes" class="border rounded px-2 py-1 w-full" required>
-                                        <option value="" disabled selected>Selecciona mes</option>
-                                        <option value="Enero">Enero</option>
-                                        <option value="Febrero">Febrero</option>
-                                        <option value="Marzo">Marzo</option>
-                                        <option value="Abril">Abril</option>
-                                        <option value="Mayo">Mayo</option>
-                                        <option value="Junio">Junio</option>
-                                        <option value="Julio">Julio</option>
-                                        <option value="Agosto">Agosto</option>
-                                        <option value="Septiembre">Septiembre</option>
-                                        <option value="Octubre">Octubre</option>
-                                        <option value="Noviembre">Noviembre</option>
-                                        <option value="Diciembre">Diciembre</option>
-                                    </select>
+                                    <button type="button" onclick="toggleOpciones()"
+                                        class="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 text-sm">
+                                        + Más Opciones
+                                    </button>
                                 </div>
-                                <div class="mb-2">
+                                
+                                <!-- Opciones ocultas -->
+                                <input id="extraOpciones" type="text" name="numero_plano" class="hidden border rounded px-2 py-1 w-full">
+
+                                <!-- Descripción -->
+                                <div class="mb-2 mt-4">
                                     <label class="block text-sm font-medium mb-1">Descripción</label>
                                     <input type="text" name="descripcion" class="border rounded px-2 py-1 w-full"
                                         required>
                                 </div>
-                                <div class="mb-2">
-                                    <label class="block text-sm font-medium mb-1">Número de Plano</label>
-                                    <input type="text" name="numero_plano" class="border rounded px-2 py-1 w-full"
-                                        required>
-                                </div>
-                                <div class="mb-2">
-                                    <label class="block text-sm font-medium mb-1">Tamaño</label>
-                                    <select name="tamano" class="border rounded px-2 py-1 w-full" required>
-                                        <option value="" disabled selected>Selecciona tamaño</option>
-                                        <option value="A0">A0</option>
-                                        <option value="A1">A1</option>
-                                        <option value="A2">A2</option>
-                                        <option value="A3">A3</option>
-                                        <option value="A4">A4</option>
-                                    </select>
-                                </div>
-                                <div class="mb-2">
-                                    <label class="block text-sm font-medium mb-1">Versión</label>
-                                    <input type="text" name="version" class="border rounded px-2 py-1 w-full" required>
-                                </div>
+
+                                <!-- Dibujante -->
                                 <div class="mb-2">
                                     <label class="block text-sm font-medium mb-1">Nombre del Dibujante</label>
                                     <input type="text" name="dibujante" class="border rounded px-2 py-1 w-full">
                                 </div>
+
+                                <!-- Año -->
+                                <div class="mb-2">
+                                    <label class="block text-sm font-medium mb-1">Fecha</label>
+                                    <input type="text" name="anio" class="border rounded px-2 py-1 w-full" required>
+                                </div>
+
+                                <!-- Archivo -->
                                 <div class="mb-4">
                                     <label class="block text-sm font-medium mb-1">Archivo PDF</label>
                                     <input type="file" name="pdf" accept="application/pdf"
                                         class="border rounded px-2 py-1 w-full">
                                 </div>
+
+                                <!-- Botones -->
                                 <div class="flex justify-end gap-2">
                                     <button type="button"
                                         onclick="document.getElementById('modalAgregar').classList.add('hidden')"
@@ -255,6 +338,7 @@
                             </form>
                         </div>
                     </div>
+                    <script src="{{url_for('static', filename='javascript/script.js')}}"></script>
 
                     <!--------------------------------------------------------------- Modal para editar documento -------------------------------------------------------------------->
                     <div id="modal{{d.id_plano}}"
@@ -269,36 +353,10 @@
                             <!-- CAMBIO: acción correcta hacia /edit/{{d.id_plano}} -->
                             <form action="/edit/{{d.id_plano}}" method="post" enctype="multipart/form-data">
                                 <div class="mb-2">
-                                    <label class="block text-sm font-medium mb-1">Año</label>
+                                    <label class="block text-sm font-medium mb-1">Fecha</label>
                                     <input type="text" name="anio" class="border rounded px-2 py-1 w-full"
                                         value="{{d.anio}}" required>
                                 </div>
-
-                                <div class="mb-2">
-                                    <label class="block text-sm font-medium mb-1">Mes</label>
-                                    <select name="mes" class="border rounded px-2 py-1 w-full" required>
-                                        <option value="Enero" {% if d.mes=="Enero" %}selected{% endif %}>Enero</option>
-                                        <option value="Febrero" {% if d.mes=="Febrero" %}selected{% endif %}>Febrero
-                                        </option>
-                                        <option value="Marzo" {% if d.mes=="Marzo" %}selected{% endif %}>Marzo</option>
-                                        <option value="Abril" {% if d.mes=="Abril" %}selected{% endif %}>Abril</option>
-                                        <option value="Mayo" {% if d.mes=="Mayo" %}selected{% endif %}>Mayo</option>
-                                        <option value="Junio" {% if d.mes=="Junio" %}selected{% endif %}>Junio</option>
-                                        <option value="Julio" {% if d.mes=="Julio" %}selected{% endif %}>Julio</option>
-                                        <option value="Agosto" {% if d.mes=="Agosto" %}selected{% endif %}>Agosto
-                                        </option>
-                                        <option value="Septiembre" {% if d.mes=="Septiembre" %}selected{% endif %}>
-                                            Septiembre</option>
-                                        <option value="Octubre" {% if d.mes=="Octubre" %}selected{% endif %}>Octubre
-                                        </option>
-                                        <option value="Noviembre" {% if d.mes=="Noviembre" %}selected{% endif %}>
-                                            Noviembre</option>
-                                        <option value="Diciembre" {% if d.mes=="Diciembre" %}selected{% endif %}>
-                                            Diciembre</option>
-                                    </select>
-
-                                </div>
-
                                 <div class="mb-2">
                                     <label class="block text-sm font-medium mb-1">Descripción</label>
                                     <input type="text" name="descripcion" class="border rounded px-2 py-1 w-full"
