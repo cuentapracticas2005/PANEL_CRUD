@@ -102,7 +102,7 @@
                 <label class="block text-sm font-medium mb-1">Dibujado en</label>
                 <select name="dibujado_en" class="border rounded px-2 py-1 w-38">
                     <option value="" disabled selected>Seleccionar</option>
-                    <option value="AC">AC</option>
+                    <option value="CAD">CAD</option>
                     <option value="Lapiz">Lapiz</option>
                 </select>
             </div><br><br>
@@ -190,7 +190,7 @@
                                 aria-label="Cerrar">&times;</button>
                             <h2 class="text-xl font-bold mb-4">Agregar Nuevo Documento</h2>
                             <!-- CAMBIO: acción correcta hacia /user -->
-                            <form action="/user" method="POST">
+                            <form action="/user" method="POST" enctype="multipart/form-data">
                                 <div class="mb-2">
                                     <label class="block text-sm font-medium mb-1">Año</label>
                                     <input type="text" name="anio" class="border rounded px-2 py-1 w-full" required>
@@ -247,7 +247,7 @@
                                     <label class="block text-sm font-medium mb-1">Dibujado en</label>
                                     <select name="dibujado_en" class="border rounded px-2 py-1 w-full" required>
                                         <option value="" disabled selected>Seleccionar</option>
-                                        <option value="AC">CAD</option>
+                                        <option value="CAD">CAD</option>
                                         <option value="Lapiz">Lapiz</option>
                                     </select>
                                 </div>
@@ -278,7 +278,7 @@
                             <h2 class="text-xl font-bold mb-4">Editar Documento</h2>
 
                             <!-- CAMBIO: acción correcta hacia /edit/{{d.id_plano}} -->
-                            <form action="/edit/{{d.id_plano}}" method="post">
+                            <form action="/edit/{{d.id_plano}}" method="post" enctype="multipart/form-data">
                                 <div class="mb-2">
                                     <label class="block text-sm font-medium mb-1">Año</label>
                                     <input type="text" name="anio" class="border rounded px-2 py-1 w-full"
@@ -349,10 +349,9 @@
 
                                 <div class="mb-2">
                                     <label class="block text-sm font-medium mb-1">Dibujado en</label>
-                                    <select name="dibujado_en" class="border rounded px-2 py-1 w-full"
-                                        value="{{d.dibujado_en}}" required>
-                                        <option value="AC">CAD</option>
-                                        <option value="Lapiz">Lapiz</option>
+                                    <select name="dibujado_en" class="border rounded px-2 py-1 w-full">
+                                        <option value="CAD" {% if d.dibujado_en == "CAD" %}selected{% endif %}>CAD</option>
+                                        <option value="Lapiz" {% if d.dibujado_en == "Lapiz" %}selected{% endif %}>Lapiz</option>
                                     </select>
                                 </div>
 
