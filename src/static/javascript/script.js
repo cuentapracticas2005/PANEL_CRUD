@@ -75,15 +75,3 @@ function colocarFechaActual() {
         fechaInput.value = "";
     }
 }
-
-// 🔹 Esta función se ejecuta justo antes de enviar el formulario
-function beforeSubmit() {
-    const numeroPlano = document.getElementById("numero_plano");
-    const extraOpciones = document.getElementById("extraOpciones");
-
-    // Si el usuario escribió algo manualmente en extraOpciones
-    if (!extraOpciones.classList.contains("hidden") && extraOpciones.value.trim() !== "") {
-        numeroPlano.value = extraOpciones.value.trim();  
-    }
-}
-
