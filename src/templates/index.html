@@ -30,7 +30,8 @@
                 </div>
                 <div class="flex items-center">
                     <!-- CAMBIO: Eliminado enlace roto, placeholder -->
-                    <a href="#" class="px-4 py-2 rounded text-sm font-medium text-white bg-red-600 hover:bg-red-700">
+                    <a href="#"
+                        class="px-4 py-2 rounded text-sm font-medium text-white bg-red-600 hover:bg-red-700 hover:scale-105 transition-all">
                         Cerrar Sesión
                     </a>
                 </div>
@@ -41,7 +42,7 @@
 
         <!-- Botones de administración -->
         <div class="flex gap-4 mb-4">
-            <button class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+            <button class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 hover:scale-105 transition-all"
                 onclick="document.getElementById('modalAgregar').classList.remove('hidden')">
                 Agregar Nuevo Documento
             </button>
@@ -82,9 +83,9 @@
             </div><br>
             <div class="flex gap-2">
                 <button type="submit"
-                    class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Buscar</button><br>
+                    class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 hover:scale-105 transition-all">Buscar</button><br>
                 <button type="reset"
-                    class="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400">Limpiar</button>
+                    class="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400 hover:scale-105 transition-all">Limpiar</button>
             </div>
         </form>
 
@@ -107,7 +108,7 @@
                 <tbody>
                     {% for d in data %}
                     <tr>
-                        <td class="border px-4 py-2">{{d.anio}}</td>
+                        <td class="border px-4 py-2">{{d.fecha}}</td>
                         <td class="border px-4 py-2">{{d.descripcion}}</td>
                         <td class="border px-4 py-2">{{d.num_plano}}</td>
                         <td class="border px-4 py-2">{{d.tamanio}}</td>
@@ -133,17 +134,20 @@
                         </td>
                         <td class="border px-4 py-2 text-center">
                             <!-- BOTON EDITAR -->
-                            <button class="bg-blue-600 text-white px-2 py-1 rounded hover:bg-blue-700"
+                            <button
+                                class="bg-blue-600 text-white px-2 py-1 rounded hover:bg-blue-700 hover:scale-105 transition-all"
                                 onclick="document.getElementById('modal{{d.id_plano}}').classList.remove('hidden')">
                                 Editar
                             </button>
                             <!-- BOTON REUTILIZAR -->
-                            <button class="bg-yellow-600 text-white px-2 py-1 rounded hover:bg-yellow-700"
+                            <button
+                                class="bg-yellow-600 text-white px-2 py-1 rounded hover:bg-yellow-700 hover:scale-105 transition-all"
                                 onclick="document.getElementById('modalReutilizar{{d.id_plano}}').classList.remove('hidden')">
                                 Reutilizar
                             </button>
                             <!-- BOTON ELIMINAR -->
-                            <button class="bg-red-600 text-white px-2 py-1 rounded hover:bg-red-700"
+                            <button
+                                class="bg-red-600 text-white px-2 py-1 rounded hover:bg-red-700 hover:scale-105 transition-all"
                                 onclick="document.getElementById('modalEliminar{{d.id_plano}}').classList.remove('hidden')">
                                 Eliminar
                             </button>
@@ -159,7 +163,7 @@
                                 aria-label="Cerrar">&times;</button>
                             <h2 class="text-xl font-bold mb-4">Agregar Nuevo Documento</h2>
 
-                            <form action="/user" method="POST" enctype="multipart/form-data">
+                            <form action="/user" method="POST" enctype="multipart/form-data" onsubmit="beforeSubmit()">
                                 <!-- Numero de plano -->
                                 <div class="mb-2">
                                     <label class="block text-sm font-medium mb-1">Número de Plano</label>
@@ -214,8 +218,8 @@
                                     </div>
 
                                     <div>
-                                        <label class="block text-sm font-medium mb-1">Revision</label>
-                                        <select id="revision" name="revision" class="border rounded px-2 py-1 w-full">
+                                        <label class="block text-sm font-medium mb-1">Version</label>
+                                        <select id="version" name="version" class="border rounded px-2 py-1 w-full">
                                             <option value="">-- Seleccionar --</option>
                                             <option value="_">_</option>
                                             <option value="Z">Z</option>
@@ -269,19 +273,19 @@
                                 <div class="mb-2">
                                     <div class="mb-2 flex items-center gap-2">
                                         <button type="button" onclick="toggleOpciones()"
-                                            class="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 text-sm">
+                                            class="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 text-sm hover:scale-105 transition-all">
                                             + Agregar Manualmente
                                         </button>
 
                                         <button id="btnGenerarCodigo" type="button" onclick="generarCodigo()"
-                                            class="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700 text-sm">
+                                            class="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700 text-sm hover:scale-105 transition-all">
                                             Generar Código
                                         </button>
                                     </div>
                                 </div>
 
                                 <!-- Opciones ocultas -->
-                                <input id="extraOpciones" type="text" name="numero_plano"
+                                <input id="extraOpciones" type="text" name="numero_plano_manual"
                                     class="hidden border rounded px-2 py-1 w-full"
                                     placeholder="Escribir manualmente...">
 
@@ -298,10 +302,14 @@
                                     <input type="text" name="dibujante" class="border rounded px-2 py-1 w-full">
                                 </div>
 
-                                <!-- Año -->
+                                <!-- Fecha -->
                                 <div class="mb-2">
                                     <label class="block text-sm font-medium mb-1">Fecha</label>
-                                    <input type="text" name="anio" class="border rounded px-2 py-1 w-full" required>
+                                    <input id="fecha" type="text" name="fecha" class="border rounded px-2 py-1 w-full"
+                                        placeholder="YYYY-MM-DD" required>
+                                    <input type="checkbox" name="f_actual" id="f_actual"
+                                        onchange="colocarFechaActual()">
+                                    <label class="text-sm text-gray-600">Usar fecha actual</label>
                                 </div>
 
                                 <!-- Archivo -->
@@ -315,9 +323,9 @@
                                 <div class="flex justify-end gap-2">
                                     <button type="button"
                                         onclick="document.getElementById('modalAgregar').classList.add('hidden')"
-                                        class="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400">Cancelar</button>
+                                        class="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400 hover:scale-105 transition-all">Cancelar</button>
                                     <button type="submit"
-                                        class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Agregar</button>
+                                        class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 hover:scale-105 transition-all">Agregar</button>
                                 </div>
                             </form>
                         </div>
@@ -338,8 +346,8 @@
                             <form action="/edit/{{d.id_plano}}" method="post" enctype="multipart/form-data">
                                 <div class="mb-2">
                                     <label class="block text-sm font-medium mb-1">Fecha</label>
-                                    <input type="text" name="anio" class="border rounded px-2 py-1 w-full"
-                                        value="{{d.anio}}" required>
+                                    <input type="text" name="fecha" class="border rounded px-2 py-1 w-full"
+                                        value="{{d.fecha}}" required>
                                 </div>
                                 <div class="mb-2">
                                     <label class="block text-sm font-medium mb-1">Descripción</label>
@@ -389,9 +397,9 @@
                                     <!-- CAMBIO: cierra el modal correcto -->
                                     <button type="button"
                                         onclick="document.getElementById('modal{{d.id_plano}}').classList.add('hidden')"
-                                        class="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400">Cancelar</button>
+                                        class="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400 hover:scale-105 transition-all">Cancelar</button>
                                     <button type="submit"
-                                        class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Guardar
+                                        class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 hover:scale-105 transition-all">Guardar
                                         Cambios</button>
                                 </div>
                             </form>
@@ -414,10 +422,10 @@
                                 <!-- CAMBIO: cierra el modal correcto -->
                                 <button
                                     onclick="document.getElementById('modalEliminar{{d.id_plano}}').classList.add('hidden')"
-                                    class="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400">Cancelar</button>
+                                    class="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400 hover:scale-105 transition-all">Cancelar</button>
                                 <!-- CAMBIO: url_for con parámetro id_plano -->
                                 <a href="{{url_for('delete', id_plano=d.id_plano)}}"
-                                    class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">Eliminar</a>
+                                    class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 hover:scale-105 transition-all">Eliminar</a>
                             </div>
                         </div>
                     </div>

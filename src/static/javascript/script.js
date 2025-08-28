@@ -18,18 +18,18 @@ function generarCodigo() {
     // Obtener valores de los selects
     const tipoPlano = document.getElementById("tipo_plano").value;
     const tamano = document.getElementById("tamano").value;
-    const revision = document.getElementById("revision").value;
+    const version = document.getElementById("version").value;
     const subrevision = document.getElementById("subrevision").value;
 
     // Validación: si falta algún campo, avisamos
-    if (!tipoPlano || !tamano || !revision || !subrevision) {
+    if (!tipoPlano || !tamano || !version || !subrevision) {
         alert("Por favor selecciona todas las opciones antes de generar el código.");
         return;
     }
 
     // Construcción del código con la lógica solicitada
-    // Formato: TIPO - 300000 - TAMAÑO - REVISION - SUBREVISION
-    const codigo = `${tipoPlano}-300000-${tamano}${revision}${subrevision}`;
+    // Formato: TIPO - 300000 - TAMAÑO - VERSION - SUBREVISION
+    const codigo = `${tipoPlano}-300000-${tamano}${version}${subrevision}`;
 
     // Insertar en el input de número de plano
     numeroPlano.value = codigo;
@@ -37,7 +37,6 @@ function generarCodigo() {
     // Al generar un código, bloqueamos el input extraOpciones
     extraOpciones.disabled = true;
 }
-
 
 // Lógica de validación dinámica (se ejecuta cada vez que se escribe en los inputs)
 document.addEventListener("input", () => {
@@ -61,3 +60,30 @@ document.addEventListener("input", () => {
         btnGenerar.classList.remove("opacity-50", "cursor-not-allowed");
     }
 });
+
+function colocarFechaActual() {
+    const checkbox = document.getElementById("f_actual");
+    const fechaInput = document.getElementById("fecha");
+
+    if (checkbox.checked) {
+        const hoy = new Date();
+        const year = hoy.getFullYear();
+        const month = String(hoy.getMonth() + 1).padStart(2, "0");
+        const day = String(hoy.getDate()).padStart(2, "0");
+        fechaInput.value = `${year}-${month}-${day}`;
+    } else {
+        fechaInput.value = "";
+    }
+}
+
+// 🔹 Esta función se ejecuta justo antes de enviar el formulario
+function beforeSubmit() {
+    const numeroPlano = document.getElementById("numero_plano");
+    const extraOpciones = document.getElementById("extraOpciones");
+
+    // Si el usuario escribió algo manualmente en extraOpciones
+    if (!extraOpciones.classList.contains("hidden") && extraOpciones.value.trim() !== "") {
+        numeroPlano.value = extraOpciones.value.trim();  
+    }
+}
+

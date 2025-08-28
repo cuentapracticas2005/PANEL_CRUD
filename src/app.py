@@ -111,24 +111,19 @@ def home():
     # CAMBIO: Soporte de filtros opcionales via query params (GET)
     # Doc: Ahora puedes buscar con cualquier combinación de criterios. 
     # Si no envías nada, se listan todos.
-    anio = request.args.get('anio', '').strip()
-    mes = request.args.get('mes', '').strip()
+    fecha = request.args.get('fecha', '').strip()
     descripcion = request.args.get('descripcion', '').strip()
     numero_plano = request.args.get('numero_plano', '').strip()
     tamano = request.args.get('tamano', '').strip()
     version = request.args.get('version', '').strip()
     dibujante = request.args.get('dibujante', '').strip()
-    dibujado_en = request.args.get('dibujado_en', '').strip()
 
     # Construcción dinámica del WHERE con parámetros para evitar inyección SQL
     query = "SELECT * FROM planos WHERE 1=1"
     params = []
-    if anio:
-        query += " AND anio = %s"  # igualdad exacta para año
-        params.append(anio)
-    if mes:
-        query += " AND mes = %s"   # igualdad exacta para mes
-        params.append(mes)
+    if fecha:
+        query += " AND fecha = %s"  # igualdad exacta para fecha
+        params.append(fecha)
     if descripcion:
         query += " AND descripcion LIKE %s"  # búsqueda parcial en descripción
         params.append(f"%{descripcion}%")
@@ -144,9 +139,6 @@ def home():
     if dibujante:
         query += " AND dibujante LIKE %s"    # búsqueda parcial por dibujante
         params.append(f"%{dibujante}%")
-    if dibujado_en:
-        query += " AND dibujado_en = %s"     # igualdad exacta para herramienta
-        params.append(dibujado_en)
 
     cursor = db.database.cursor() # Usamos la funcion cursor para la conexion a la base de datos
     cursor.execute(query, tuple(params))
@@ -164,14 +156,12 @@ def home():
 @app.route('/user', methods=['POST'])
 def addUser():
     # A traves de request.form obtenemos los datos del formulario
-    anio = request.form['anio']
-    mes = request.form['mes']
+    fecha = request.form['fecha']
     descripcion = request.form['descripcion']
     numero_plano = request.form['numero_plano']
     tamano = request.form['tamano']
     version = request.form['version']
     dibujante = request.form['dibujante']
-    dibujado_en = request.form['dibujado_en']
 
     #Procesamiento de archivo (pdf o imagen)
     archivo_nombre = None
@@ -198,15 +188,15 @@ def addUser():
         elif extension in ('png', 'jpg', 'jpeg', 'gif'):
             archivo_mime = f"image/{'jpeg' if extension in ('jpg','jpeg') else extension}"
 
-    if all([anio, mes, descripcion, numero_plano, tamano, version, dibujante, dibujado_en]):
+    if all([fecha, descripcion, numero_plano, tamano, version, dibujante]):
         cursor = db.database.cursor() # Permite ejecutas consultas SQL sobre la base de datos
         # Incluimos columnas de archivo si se subió algo
         if archivo_nombre and archivo_path:
-            sql = "INSERT INTO planos (anio, mes, descripcion, num_plano, tamanio, version, dibujante, dibujado_en, archivo_nombre, archivo_path, archivo_mime) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
-            data = (anio, mes, descripcion, numero_plano, tamano, version, dibujante, dibujado_en, archivo_nombre, archivo_path, archivo_mime)
+            sql = "INSERT INTO planos (fecha, descripcion, num_plano, tamanio, version, dibujante, archivo_nombre, archivo_path, archivo_mime) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"
+            data = (fecha, descripcion, numero_plano, tamano, version, dibujante, archivo_nombre, archivo_path, archivo_mime)
         else:
-            sql = "INSERT INTO planos (anio, mes, descripcion, num_plano, tamanio, version, dibujante, dibujado_en) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
-            data = (anio, mes, descripcion, numero_plano, tamano, version, dibujante, dibujado_en)
+            sql = "INSERT INTO planos (fecha, descripcion, num_plano, tamanio, version, dibujante) VALUES (%s, %s, %s, %s, %s, %s)"
+            data = (fecha, descripcion, numero_plano, tamano, version, dibujante)
         cursor.execute(sql, data) # Envía la consulta SQL al servidor, pero no la guarda todavía de forma permanente en la base de datos.
         db.database.commit() # Confirma (commit) los cambios hechos por la consulta, y los hace definitivos.
         cursor.close() # CAMBIO: cierre explícito del cursor
@@ -216,14 +206,12 @@ def addUser():
 # Ruta para actualizar documentos en la db_h
 @app.route('/edit/<string:id_plano>', methods=['POST'])
 def edit (id_plano):
-    anio = request.form['anio']
-    mes = request.form['mes']
+    fecha = request.form['fecha']
     descripcion = request.form['descripcion']
     numero_plano = request.form['numero_plano']
     tamano = request.form['tamano']
     version = request.form['version']
     dibujante = request.form['dibujante']
-    dibujado_en = request.form['dibujado_en']
 
     # CAMBIO: manejo opcional de nuevo archivo
     archivo_nombre = None
@@ -248,15 +236,15 @@ def edit (id_plano):
         elif extension in ('png', 'jpg', 'jpeg', 'gif'):
             archivo_mime = f"image/{'jpeg' if extension in ('jpg','jpeg') else extension}"
 
-    if all([anio, mes, descripcion, numero_plano, tamano, version, dibujante, dibujado_en]):
+    if all([fecha, descripcion, numero_plano, tamano, version, dibujante]):
         cursor = db.database.cursor() 
         # CAMBIO: si hay nuevo archivo, actualizamos columnas correspondientes
         if archivo_nombre and archivo_path:
-            sql = "UPDATE planos SET anio=%s, mes=%s, descripcion=%s, num_plano=%s, tamanio=%s, version=%s, dibujante=%s, dibujado_en=%s, archivo_nombre=%s, archivo_path=%s, archivo_mime=%s WHERE id_plano=%s"
-            data = (anio, mes, descripcion, numero_plano, tamano, version, dibujante, dibujado_en, archivo_nombre, archivo_path, archivo_mime, id_plano)
+            sql = "UPDATE planos SET fecha=%s, descripcion=%s, num_plano=%s, tamanio=%s, version=%s, dibujante=%s, archivo_nombre=%s, archivo_path=%s, archivo_mime=%s WHERE id_plano=%s"
+            data = (fecha, descripcion, numero_plano, tamano, version, dibujante, archivo_nombre, archivo_path, archivo_mime, id_plano)
         else:
-            sql = "UPDATE planos SET anio=%s, mes=%s, descripcion=%s, num_plano=%s, tamanio=%s, version=%s, dibujante=%s, dibujado_en=%s WHERE id_plano=%s"
-            data = (anio, mes, descripcion, numero_plano, tamano, version, dibujante, dibujado_en, id_plano)
+            sql = "UPDATE planos SET fecha=%s, descripcion=%s, num_plano=%s, tamanio=%s, version=%s, dibujante=%s WHERE id_plano=%s"
+            data = (fecha, descripcion, numero_plano, tamano, version, dibujante, id_plano)
         cursor.execute(sql, data)
         db.database.commit()
         cursor.close()
