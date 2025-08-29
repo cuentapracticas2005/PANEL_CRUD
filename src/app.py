@@ -68,7 +68,7 @@ def verificarPermisos(folder_path):
 UPLOAD_FOLDER = get_upload_folder()
 verificarPermisos(UPLOAD_FOLDER)
 ALLOWED_EXTENSIONS = {"pdf", "png", "jpg", "jpeg", "gif"}
-os.makedirs(UPLOAD_FOLDER, exist_ok=True) # Crear acrpeta umploads si es que no existe
+os.makedirs(UPLOAD_FOLDER, exist_ok=True) # Crear carpeta umploads si es que no existe
 
 # Garantizamos columnas para archivo en la tabla si no existen
 try:
@@ -151,24 +151,59 @@ def home():
     cursor.close()
     return render_template('index.html', data=insertObject) # Pasamos el array de diccionarios a la plantilla index.html
 
-
 # Ruta para guardar documentos en la db_h
 @app.route('/user', methods=['POST'])
 def addUser():
-    # A traves de request.form obtenemos los datos del formulario
-    fecha = request.form['fecha']
-    descripcion = request.form['descripcion']
-    numero_plano = request.form['numero_plano']
-    tamano = request.form['tamano']
-    version = request.form['version']
-    dibujante = request.form['dibujante']
+    fecha = request.form.get('fecha', '').strip()
+    descripcion = request.form.get('descripcion', '').strip()
 
-    #Procesamiento de archivo (pdf o imagen)
+    # Inputs: numero plano (generado) o manual
+    numero_plano_select = request.form.get('numero_plano', '').strip()
+    numero_plano_manual = request.form.get('numero_plano_manual', '').strip()
+
+    # Otros campos
+    tamano = request.form.get('tamano', '').strip()
+    version = request.form.get('version', '').strip()
+    dibujante = request.form.get('dibujante', '').strip()
+
+    # Decidir qué número de plano usar
+    if numero_plano_select:
+        num_plano = numero_plano_select
+        print(f"DEBUG - Usando numero_plano_select: '{num_plano}'")
+        flujo = "select"
+    elif numero_plano_manual:
+        num_plano = numero_plano_manual
+        print(f"DEBUG - Usando numero_plano_manual: '{num_plano}'")
+        flujo = "manual"
+    else:
+        num_plano = None
+        flujo = None
+
+    # --- Debug ---
+    print(f"DEBUG - flujo: {flujo}")
+    print(f"  fecha: '{fecha}'")
+    print(f"  descripcion: '{descripcion}'")
+    print(f"  num_plano: '{num_plano}'")
+    print(f"  tamano: '{tamano}'")
+    print(f"  version: '{version}'")
+    print(f"  dibujante: '{dibujante}'")
+
+    # Validación de campos según el flujo
+    campos_ok = False
+    if flujo == "select":
+        if all([fecha, descripcion, num_plano, tamano, version, dibujante]):
+            campos_ok = True
+    elif flujo == "manual":
+        if all([fecha, descripcion, num_plano, dibujante]):
+            # aquí no se obliga tamano ni version porque es manual
+            campos_ok = True
+
+    # Procesamiento de archivo
     archivo_nombre = None
     archivo_path = None
     archivo_mime = None
     file_storage = None
-    # Aceptamos tanto campo 'pdf' como 'imagen' del formulario
+
     if 'pdf' in request.files and request.files['pdf'] and request.files['pdf'].filename:
         file_storage = request.files['pdf']
     elif 'imagen' in request.files and request.files['imagen'] and request.files['imagen'].filename:
@@ -182,25 +217,34 @@ def addUser():
         file_storage.save(save_path)
         archivo_nombre = original_name
         archivo_path = unique_name
-        # Mime básico por extension
         if extension == 'pdf':
             archivo_mime = 'application/pdf'
         elif extension in ('png', 'jpg', 'jpeg', 'gif'):
             archivo_mime = f"image/{'jpeg' if extension in ('jpg','jpeg') else extension}"
 
-    if all([fecha, descripcion, numero_plano, tamano, version, dibujante]):
-        cursor = db.database.cursor() # Permite ejecutas consultas SQL sobre la base de datos
-        # Incluimos columnas de archivo si se subió algo
+    # Inserción en BD
+    if campos_ok:
+        cursor = db.database.cursor()
         if archivo_nombre and archivo_path:
-            sql = "INSERT INTO planos (fecha, descripcion, num_plano, tamanio, version, dibujante, archivo_nombre, archivo_path, archivo_mime) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"
-            data = (fecha, descripcion, numero_plano, tamano, version, dibujante, archivo_nombre, archivo_path, archivo_mime)
+            sql = """INSERT INTO planos 
+                     (fecha, descripcion, num_plano, tamanio, version, dibujante, archivo_nombre, archivo_path, archivo_mime) 
+                     VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"""
+            data = (fecha, descripcion, num_plano, tamano, version, dibujante, archivo_nombre, archivo_path, archivo_mime)
         else:
-            sql = "INSERT INTO planos (fecha, descripcion, num_plano, tamanio, version, dibujante) VALUES (%s, %s, %s, %s, %s, %s)"
-            data = (fecha, descripcion, numero_plano, tamano, version, dibujante)
-        cursor.execute(sql, data) # Envía la consulta SQL al servidor, pero no la guarda todavía de forma permanente en la base de datos.
-        db.database.commit() # Confirma (commit) los cambios hechos por la consulta, y los hace definitivos.
-        cursor.close() # CAMBIO: cierre explícito del cursor
+            sql = """INSERT INTO planos 
+                     (fecha, descripcion, num_plano, tamanio, version, dibujante) 
+                     VALUES (%s, %s, %s, %s, %s, %s)"""
+            data = (fecha, descripcion, num_plano, tamano, version, dibujante)
+
+        cursor.execute(sql, data)
+        db.database.commit()
+        cursor.close()
+        print("DEBUG - Datos insertados correctamente")
+    else:
+        print("DEBUG - Faltan campos requeridos para el flujo actual")
+
     return redirect(url_for('home'))
+
 
 
 # Ruta para actualizar documentos en la db_h
