@@ -115,7 +115,8 @@ def home():
     descripcion = request.args.get('descripcion', '').strip()
     numero_plano = request.args.get('numero_plano', '').strip()
     tamano = request.args.get('tamano', '').strip()
-    version = request.args.get('version', '').strip()
+    revision = request.args.get('revision', '').strip()
+    sub_revision = request.args.get('sub_revision', '').strip()
     dibujante = request.args.get('dibujante', '').strip()
 
     # Construcción dinámica del WHERE con parámetros para evitar inyección SQL
@@ -133,9 +134,12 @@ def home():
     if tamano:
         query += " AND tamanio = %s"         # igualdad exacta para tamaño
         params.append(tamano)
-    if version:
-        query += " AND version LIKE %s"      # búsqueda parcial para versión
-        params.append(f"%{version}%")
+    if revision:
+        query += " AND revision LIKE %s"      # búsqueda parcial para revisión
+        params.append(f"%{revision}%")
+    if sub_revision:
+        query += " AND sub_revision LIKE %s"    # búsqueda parcial por sub-revisión
+        params.append(f"%{sub_revision}%")
     if dibujante:
         query += " AND dibujante LIKE %s"    # búsqueda parcial por dibujante
         params.append(f"%{dibujante}%")
@@ -162,18 +166,18 @@ def addUser():
     numero_plano_manual = request.form.get('numero_plano_manual', '').strip()
 
     # Otros campos
+    tipo_plano = request.form.get('tipo_plano', '').strip() # actualmente no se usa
     tamano = request.form.get('tamano', '').strip()
-    version = request.form.get('version', '').strip()
+    revision = request.form.get('revision', '').strip()
     dibujante = request.form.get('dibujante', '').strip()
+    sub_revision = request.form.get('sub_revision', '').strip()
 
     # Decidir qué número de plano usar
     if numero_plano_select:
         num_plano = numero_plano_select
-        print(f"DEBUG - Usando numero_plano_select: '{num_plano}'")
         flujo = "select"
     elif numero_plano_manual:
         num_plano = numero_plano_manual
-        print(f"DEBUG - Usando numero_plano_manual: '{num_plano}'")
         flujo = "manual"
     else:
         num_plano = None
@@ -183,19 +187,21 @@ def addUser():
     print(f"DEBUG - flujo: {flujo}")
     print(f"  fecha: '{fecha}'")
     print(f"  descripcion: '{descripcion}'")
+    print(f"  tipo_plano: '{tipo_plano}'")
     print(f"  num_plano: '{num_plano}'")
     print(f"  tamano: '{tamano}'")
-    print(f"  version: '{version}'")
+    print(f"  revision: '{revision}'")
+    print(f"  sub_revision: '{sub_revision}'")
     print(f"  dibujante: '{dibujante}'")
 
     # Validación de campos según el flujo
     campos_ok = False
     if flujo == "select":
-        if all([fecha, descripcion, num_plano, tamano, version, dibujante]):
+        if all([fecha, descripcion, tipo_plano, num_plano, tamano, revision, sub_revision, dibujante]):
             campos_ok = True
     elif flujo == "manual":
         if all([fecha, descripcion, num_plano, dibujante]):
-            # aquí no se obliga tamano ni version porque es manual
+            # aquí no se obliga tamano ni revision porque es manual
             campos_ok = True
 
     # Procesamiento de archivo
@@ -227,14 +233,14 @@ def addUser():
         cursor = db.database.cursor()
         if archivo_nombre and archivo_path:
             sql = """INSERT INTO planos 
-                     (fecha, descripcion, num_plano, tamanio, version, dibujante, archivo_nombre, archivo_path, archivo_mime) 
-                     VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"""
-            data = (fecha, descripcion, num_plano, tamano, version, dibujante, archivo_nombre, archivo_path, archivo_mime)
+                     (fecha, descripcion, tipo_plano, num_plano, tamanio, revision, sub_revision, dibujante, archivo_nombre, archivo_path, archivo_mime) 
+                     VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
+            data = (fecha, descripcion, tipo_plano, num_plano, tamano, revision, sub_revision, dibujante, archivo_nombre, archivo_path, archivo_mime)
         else:
             sql = """INSERT INTO planos 
-                     (fecha, descripcion, num_plano, tamanio, version, dibujante) 
-                     VALUES (%s, %s, %s, %s, %s, %s)"""
-            data = (fecha, descripcion, num_plano, tamano, version, dibujante)
+                     (fecha, descripcion, tipo_plano, num_plano, tamanio, revision, sub_revision, dibujante) 
+                     VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"""
+            data = (fecha, descripcion, tipo_plano, num_plano, tamano, revision, sub_revision, dibujante)
 
         cursor.execute(sql, data)
         db.database.commit()
@@ -247,14 +253,17 @@ def addUser():
 
 
 
+
 # Ruta para actualizar documentos en la db_h
 @app.route('/edit/<string:id_plano>', methods=['POST'])
 def edit (id_plano):
     fecha = request.form['fecha']
     descripcion = request.form['descripcion']
+    tipo_plano = request.form.get('tipo_plano', '').strip() # actualmente no se usa
     numero_plano = request.form['numero_plano']
     tamano = request.form['tamano']
-    version = request.form['version']
+    revision = request.form['revision']
+    sub_revision = request.form['sub_revision']
     dibujante = request.form['dibujante']
 
     # CAMBIO: manejo opcional de nuevo archivo
@@ -280,15 +289,15 @@ def edit (id_plano):
         elif extension in ('png', 'jpg', 'jpeg', 'gif'):
             archivo_mime = f"image/{'jpeg' if extension in ('jpg','jpeg') else extension}"
 
-    if all([fecha, descripcion, numero_plano, tamano, version, dibujante]):
+    if all([fecha, descripcion, numero_plano, tamano, revision, dibujante]):
         cursor = db.database.cursor() 
         # CAMBIO: si hay nuevo archivo, actualizamos columnas correspondientes
         if archivo_nombre and archivo_path:
-            sql = "UPDATE planos SET fecha=%s, descripcion=%s, num_plano=%s, tamanio=%s, version=%s, dibujante=%s, archivo_nombre=%s, archivo_path=%s, archivo_mime=%s WHERE id_plano=%s"
-            data = (fecha, descripcion, numero_plano, tamano, version, dibujante, archivo_nombre, archivo_path, archivo_mime, id_plano)
+            sql = "UPDATE planos SET fecha=%s, descripcion=%s, tipo_plano=%s, num_plano=%s, tamanio=%s, revision=%s, sub_revision=%s, dibujante=%s, archivo_nombre=%s, archivo_path=%s, archivo_mime=%s WHERE id_plano=%s"
+            data = (fecha, descripcion, tipo_plano, numero_plano, tamano, revision, sub_revision, dibujante, archivo_nombre, archivo_path, archivo_mime, id_plano)
         else:
-            sql = "UPDATE planos SET fecha=%s, descripcion=%s, num_plano=%s, tamanio=%s, version=%s, dibujante=%s WHERE id_plano=%s"
-            data = (fecha, descripcion, numero_plano, tamano, version, dibujante, id_plano)
+            sql = "UPDATE planos SET fecha=%s, descripcion=%s, tipo_plano=%s, num_plano=%s, tamanio=%s, revision=%s, sub_revision=%s, dibujante=%s WHERE id_plano=%s"
+            data = (fecha, descripcion, tipo_plano, numero_plano, tamano, revision, sub_revision, dibujante, id_plano)
         cursor.execute(sql, data)
         db.database.commit()
         cursor.close()

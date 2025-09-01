@@ -74,8 +74,12 @@
                 </select>
             </div>
             <div>
-                <label class="block text-sm font-medium mb-1">Versión</label>
-                <input type="text" name="version" class="border rounded px-2 py-1 w-20" placeholder="Versión">
+                <label class="block text-sm font-medium mb-1">Revision</label>
+                <input type="text" name="revision" class="border rounded px-2 py-1 w-20" placeholder="Revision">
+            </div>
+            <div>
+                <label class="block text-sm font-medium mb-1">Sub-revision</label>
+                <input type="text" name="sub_revision" class="border rounded px-2 py-1 w-20" placeholder="Sub-revision">
             </div>
             <div>
                 <label class="block text-sm font-medium mb-1">Nombre del Dibujante</label>
@@ -98,7 +102,8 @@
                         <th class="px-4 py-2">Descripción</th>
                         <th class="px-4 py-2">Número de Plano</th>
                         <th class="px-4 py-2">Tamaño</th>
-                        <th class="px-4 py-2">Versión</th>
+                        <th class="px-4 py-2">Revision</th>
+                        <th class="px-4 py-2">Sub-revision</th>
                         <th class="px-4 py-2">Nombre del Dibujante</th>
                         <th class="px-4 py-2">Ver</th>
                         <th class="px-4 py-2">Descargar</th>
@@ -112,7 +117,8 @@
                         <td class="border px-4 py-2">{{d.descripcion}}</td>
                         <td class="border px-4 py-2">{{d.num_plano}}</td>
                         <td class="border px-4 py-2">A{{d.tamanio}}</td>
-                        <td class="border px-4 py-2">{{d.version}}</td>
+                        <td class="border px-4 py-2">{{d.revision}}</td>
+                        <td class="border px-4 py-2">{{d.sub_revision}}</td>
                         <td class="border px-4 py-2">{{d.dibujante}}</td>
                         <td class="border px-4 py-2 text-center">
                             {# CAMBIO: mostrar enlace Ver si hay archivo #}
@@ -156,7 +162,7 @@
 
                     <!---------------------------------------------------------- Modal para agregar nuevo documento ----------------------------------------------------------------->
                     <div id="modalAgregar"
-                        class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 hidden">
+                        class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 hidden modal">
                         <div class="bg-white p-8 rounded shadow-lg w-full max-w-lg relative">
                             <button onclick="document.getElementById('modalAgregar').classList.add('hidden')"
                                 class="absolute top-2 right-2 text-gray-500 hover:text-gray-800"
@@ -171,7 +177,7 @@
                                         class="border rounded px-2 py-1 w-full" hidden>
                                 </div>
 
-                                <!-- Botón para mostrar más opciones -->
+                                <!-- Opciones para generar codigo de plano -->
                                 <div class="space-y-2 border rounded p-3 bg-gray-50 mt-2">
                                     <div>
                                         <label class="block text-sm font-medium mb-1">Tipo de Plano</label>
@@ -209,17 +215,17 @@
                                         <label class="block text-sm font-medium mb-1">Tamaño</label>
                                         <select id="tamano" name="tamano" class="border rounded px-2 py-1 w-full">
                                             <option value="">-- Seleccionar --</option>
-                                            <option value="0">0-A0</option>
-                                            <option value="1">1-A1</option>
-                                            <option value="2">2-A2</option>
-                                            <option value="3">3-A3</option>
-                                            <option value="4">4-A4</option>
+                                            <option value="0">0 - A0</option>
+                                            <option value="1">1 - A1</option>
+                                            <option value="2">2 - A2</option>
+                                            <option value="3">3 - A3</option>
+                                            <option value="4">4 - A4</option>
                                         </select>
                                     </div>
 
                                     <div>
-                                        <label class="block text-sm font-medium mb-1">Version</label>
-                                        <select id="version" name="version" class="border rounded px-2 py-1 w-full">
+                                        <label class="block text-sm font-medium mb-1">Revision</label>
+                                        <select id="revision" name="revision" class="border rounded px-2 py-1 w-full">
                                             <option value="">-- Seleccionar --</option>
                                             <option value="_">_</option>
                                             <option value="Z">Z</option>
@@ -253,7 +259,7 @@
 
                                     <div>
                                         <label class="block text-sm font-medium mb-1">Sub-Revision</label>
-                                        <select id="subrevision" name="subrevision"
+                                        <select id="sub_revision" name="sub_revision"
                                             class="border rounded px-2 py-1 w-full">
                                             <option value="">-- Seleccionar --</option>
                                             <option value=" ">Ninguno</option>
@@ -270,6 +276,7 @@
                                         </select>
                                     </div>
                                 </div>
+                                <!--
                                 <div class="mb-2">
                                     <div class="mb-2 flex items-center gap-2">
                                         <button type="button" onclick="toggleOpciones()"
@@ -279,10 +286,10 @@
                                     </div>
                                 </div>
 
-                                <!-- Opciones ocultas -->
+                                
                                 <input id="extraOpciones" type="text" name="numero_plano_manual"
                                     class="hidden border rounded px-2 py-1 w-full"
-                                    placeholder="Escribir manualmente...">
+                                    placeholder="Escribir manualmente..."> -->
 
                                 <!-- Descripción -->
                                 <div class="mb-2 mt-4">
@@ -300,8 +307,9 @@
                                 <!-- Fecha -->
                                 <div class="mb-2">
                                     <label class="block text-sm font-medium mb-1">Fecha</label>
-                                    <input id="fecha" type="text" name="fecha" class="border rounded px-2 py-1 w-full fecha-input"
-                                        placeholder="YYYY-MM-DD" required>
+                                    <input id="fecha" type="text" name="fecha"
+                                        class="border rounded px-2 py-1 w-full fecha-input" placeholder="YYYY-MM-DD"
+                                        required>
                                     <input type="checkbox" name="f_actual" id="f_actual"
                                         onchange="colocarFechaActual(this)">
                                     <label class="text-sm text-gray-600">Usar fecha actual</label>
@@ -325,11 +333,11 @@
                             </form>
                         </div>
                     </div>
-                    
+
 
                     <!--------------------------------------------------------------- Modal para editar documento -------------------------------------------------------------------->
                     <div id="modal{{d.id_plano}}"
-                        class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 hidden">
+                        class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 hidden modal">
                         <div class="bg-white p-8 rounded shadow-lg w-full max-w-lg relative">
                             <!-- CAMBIO: botón de cierre simple sin imagen externa y con id correcto -->
                             <button onclick="document.getElementById('modal{{d.id_plano}}').classList.add('hidden')"
@@ -357,21 +365,127 @@
                                 </div>
 
                                 <div class="mb-2">
-                                    <label class="block text-sm font-medium mb-1">Tamaño</label>
-                                    <!-- CAMBIO: uso de d.tamanio para coincidir con la columna de la tabla -->
-                                    <select name="tamano" class="border rounded px-2 py-1 w-full" required>
-                                        <option value="A0" {% if d.tamanio=="A0" %}selected{% endif %}>A0</option>
-                                        <option value="A1" {% if d.tamanio=="A1" %}selected{% endif %}>A1</option>
-                                        <option value="A2" {% if d.tamanio=="A2" %}selected{% endif %}>A2</option>
-                                        <option value="A3" {% if d.tamanio=="A3" %}selected{% endif %}>A3</option>
-                                        <option value="A4" {% if d.tamanio=="A4" %}selected{% endif %}>A4</option>
+                                    <label class="block text-sm font-medium mb-1">Tipo de Plano</label>
+                                    <select id="tipo_plano_edit" name="tipo_plano"
+                                        class="border rounded px-2 py-1 w-full">
+                                        <option value="">-- Seleccionar --</option>
+                                        <option value="04" {% if d.tipo_plano=="04" %}selected{% endif %}>04 - ESQUEMA
+                                            GENERAL</option>
+                                        <option value="06" {% if d.tipo_plano=="06" %}selected{% endif %}>06 - TABLAS DE
+                                            PRODUCCIÓN</option>
+                                        <option value="11" {% if d.tipo_plano=="11" %}selected{% endif %}>11 - CONJUNTO
+                                            P.HIDRÁULICA</option>
+                                        <option value="12" {% if d.tipo_plano=="12" %}selected{% endif %}>12 - PIEZAS
+                                            P.HIDRÁULICA</option>
+                                        <option value="14" {% if d.tipo_plano=="14" %}selected{% endif %}>14 - CURVAS
+                                            HIDRÁULICAS</option>
+                                        <option value="21" {% if d.tipo_plano=="21" %}selected{% endif %}>21 - CONJUNTO
+                                            P.SOPORTE</option>
+                                        <option value="22" {% if d.tipo_plano=="22" %}selected{% endif %}>22 - PIEZA
+                                            P.SOPORTE</option>
+                                        <option value="31" {% if d.tipo_plano=="31" %}selected{% endif %}>31 - CONJUNTO
+                                            CCMM</option>
+                                        <option value="32" {% if d.tipo_plano=="32" %}selected{% endif %}>32 - PIEZAS
+                                            CCMM</option>
+                                        <option value="41" {% if d.tipo_plano=="41" %}selected{% endif %}>41 - CROQUIS
+                                            DE CONJUNTOS</option>
+                                        <option value="42" {% if d.tipo_plano=="42" %}selected{% endif %}>42 - CROQUIS
+                                            DE PIEZAS</option>
+                                        <option value="50" {% if d.tipo_plano=="50" %}selected{% endif %}>50 - TERCEROS
+                                            GENERAL</option>
+                                        <option value="51" {% if d.tipo_plano=="51" %}selected{% endif %}>51 - CONJUNTO
+                                            TERCEROS</option>
+                                        <option value="52" {% if d.tipo_plano=="52" %}selected{% endif %}>52 - PIEZAS
+                                            TERCEROS</option>
+                                        <option value="53" {% if d.tipo_plano=="53" %}selected{% endif %}>53 - CROQUIS
+                                            TERCEROS</option>
+                                        <option value="54" {% if d.tipo_plano=="54" %}selected{% endif %}>54 - MODELO
+                                            TERCEROS</option>
+                                        <option value="55" {% if d.tipo_plano=="55" %}selected{% endif %}>55 - FUNDA
+                                            TERCEROS</option>
+                                        <option value="56" {% if d.tipo_plano=="56" %}selected{% endif %}>56 - MODELO
+                                            HIDROSTAL</option>
+                                        <option value="71" {% if d.tipo_plano=="71" %}selected{% endif %}>71 -
+                                            DESARROLLO CONJUNTOS</option>
+                                        <option value="72" {% if d.tipo_plano=="72" %}selected{% endif %}>72 -
+                                            DESARROLLO PIEZAS</option>
+                                        <option value="CI" {% if d.tipo_plano=="CI" %}selected{% endif %}>CI - CONTROL
+                                            DE INTERNAMIENTO</option>
+                                        <option value="LP" {% if d.tipo_plano=="LP" %}selected{% endif %}>LP -
+                                            LABORATORIO DE PRUEBAS</option>
+                                        <option value="TS" {% if d.tipo_plano=="TS" %}selected{% endif %}>TS - TURBINA
+                                            SUMERGIBLE</option>
+                                        <option value="Z0" {% if d.tipo_plano=="Z0" %}selected{% endif %}>Z0 - OTRO
+                                        </option>
                                     </select>
                                 </div>
 
                                 <div class="mb-2">
-                                    <label class="block text-sm font-medium mb-1">Versión</label>
-                                    <input type="text" name="version" class="border rounded px-2 py-1 w-full"
-                                        value="{{d.version}}">
+                                    <label class="block text-sm font-medium mb-1">Tamaño</label>
+                                    <!-- CAMBIO: uso de d.tamanio para coincidir con la columna de la tabla -->
+                                    <select name="tamano" class="border rounded px-2 py-1 w-full" required>
+                                        <option value="0" {% if d.tamanio=="0" %}selected{% endif %}>A0</option>
+                                        <option value="1" {% if d.tamanio=="1" %}selected{% endif %}>A1</option>
+                                        <option value="2" {% if d.tamanio=="2" %}selected{% endif %}>A2</option>
+                                        <option value="3" {% if d.tamanio=="3" %}selected{% endif %}>A3</option>
+                                        <option value="4" {% if d.tamanio=="4" %}selected{% endif %}>A4</option>
+                                    </select>
+                                </div>
+
+                                <div class="mb-2">
+                                    <label class="block text-sm font-medium mb-1">Revision</label>
+                                    <select name="revision" id="revision_editar"
+                                        class="border rounded px-2 py-1 w-full">
+                                        <option value="">-- Seleccionar --</option>
+                                        <option value="_" {% if d.revision=="_" %}selected{% endif %}>_</option>
+                                        <option value="Z" {% if d.revision=="Z" %}selected{% endif %}>Z</option>
+                                        <option value="Y" {% if d.revision=="Y" %}selected{% endif %}>Y</option>
+                                        <option value="X" {% if d.revision=="X" %}selected{% endif %}>X</option>
+                                        <option value="W" {% if d.revision=="W" %}selected{% endif %}>W</option>
+                                        <option value="V" {% if d.revision=="V" %}selected{% endif %}>V</option>
+                                        <option value="U" {% if d.revision=="U" %}selected{% endif %}>U</option>
+                                        <option value="T" {% if d.revision=="T" %}selected{% endif %}>T</option>
+                                        <option value="S" {% if d.revision=="S" %}selected{% endif %}>S</option>
+                                        <option value="R" {% if d.revision=="R" %}selected{% endif %}>R</option>
+                                        <option value="Q" {% if d.revision=="Q" %}selected{% endif %}>Q</option>
+                                        <option value="P" {% if d.revision=="P" %}selected{% endif %}>P</option>
+                                        <option value="O" {% if d.revision=="O" %}selected{% endif %}>O</option>
+                                        <option value="N" {% if d.revision=="N" %}selected{% endif %}>N</option>
+                                        <option value="M" {% if d.revision=="M" %}selected{% endif %}>M</option>
+                                        <option value="L" {% if d.revision=="L" %}selected{% endif %}>L</option>
+                                        <option value="K" {% if d.revision=="K" %}selected{% endif %}>K</option>
+                                        <option value="J" {% if d.revision=="J" %}selected{% endif %}>J</option>
+                                        <option value="I" {% if d.revision=="I" %}selected{% endif %}>I</option>
+                                        <option value="H" {% if d.revision=="H" %}selected{% endif %}>H</option>
+                                        <option value="G" {% if d.revision=="G" %}selected{% endif %}>G</option>
+                                        <option value="F" {% if d.revision=="F" %}selected{% endif %}>F</option>
+                                        <option value="E" {% if d.revision=="E" %}selected{% endif %}>E</option>
+                                        <option value="D" {% if d.revision=="D" %}selected{% endif %}>D</option>
+                                        <option value="C" {% if d.revision=="C" %}selected{% endif %}>C</option>
+                                        <option value="B" {% if d.revision=="B" %}selected{% endif %}>B</option>
+                                        <option value="A" {% if d.revision=="A" %}selected{% endif %}>A</option>
+                                    </select>
+
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium mb-1">Sub-revision</label>
+                                    <select name="sub_revision" id="sub_revision_editar"
+                                        class="border rounded px-2 py-1 w-full">
+                                        <option value="">-- Seleccionar --</option>
+                                        <option value=" " {% if d.sub_revision==" " %}selected{% endif %}>Ninguno
+                                        </option>
+                                        <option value="1" {% if d.sub_revision==1 %}selected{% endif %}>1</option>
+                                        <option value="2" {% if d.sub_revision==2 %}selected{% endif %}>2</option>
+                                        <option value="3" {% if d.sub_revision==3 %}selected{% endif %}>3</option>
+                                        <option value="4" {% if d.sub_revision==4 %}selected{% endif %}>4</option>
+                                        <option value="5" {% if d.sub_revision==5 %}selected{% endif %}>5</option>
+                                        <option value="6" {% if d.sub_revision==6 %}selected{% endif %}>6</option>
+                                        <option value="7" {% if d.sub_revision==7 %}selected{% endif %}>7</option>
+                                        <option value="8" {% if d.sub_revision==8 %}selected{% endif %}>8</option>
+                                        <option value="9" {% if d.sub_revision==9 %}selected{% endif %}>9</option>
+                                        <option value="10" {% if d.sub_revision==10 %}selected{% endif %}>10</option>
+                                    </select>
                                 </div>
 
                                 <div class="mb-2">
@@ -394,7 +508,8 @@
                                         onclick="document.getElementById('modal{{d.id_plano}}').classList.add('hidden')"
                                         class="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400 hover:scale-105 transition-all">Cancelar</button>
                                     <button type="submit"
-                                        class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 hover:scale-105 transition-all">Guardar
+                                        class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 hover:scale-105 transition-all"
+                                        onclick="generarCodigoEditar('{{d.id_plano}}')">Guardar
                                         Cambios</button>
                                 </div>
                             </form>
@@ -403,7 +518,7 @@
 
                     <!------------------------------------------------------------ Modal para reutilizar documento ----------------------------------------------------------------->
                     <div id="modalReutilizar{{d.id_plano}}"
-                        class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 hidden">
+                        class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 hidden modal">
                         <div class="bg-white p-8 rounded shadow-lg w-full max-w-lg relative">
                             <button
                                 onclick="document.getElementById('modalReutilizar{{d.id_plano}}').classList.add('hidden')"
@@ -416,7 +531,7 @@
                                 <div class="mb-2">
                                     <label class="block text-sm font-medium mb-1">Número de Plano</label>
                                     <input id="numero_plano" type="text" name="numero_plano"
-                                        class="border rounded px-2 py-1 w-full" disabled>
+                                        class="border rounded px-2 py-1 w-full" value="{{d.num_plano}}" readonly>
                                 </div>
 
                                 <!-- Botón para mostrar más opciones -->
@@ -424,75 +539,143 @@
 
                                     <div>
                                         <label class="block text-sm font-medium mb-1">Tamaño</label>
-                                        <select id="tamano" name="tamano" class="border rounded px-2 py-1 w-full">
+                                        <select id="tamano_reutilizar" name="tamano"
+                                            class="border rounded px-2 py-1 w-full">
+                                            <option value="0" {% if d.tamanio=="0" %}selected{% endif %}>A0</option>
+                                            <option value="1" {% if d.tamanio=="1" %}selected{% endif %}>A1</option>
+                                            <option value="2" {% if d.tamanio=="2" %}selected{% endif %}>A2</option>
+                                            <option value="3" {% if d.tamanio=="3" %}selected{% endif %}>A3</option>
+                                            <option value="4" {% if d.tamanio=="4" %}selected{% endif %}>A4</option>
+                                        </select>
+                                    </div>
+
+                                    <div hidden>
+                                        <label class="block text-sm font-medium mb-1">Tipo de Plano</label>
+                                        <select id="tipo_plano_reutilizar" name="tipo_plano"
+                                            class="border rounded px-2 py-1 w-full">
                                             <option value="">-- Seleccionar --</option>
-                                            <option value="0">0-A0</option>
-                                            <option value="1">1-A1</option>
-                                            <option value="2">2-A2</option>
-                                            <option value="3">3-A3</option>
-                                            <option value="4">4-A4</option>
+                                            <option value="04" {% if d.tipo_plano=="04" %}selected{% endif %}>04 -
+                                                ESQUEMA
+                                                GENERAL</option>
+                                            <option value="06" {% if d.tipo_plano=="06" %}selected{% endif %}>06 -
+                                                TABLAS DE
+                                                PRODUCCIÓN</option>
+                                            <option value="11" {% if d.tipo_plano=="11" %}selected{% endif %}>11 -
+                                                CONJUNTO
+                                                P.HIDRÁULICA</option>
+                                            <option value="12" {% if d.tipo_plano=="12" %}selected{% endif %}>12 -
+                                                PIEZAS
+                                                P.HIDRÁULICA</option>
+                                            <option value="14" {% if d.tipo_plano=="14" %}selected{% endif %}>14 -
+                                                CURVAS
+                                                HIDRÁULICAS</option>
+                                            <option value="21" {% if d.tipo_plano=="21" %}selected{% endif %}>21 -
+                                                CONJUNTO
+                                                P.SOPORTE</option>
+                                            <option value="22" {% if d.tipo_plano=="22" %}selected{% endif %}>22 - PIEZA
+                                                P.SOPORTE</option>
+                                            <option value="31" {% if d.tipo_plano=="31" %}selected{% endif %}>31 -
+                                                CONJUNTO
+                                                CCMM</option>
+                                            <option value="32" {% if d.tipo_plano=="32" %}selected{% endif %}>32 -
+                                                PIEZAS
+                                                CCMM</option>
+                                            <option value="41" {% if d.tipo_plano=="41" %}selected{% endif %}>41 -
+                                                CROQUIS
+                                                DE CONJUNTOS</option>
+                                            <option value="42" {% if d.tipo_plano=="42" %}selected{% endif %}>42 -
+                                                CROQUIS
+                                                DE PIEZAS</option>
+                                            <option value="50" {% if d.tipo_plano=="50" %}selected{% endif %}>50 -
+                                                TERCEROS
+                                                GENERAL</option>
+                                            <option value="51" {% if d.tipo_plano=="51" %}selected{% endif %}>51 -
+                                                CONJUNTO
+                                                TERCEROS</option>
+                                            <option value="52" {% if d.tipo_plano=="52" %}selected{% endif %}>52 -
+                                                PIEZAS
+                                                TERCEROS</option>
+                                            <option value="53" {% if d.tipo_plano=="53" %}selected{% endif %}>53 -
+                                                CROQUIS
+                                                TERCEROS</option>
+                                            <option value="54" {% if d.tipo_plano=="54" %}selected{% endif %}>54 -
+                                                MODELO
+                                                TERCEROS</option>
+                                            <option value="55" {% if d.tipo_plano=="55" %}selected{% endif %}>55 - FUNDA
+                                                TERCEROS</option>
+                                            <option value="56" {% if d.tipo_plano=="56" %}selected{% endif %}>56 -
+                                                MODELO
+                                                HIDROSTAL</option>
+                                            <option value="71" {% if d.tipo_plano=="71" %}selected{% endif %}>71 -
+                                                DESARROLLO CONJUNTOS</option>
+                                            <option value="72" {% if d.tipo_plano=="72" %}selected{% endif %}>72 -
+                                                DESARROLLO PIEZAS</option>
+                                            <option value="CI" {% if d.tipo_plano=="CI" %}selected{% endif %}>CI -
+                                                CONTROL
+                                                DE INTERNAMIENTO</option>
+                                            <option value="LP" {% if d.tipo_plano=="LP" %}selected{% endif %}>LP -
+                                                LABORATORIO DE PRUEBAS</option>
+                                            <option value="TS" {% if d.tipo_plano=="TS" %}selected{% endif %}>TS -
+                                                TURBINA
+                                                SUMERGIBLE</option>
+                                            <option value="Z0" {% if d.tipo_plano=="Z0" %}selected{% endif %}>Z0 - OTRO
+                                            </option>
                                         </select>
                                     </div>
 
                                     <div>
-                                        <label class="block text-sm font-medium mb-1">Version</label>
-                                        <select id="version" name="version" class="border rounded px-2 py-1 w-full">
+                                        <label class="block text-sm font-medium mb-1">Revision</label>
+                                        <select id="revision_reutilizar" name="revision"
+                                            class="border rounded px-2 py-1 w-full">
                                             <option value="">-- Seleccionar --</option>
-                                            <option value="_">_</option>
-                                            <option value="Z">Z</option>
-                                            <option value="Y">Y</option>
-                                            <option value="X">X</option>
-                                            <option value="W">W</option>
-                                            <option value="V">V</option>
-                                            <option value="U">U</option>
-                                            <option value="T">T</option>
-                                            <option value="S">S</option>
-                                            <option value="R">R</option>
-                                            <option value="Q">Q</option>
-                                            <option value="P">P</option>
-                                            <option value="O">O</option>
-                                            <option value="N">N</option>
-                                            <option value="M">M</option>
-                                            <option value="L">L</option>
-                                            <option value="K">K</option>
-                                            <option value="J">J</option>
-                                            <option value="I">I</option>
-                                            <option value="H">H</option>
-                                            <option value="G">G</option>
-                                            <option value="F">F</option>
-                                            <option value="E">E</option>
-                                            <option value="D">D</option>
-                                            <option value="C">C</option>
-                                            <option value="B">B</option>
-                                            <option value="A">A</option>
+                                            <option value="_" {% if d.revision=="_" %}selected{% endif %}>_</option>
+                                            <option value="Z" {% if d.revision=="Z" %}selected{% endif %}>Z</option>
+                                            <option value="Y" {% if d.revision=="Y" %}selected{% endif %}>Y</option>
+                                            <option value="X" {% if d.revision=="X" %}selected{% endif %}>X</option>
+                                            <option value="W" {% if d.revision=="W" %}selected{% endif %}>W</option>
+                                            <option value="V" {% if d.revision=="V" %}selected{% endif %}>V</option>
+                                            <option value="U" {% if d.revision=="U" %}selected{% endif %}>U</option>
+                                            <option value="T" {% if d.revision=="T" %}selected{% endif %}>T</option>
+                                            <option value="S" {% if d.revision=="S" %}selected{% endif %}>S</option>
+                                            <option value="R" {% if d.revision=="R" %}selected{% endif %}>R</option>
+                                            <option value="Q" {% if d.revision=="Q" %}selected{% endif %}>Q</option>
+                                            <option value="P" {% if d.revision=="P" %}selected{% endif %}>P</option>
+                                            <option value="O" {% if d.revision=="O" %}selected{% endif %}>O</option>
+                                            <option value="N" {% if d.revision=="N" %}selected{% endif %}>N</option>
+                                            <option value="M" {% if d.revision=="M" %}selected{% endif %}>M</option>
+                                            <option value="L" {% if d.revision=="L" %}selected{% endif %}>L</option>
+                                            <option value="K" {% if d.revision=="K" %}selected{% endif %}>K</option>
+                                            <option value="J" {% if d.revision=="J" %}selected{% endif %}>J</option>
+                                            <option value="I" {% if d.revision=="I" %}selected{% endif %}>I</option>
+                                            <option value="H" {% if d.revision=="H" %}selected{% endif %}>H</option>
+                                            <option value="G" {% if d.revision=="G" %}selected{% endif %}>G</option>
+                                            <option value="F" {% if d.revision=="F" %}selected{% endif %}>F</option>
+                                            <option value="E" {% if d.revision=="E" %}selected{% endif %}>E</option>
+                                            <option value="D" {% if d.revision=="D" %}selected{% endif %}>D</option>
+                                            <option value="C" {% if d.revision=="C" %}selected{% endif %}>C</option>
+                                            <option value="B" {% if d.revision=="B" %}selected{% endif %}>B</option>
+                                            <option value="A" {% if d.revision=="A" %}selected{% endif %}>A</option>
                                         </select>
                                     </div>
 
                                     <div>
                                         <label class="block text-sm font-medium mb-1">Sub-Revision</label>
-                                        <select id="subrevision" name="subrevision"
+                                        <select id="sub_revision_reutilizar" name="sub_revision"
                                             class="border rounded px-2 py-1 w-full">
-                                            <option value="">-- Seleccionar --</option>
-                                            <option value=" ">Ninguno</option>
-                                            <option value="1">1</option>
-                                            <option value="2">2</option>
-                                            <option value="3">3</option>
-                                            <option value="4">4</option>
-                                            <option value="5">5</option>
-                                            <option value="6">6</option>
-                                            <option value="7">7</option>
-                                            <option value="8">8</option>
-                                            <option value="9">9</option>
-                                            <option value="10">10</option>
+                                            <option value=" " {% if d.sub_revision==" " %}selected{% endif %}>Ninguno
+                                            </option>
+                                            <option value="1" {% if d.sub_revision==1 %}selected{% endif %}>1</option>
+                                            <option value="2" {% if d.sub_revision==2 %}selected{% endif %}>2</option>
+                                            <option value="3" {% if d.sub_revision==3 %}selected{% endif %}>3</option>
+                                            <option value="4" {% if d.sub_revision==4 %}selected{% endif %}>4</option>
+                                            <option value="5" {% if d.sub_revision==5 %}selected{% endif %}>5</option>
+                                            <option value="6" {% if d.sub_revision==6 %}selected{% endif %}>6</option>
+                                            <option value="7" {% if d.sub_revision==7 %}selected{% endif %}>7</option>
+                                            <option value="8" {% if d.sub_revision==8 %}selected{% endif %}>8</option>
+                                            <option value="9" {% if d.sub_revision==9 %}selected{% endif %}>9</option>
+                                            <option value="10" {% if d.sub_revision==10 %}selected{% endif %}>10
+                                            </option>
                                         </select>
-                                    </div>
-                                </div>
-                                <div class="mb-2">
-                                    <div class="mb-2 flex items-center gap-2">
-                                        <button id="btnGenerarCodigo" type="button" onclick="generarCodigo()"
-                                            class="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700 text-sm hover:scale-105 transition-all">
-                                            Generar Código
-                                        </button>
                                     </div>
                                 </div>
 
@@ -500,20 +683,22 @@
                                 <div class="mb-2 mt-4">
                                     <label class="block text-sm font-medium mb-1">Descripción</label>
                                     <input type="text" name="descripcion" class="border rounded px-2 py-1 w-full"
-                                        required>
+                                        value="{{ d.descripcion }}" required>
                                 </div>
 
                                 <!-- Dibujante -->
                                 <div class="mb-2">
                                     <label class="block text-sm font-medium mb-1">Nombre del Dibujante</label>
-                                    <input type="text" name="dibujante" class="border rounded px-2 py-1 w-full">
+                                    <input type="text" name="dibujante" class="border rounded px-2 py-1 w-full"
+                                        value="{{ d.dibujante }}">
                                 </div>
 
                                 <!-- Fecha -->
                                 <div class="mb-2">
                                     <label class="block text-sm font-medium mb-1">Fecha</label>
-                                    <input id="fecha" type="text" name="fecha" class="border rounded px-2 py-1 w-full fecha-input"
-                                        placeholder="YYYY-MM-DD" required disabled>
+                                    <input id="fecha" type="text" name="fecha"
+                                        class="border rounded px-2 py-1 w-full fecha-input" placeholder="YYYY-MM-DD"
+                                        value="{{ d.fecha }}" required>
                                     <input type="checkbox" name="f_actual" id="f_actual"
                                         onchange="colocarFechaActual(this)">
                                     <label class="text-sm text-gray-600">Usar fecha actual</label>
@@ -532,14 +717,15 @@
                                         onclick="document.getElementById('modalReutilizar{{d.id_plano}}').classList.add('hidden')"
                                         class="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400 hover:scale-105 transition-all">Cancelar</button>
                                     <button type="submit"
-                                        class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 hover:scale-105 transition-all">Agregar</button>
+                                        class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 hover:scale-105 transition-all"
+                                        onclick="generarCodigoReutilizar('{{d.id_plano}}')">Agregar</button>
                                 </div>
                             </form>
                         </div>
                     </div>
                     <!------------------------------------------------------------ Modal para eliminar documento ------------------------------------------------------------------->
                     <div id="modalEliminar{{d.id_plano}}"
-                        class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 hidden">
+                        class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 hidden modal">
                         <div class="bg-white rounded-lg shadow-lg p-8 w-full max-w-md relative">
                             <!-- CAMBIO: botón de cierre simple sin imagen externa y con id correcto -->
                             <button
