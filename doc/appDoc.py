@@ -1,36 +1,50 @@
-from flask import Flask, render_template, request, redirect, url_for, send_from_directory, abort
-import os
-import database as db
-from werkzeug.utils import secure_filename
-import uuid
-from dotenv import load_dotenv
-load_dotenv()
+"""
+=============== SISTEMA PARA GESTIONAR PLANOS ===============
 
+"""
+
+from flask import Flask, render_template, request, redirect, url_for, send_from_directory, abort
+import os                                       # operciones del sistema operativo y rutas de archivos
+import database as db                           # modulo personalizado para conexion a base de datos
+from werkzeug.utils import secure_filename      # seguridad de las rutas con los archivos subidos
+import uuid                                     # identificadores unicos en archivos
+from dotenv import load_dotenv                  # cargar variables de entorno desde .env
+load_dotenv()                                   # ejecucion de ve
+
+# =========== CONFIGURACION INICIAL DE LA APP FLASK ==============
+# configuracion de directorios para templates y static
 template_dir = os.path.join(os.path.dirname(__file__), 'templates')
 app = Flask(
     __name__,
-    template_folder=template_dir,
-    static_folder=os.path.join(os.path.dirname(__file__), 'static')
+    template_folder=template_dir,                                   # ubicacion de los templates
+    static_folder=os.path.join(os.path.dirname(__file__), 'static') # ubicacion de statics
 )
 
-# Configuración de subida de archivos
+# =========== CONFIGURACION DE SUBIDA DE ARCHIVOS ==============
+""" se obtiene y valida la carpeta de upload previamente configurada
+
+    1.- se lee la variable de entorno UPLOAD_FOLDER
+    2.- se valida que la carpeta exista y sea accesible
+    3.- en caso no sea se crea una carpeta local
+    4.- realiza pruebas de escritura en la carpeta para verificar permisos
+    5.- se retorna la ruta de la carpeta de uploads
+"""
 def get_upload_folder():
-    """Obtiene la carpeta de uploads con validaciones"""
     upload_path = os.environ.get('UPLOAD_FOLDER')
     
     if not upload_path:
-        # Fallback para desarrollo local
+        # carpeta por defecto si no se define UPLOAD_FOLDER
         upload_path = os.path.join(os.path.dirname(__file__), 'uploads')
         print("⚠️  UPLOAD_FOLDER no definido, usando carpeta local")
-    
-    # Verificar que la carpeta existe y es accesible
+
+    # verificar que la carpeta existe y es accesible
     try:
-        os.makedirs(upload_path, exist_ok=True)
-        # Prueba de escritura
+        os.makedirs(upload_path, exist_ok=True) # crea carpeta si no existe
+        # Prueba de escritura para validar permisos
         test_file = os.path.join(upload_path, 'test_write.tmp')
         with open(test_file, 'w') as f:
             f.write('test')
-        os.remove(test_file)
+        os.remove(test_file) # elimina archivo de prueba
         print(f"✅ Carpeta de uploads configurada: {upload_path}")
     except PermissionError:
         print(f"❌ Sin permisos de escritura en: {upload_path}")
@@ -41,15 +55,19 @@ def get_upload_folder():
     
     return upload_path
 
-# Funcion para verificar permisos
+# FUNCION PARA VERIFICAR PERMISOS
+""" verifica los permisos de lectura y escritura en la carpeta especificada.
+
+    el propósito de esta función va a ser la verificar la configuración de la carpeta de uploads
+    importante cuando se desarrolla el trabajo en carpetas compartidas de red
+"""
 def verificarPermisos(folder_path):
-    """Verifica permisos de la carpeta"""
     try:
-        # Verificar lectura
+        # verificar permisos de lectura
         os.listdir(folder_path)
         print(f"✅ Permisos de lectura OK en: {folder_path}")
-        
-        # Verificar escritura
+
+        # Verificar permisos de escritura
         test_file = os.path.join(folder_path, 'permission_test.tmp')
         with open(test_file, 'w') as f:
             f.write('test')
@@ -64,13 +82,13 @@ def verificarPermisos(folder_path):
         print(f"❌ Error al verificar {folder_path}: {e}")
         return False
 
+# CONFIGURACION DE UPLOADS
+UPLOAD_FOLDER = get_upload_folder()             # carpeta donde se almacenaran los archivos subidos
+verificarPermisos(UPLOAD_FOLDER)                # verificar permisos de la carpeta
+ALLOWED_EXTENSIONS = {"pdf", "png", "jpg", "jpeg"} # archivos permitidos
+os.makedirs(UPLOAD_FOLDER, exist_ok=True) # crear carpeta uploads si no existe
 
-UPLOAD_FOLDER = get_upload_folder()
-verificarPermisos(UPLOAD_FOLDER)
-ALLOWED_EXTENSIONS = {"pdf", "png", "jpg", "jpeg", "gif"}
-os.makedirs(UPLOAD_FOLDER, exist_ok=True) # Crear carpeta umploads si es que no existe
-
-# Garantizamos columnas para archivo en la tabla si no existen
+# =========== CONFIGURACION DE BASE DE DATOS PARA ALMACENAR ARCHIVOS =============
 try:
     cursor = db.database.cursor() # Abrimos un cursor para la base de datos
     cursor.execute(
@@ -84,7 +102,7 @@ try:
     db.database.commit()
     cursor.close()
 except Exception:
-    # Si falla (versiones antiguas de MySQL), intentamos añadir una por una ignorando errores
+    # si falla añadimos una por una
     try:
         cursor = db.database.cursor()
         for stmt in [
@@ -101,10 +119,12 @@ except Exception:
     except Exception: # Si ambos casos fallan se ignoran los errores
         pass
 
-def allowed_file(filename: str) -> bool: # Verifica si el archivo tiene una extensión permitida
-    return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS # Verifica si la extensión del archivo es permitida
+# funcion de seguridad para validacion de extension de archivos
+def allowed_file(filename: str) -> bool:
+    # el nombre debe contener al menos un punto, extrae extension despues del ultimo punto convierte a minusculas, verifica
+    return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
 
-#Rutas de la app
+# =========== RUTAS DE LA APP =================
 @app.route('/')
 def home():
     # CAMBIO: Soporte de filtros opcionales via query params (GET)

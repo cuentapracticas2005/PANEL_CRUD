@@ -261,7 +261,6 @@
                                         <label class="block text-sm font-medium mb-1">Sub-Revision</label>
                                         <select id="sub_revision" name="sub_revision"
                                             class="border rounded px-2 py-1 w-full">
-                                            <option value="">-- Seleccionar --</option>
                                             <option value=" ">Ninguno</option>
                                             <option value="1">1</option>
                                             <option value="2">2</option>
@@ -276,21 +275,7 @@
                                         </select>
                                     </div>
                                 </div>
-                                <!--
-                                <div class="mb-2">
-                                    <div class="mb-2 flex items-center gap-2">
-                                        <button type="button" onclick="toggleOpciones()"
-                                            class="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 text-sm hover:scale-105 transition-all">
-                                            + Agregar Manualmente
-                                        </button>
-                                    </div>
-                                </div>
-
                                 
-                                <input id="extraOpciones" type="text" name="numero_plano_manual"
-                                    class="hidden border rounded px-2 py-1 w-full"
-                                    placeholder="Escribir manualmente..."> -->
-
                                 <!-- Descripción -->
                                 <div class="mb-2 mt-4">
                                     <label class="block text-sm font-medium mb-1">Descripción</label>
@@ -301,7 +286,7 @@
                                 <!-- Dibujante -->
                                 <div class="mb-2">
                                     <label class="block text-sm font-medium mb-1">Nombre del Dibujante</label>
-                                    <input type="text" name="dibujante" class="border rounded px-2 py-1 w-full">
+                                    <input type="text" name="dibujante" class="border rounded px-2 py-1 w-full" required>
                                 </div>
 
                                 <!-- Fecha -->
@@ -360,13 +345,13 @@
 
                                 <div class="mb-2">
                                     <label class="block text-sm font-medium mb-1">Número de Plano</label>
-                                    <input type="text" name="numero_plano" class="border rounded px-2 py-1 w-full"
+                                    <input id="numero_plano_edit" type="text" name="numero_plano" class="border rounded px-2 py-1 w-full"
                                         value="{{d.num_plano}}" readonly>
                                 </div>
 
                                 <div class="mb-2">
                                     <label class="block text-sm font-medium mb-1">Tipo de Plano</label>
-                                    <select id="tipo_plano_edit" name="tipo_plano"
+                                    <select id="tipo_plano_edit{{d.id_plano}}" name="tipo_plano"
                                         class="border rounded px-2 py-1 w-full">
                                         <option value="">-- Seleccionar --</option>
                                         <option value="04" {% if d.tipo_plano=="04" %}selected{% endif %}>04 - ESQUEMA
@@ -423,7 +408,7 @@
                                 <div class="mb-2">
                                     <label class="block text-sm font-medium mb-1">Tamaño</label>
                                     <!-- CAMBIO: uso de d.tamanio para coincidir con la columna de la tabla -->
-                                    <select name="tamano" class="border rounded px-2 py-1 w-full" required>
+                                    <select name="tamano" class="border rounded px-2 py-1 w-full" id="tamano_edit{{d.id_plano}}" required>
                                         <option value="0" {% if d.tamanio=="0" %}selected{% endif %}>A0</option>
                                         <option value="1" {% if d.tamanio=="1" %}selected{% endif %}>A1</option>
                                         <option value="2" {% if d.tamanio=="2" %}selected{% endif %}>A2</option>
@@ -434,7 +419,7 @@
 
                                 <div class="mb-2">
                                     <label class="block text-sm font-medium mb-1">Revision</label>
-                                    <select name="revision" id="revision_editar"
+                                    <select name="revision" id="revision_edit{{d.id_plano}}"
                                         class="border rounded px-2 py-1 w-full">
                                         <option value="">-- Seleccionar --</option>
                                         <option value="_" {% if d.revision=="_" %}selected{% endif %}>_</option>
@@ -470,9 +455,8 @@
 
                                 <div>
                                     <label class="block text-sm font-medium mb-1">Sub-revision</label>
-                                    <select name="sub_revision" id="sub_revision_editar"
+                                    <select name="sub_revision" id="sub_revision_edit{{d.id_plano}}"
                                         class="border rounded px-2 py-1 w-full">
-                                        <option value="">-- Seleccionar --</option>
                                         <option value=" " {% if d.sub_revision==" " %}selected{% endif %}>Ninguno
                                         </option>
                                         <option value="1" {% if d.sub_revision==1 %}selected{% endif %}>1</option>
@@ -530,7 +514,7 @@
                                 <!-- Numero de plano -->
                                 <div class="mb-2">
                                     <label class="block text-sm font-medium mb-1">Número de Plano</label>
-                                    <input id="numero_plano" type="text" name="numero_plano"
+                                    <input id="numero_plano_reutilizar" type="text" name="numero_plano"
                                         class="border rounded px-2 py-1 w-full" value="{{d.num_plano}}" readonly>
                                 </div>
 
@@ -539,7 +523,7 @@
 
                                     <div>
                                         <label class="block text-sm font-medium mb-1">Tamaño</label>
-                                        <select id="tamano_reutilizar" name="tamano"
+                                        <select id="tamano_reutilizar{{d.id_plano}}" name="tamano"
                                             class="border rounded px-2 py-1 w-full">
                                             <option value="0" {% if d.tamanio=="0" %}selected{% endif %}>A0</option>
                                             <option value="1" {% if d.tamanio=="1" %}selected{% endif %}>A1</option>
@@ -551,7 +535,7 @@
 
                                     <div hidden>
                                         <label class="block text-sm font-medium mb-1">Tipo de Plano</label>
-                                        <select id="tipo_plano_reutilizar" name="tipo_plano"
+                                        <select id="tipo_plano_reutilizar{{d.id_plano}}" name="tipo_plano"
                                             class="border rounded px-2 py-1 w-full">
                                             <option value="">-- Seleccionar --</option>
                                             <option value="04" {% if d.tipo_plano=="04" %}selected{% endif %}>04 -
@@ -625,7 +609,7 @@
 
                                     <div>
                                         <label class="block text-sm font-medium mb-1">Revision</label>
-                                        <select id="revision_reutilizar" name="revision"
+                                        <select id="revision_reutilizar{{d.id_plano}}" name="revision"
                                             class="border rounded px-2 py-1 w-full">
                                             <option value="">-- Seleccionar --</option>
                                             <option value="_" {% if d.revision=="_" %}selected{% endif %}>_</option>
@@ -660,7 +644,7 @@
 
                                     <div>
                                         <label class="block text-sm font-medium mb-1">Sub-Revision</label>
-                                        <select id="sub_revision_reutilizar" name="sub_revision"
+                                        <select id="sub_revision_reutilizar{{d.id_plano}}" name="sub_revision"
                                             class="border rounded px-2 py-1 w-full">
                                             <option value=" " {% if d.sub_revision==" " %}selected{% endif %}>Ninguno
                                             </option>
