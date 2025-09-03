@@ -6,6 +6,8 @@ import uuid
 from dotenv import load_dotenv
 load_dotenv()
 
+# =========== CONFIGURACION INICIAL DE LA APP FLASK ==============
+# configuracion de directorios para templates y static
 template_dir = os.path.join(os.path.dirname(__file__), 'templates')
 app = Flask(
     __name__,
@@ -13,24 +15,23 @@ app = Flask(
     static_folder=os.path.join(os.path.dirname(__file__), 'static')
 )
 
-# Configuración de subida de archivos
+# =========== CONFIGURACION DE SUBIDA DE ARCHIVOS ==============
 def get_upload_folder():
-    """Obtiene la carpeta de uploads con validaciones"""
     upload_path = os.environ.get('UPLOAD_FOLDER')
     
     if not upload_path:
-        # Fallback para desarrollo local
+        # carpeta por defecto si no se define UPLOAD_FOLDER
         upload_path = os.path.join(os.path.dirname(__file__), 'uploads')
         print("⚠️  UPLOAD_FOLDER no definido, usando carpeta local")
-    
-    # Verificar que la carpeta existe y es accesible
+
+    # verificar que la carpeta existe y es accesible
     try:
-        os.makedirs(upload_path, exist_ok=True)
-        # Prueba de escritura
+        os.makedirs(upload_path, exist_ok=True) # crea carpeta si no existe
+        # Prueba de escritura para validar permisos
         test_file = os.path.join(upload_path, 'test_write.tmp')
         with open(test_file, 'w') as f:
             f.write('test')
-        os.remove(test_file)
+        os.remove(test_file) # elimina archivo de prueba
         print(f"✅ Carpeta de uploads configurada: {upload_path}")
     except PermissionError:
         print(f"❌ Sin permisos de escritura en: {upload_path}")
@@ -41,15 +42,19 @@ def get_upload_folder():
     
     return upload_path
 
-# Funcion para verificar permisos
+# FUNCION PARA VERIFICAR PERMISOS
+""" verifica los permisos de lectura y escritura en la carpeta especificada.
+
+    el propósito de esta función va a ser la verificar la configuración de la carpeta de uploads
+    importante cuando se desarrolla el trabajo en carpetas compartidas de red
+"""
 def verificarPermisos(folder_path):
-    """Verifica permisos de la carpeta"""
     try:
-        # Verificar lectura
+        # verificar permisos de lectura
         os.listdir(folder_path)
         print(f"✅ Permisos de lectura OK en: {folder_path}")
-        
-        # Verificar escritura
+
+        # Verificar permisos de escritura
         test_file = os.path.join(folder_path, 'permission_test.tmp')
         with open(test_file, 'w') as f:
             f.write('test')
@@ -64,15 +69,15 @@ def verificarPermisos(folder_path):
         print(f"❌ Error al verificar {folder_path}: {e}")
         return False
 
+# CONFIGURACION DE UPLOADS
+UPLOAD_FOLDER = get_upload_folder()             # carpeta donde se almacenaran los archivos subidos
+verificarPermisos(UPLOAD_FOLDER)                # verificar permisos de la carpeta
+ALLOWED_EXTENSIONS = {"pdf", "png", "jpg", "jpeg"}
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)       # crear carpeta uploads si no existe
 
-UPLOAD_FOLDER = get_upload_folder()
-verificarPermisos(UPLOAD_FOLDER)
-ALLOWED_EXTENSIONS = {"pdf", "png", "jpg", "jpeg", "gif"}
-os.makedirs(UPLOAD_FOLDER, exist_ok=True) # Crear carpeta umploads si es que no existe
-
-# Garantizamos columnas para archivo en la tabla si no existen
+# =========== CONFIGURACION DE BASE DE DATOS PARA ALMACENAR ARCHIVOS =============
 try:
-    cursor = db.database.cursor() # Abrimos un cursor para la base de datos
+    cursor = db.database.cursor() # cursor para la base de datos
     cursor.execute(
         """
         ALTER TABLE planos
@@ -84,7 +89,6 @@ try:
     db.database.commit()
     cursor.close()
 except Exception:
-    # Si falla (versiones antiguas de MySQL), intentamos añadir una por una ignorando errores
     try:
         cursor = db.database.cursor()
         for stmt in [
@@ -98,18 +102,22 @@ except Exception:
             except Exception:
                 pass
         cursor.close()
-    except Exception: # Si ambos casos fallan se ignoran los errores
+    except Exception:
         pass
 
-def allowed_file(filename: str) -> bool: # Verifica si el archivo tiene una extensión permitida
-    return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS # Verifica si la extensión del archivo es permitida
+# funcion de seguridad para validacion de extension de archivos
+def allowed_file(filename: str) -> bool:
+    return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
 
-#Rutas de la app
+# =========== RUTAS DE LA APP =================
 @app.route('/')
 def home():
-    # CAMBIO: Soporte de filtros opcionales via query params (GET)
-    # Doc: Ahora puedes buscar con cualquier combinación de criterios. 
-    # Si no envías nada, se listan todos.
+    """ Ruta principal, pagina de inicio con filtros   
+        * con request.args.get() se obtiene parametro de la url
+        * ('') se define un valor por defecto si es que no existe un parametro
+        * .strip() elimina espacios al inicio y al final
+        * todos los filtros opcionales
+    """
     fecha = request.args.get('fecha', '').strip()
     descripcion = request.args.get('descripcion', '').strip()
     numero_plano = request.args.get('numero_plano', '').strip()
@@ -119,42 +127,44 @@ def home():
     dibujante = request.args.get('dibujante', '').strip()
 
     # Construcción dinámica del WHERE con parámetros para evitar inyección SQL
-    query = "SELECT * FROM planos WHERE 1=1"
-    params = []
+    query = "SELECT * FROM planos WHERE 1=1" # simplificacion de la consulta
+    params = [] # lista adonde se almacenaran los parametros
     if fecha:
-        query += " AND fecha = %s"  # igualdad exacta para fecha
+        query += " AND fecha = %s"
         params.append(fecha)
     if descripcion:
-        query += " AND descripcion LIKE %s"  # búsqueda parcial en descripción
+        query += " AND descripcion LIKE %s"
         params.append(f"%{descripcion}%")
     if numero_plano:
-        query += " AND num_plano LIKE %s"    # permite búsqueda parcial por número de plano
+        query += " AND num_plano LIKE %s"
         params.append(f"%{numero_plano}%")
     if tamano:
-        query += " AND tamanio = %s"         # igualdad exacta para tamaño
+        query += " AND tamanio = %s"
         params.append(tamano)
     if revision:
-        query += " AND revision LIKE %s"      # búsqueda parcial para revisión
+        query += " AND revision LIKE %s"
         params.append(f"%{revision}%")
     if sub_revision:
-        query += " AND sub_revision LIKE %s"    # búsqueda parcial por sub-revisión
+        query += " AND sub_revision LIKE %s"
         params.append(f"%{sub_revision}%")
     if dibujante:
-        query += " AND dibujante LIKE %s"    # búsqueda parcial por dibujante
+        query += " AND dibujante LIKE %s"
         params.append(f"%{dibujante}%")
 
-    cursor = db.database.cursor() # Usamos la funcion cursor para la conexion a la base de datos
-    cursor.execute(query, tuple(params))
+    query += " ORDER BY id_plano DESC"
+
+    cursor = db.database.cursor()
+    cursor.execute(query, tuple(params)) # ejecucion segura con parametros separados 
     myresult = cursor.fetchall() # fetchall() obtiene todos los registros de la consulta
     # Convertir los datos a diccionario
-    insertObject = [] # Declaramos un array vacio para poder almacenar los registros de planos
+    insertObject = [] # array vacio para poder almacenar los registros de planos
     columnNames = [column[0] for column in cursor.description] # Obtenemos los nombres de las columnas de la tabla
     for record in myresult:
         insertObject.append(dict(zip(columnNames, record))) # Convertimos cada registro en un diccionario
     cursor.close()
     return render_template('index.html', data=insertObject) # Pasamos el array de diccionarios a la plantilla index.html
 
-# Ruta para guardar documentos en la db_h
+# ============== RUTA PARA GUARDAR DOCUMENTOS EN LA DB ==============
 @app.route('/user', methods=['POST'])
 def addUser():
     # Obtener datos del formulario
@@ -183,11 +193,16 @@ def addUser():
         print("DEBUG - Faltan campos requeridos")
         return redirect(url_for('home'))
 
-    # Procesamiento de archivo
+    # se inicializa variable donde se guardaran archivos
     archivo_nombre = None
     archivo_path = None
     archivo_mime = None
-    
+    if 'pdf' in request.files and request.files['pdf'] and request.files['pdf'].filename:
+        file_storage = request.files['pdf']
+    elif 'imagen' in request.files and request.files['imagen'] and request.files['imagen'].filename:
+        file_storage = request.files['imagen']
+
+    # proceso del archivo si es valido
     file_storage = request.files.get('pdf')
     if file_storage and file_storage.filename and allowed_file(file_storage.filename):
         original_name = secure_filename(file_storage.filename)
@@ -196,24 +211,31 @@ def addUser():
         save_path = os.path.join(UPLOAD_FOLDER, unique_name)
         file_storage.save(save_path)
         
+        # se preparan los datos del archivo
         archivo_nombre = original_name
         archivo_path = unique_name
-        archivo_mime = 'application/pdf' if extension == 'pdf' else f"image/{extension}"
+        
+        if extension == 'pdf':
+            archivo_mime = 'application/pdf'
+        elif extension in ('png', 'jpg', 'jpeg', 'gif'):
+            archivo_mime = f"image/{'jpeg' if extension in ('jpg','jpeg') else extension}"
 
-    # Inserción en BD
-    cursor = db.database.cursor()
-    
-    if archivo_nombre and archivo_path:
-        sql = """INSERT INTO planos 
-                 (fecha, descripcion, tipo_plano, num_plano, tamanio, revision, sub_revision, dibujante, archivo_nombre, archivo_path, archivo_mime) 
-                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
-        data = (fecha, descripcion, tipo_plano, num_plano, tamano, revision, sub_revision, dibujante, archivo_nombre, archivo_path, archivo_mime)
-    else:
-        sql = """INSERT INTO planos 
-                 (fecha, descripcion, tipo_plano, num_plano, tamanio, revision, sub_revision, dibujante) 
-                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"""
-        data = (fecha, descripcion, tipo_plano, num_plano, tamano, revision, sub_revision, dibujante)
-
+    # Inserción en db solo si todos los campos requeridos están presentes
+    if all([fecha, descripcion, num_plano, tamano, revision, dibujante]):
+        cursor = db.database.cursor()
+        # se inserta a la db tomando en cuenta dos caminos, si es hay o no hay archivo
+        if archivo_nombre and archivo_path:
+            sql = """INSERT INTO planos
+                    (fecha, descripcion, tipo_plano, num_plano, tamanio, revision, sub_revision, dibujante, archivo_nombre, archivo_path, archivo_mime)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
+            data = (fecha, descripcion, tipo_plano, num_plano, tamano, revision, sub_revision, dibujante, archivo_nombre, archivo_path, archivo_mime)
+        else:
+            sql = """INSERT INTO planos
+                    (fecha, descripcion, tipo_plano, num_plano, tamanio, revision, sub_revision, dibujante)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"""
+            data = (fecha, descripcion, tipo_plano, num_plano, tamano, revision, sub_revision, dibujante)
+        
+    # se inserta a la db
     cursor.execute(sql, data)
     db.database.commit()
     cursor.close()
@@ -221,7 +243,7 @@ def addUser():
     print("DEBUG - Datos insertados correctamente")
     return redirect(url_for('home'))
 
-# Ruta para actualizar documentos en la db_h
+# ============= RUTA PARA ACTUALIZAR DOCUMENTOS EN LA DB ==============
 @app.route('/edit/<string:id_plano>', methods=['POST'])
 def edit (id_plano):
     fecha = request.form['fecha']
@@ -233,11 +255,12 @@ def edit (id_plano):
     sub_revision = request.form['sub_revision']
     dibujante = request.form['dibujante']
 
-    # CAMBIO: manejo opcional de nuevo archivo
+    # inicializacion de variable donde se van a almacenar los datos del archivo
     archivo_nombre = None
     archivo_path = None
     archivo_mime = None
     file_storage = None
+
     if 'pdf' in request.files and request.files['pdf'] and request.files['pdf'].filename:
         file_storage = request.files['pdf']
     elif 'imagen' in request.files and request.files['imagen'] and request.files['imagen'].filename:
@@ -251,6 +274,7 @@ def edit (id_plano):
         file_storage.save(save_path)
         archivo_nombre = original_name
         archivo_path = unique_name
+
         if extension == 'pdf':
             archivo_mime = 'application/pdf'
         elif extension in ('png', 'jpg', 'jpeg', 'gif'):
@@ -258,36 +282,39 @@ def edit (id_plano):
 
     if all([fecha, descripcion, numero_plano, tamano, revision, dibujante]):
         cursor = db.database.cursor() 
-        # CAMBIO: si hay nuevo archivo, actualizamos columnas correspondientes
         if archivo_nombre and archivo_path:
             sql = "UPDATE planos SET fecha=%s, descripcion=%s, tipo_plano=%s, num_plano=%s, tamanio=%s, revision=%s, sub_revision=%s, dibujante=%s, archivo_nombre=%s, archivo_path=%s, archivo_mime=%s WHERE id_plano=%s"
             data = (fecha, descripcion, tipo_plano, numero_plano, tamano, revision, sub_revision, dibujante, archivo_nombre, archivo_path, archivo_mime, id_plano)
         else:
             sql = "UPDATE planos SET fecha=%s, descripcion=%s, tipo_plano=%s, num_plano=%s, tamanio=%s, revision=%s, sub_revision=%s, dibujante=%s WHERE id_plano=%s"
             data = (fecha, descripcion, tipo_plano, numero_plano, tamano, revision, sub_revision, dibujante, id_plano)
+
         cursor.execute(sql, data)
         db.database.commit()
         cursor.close()
+
     return redirect(url_for('home'))
 
 
-# Ruta para eliminar documentos de la db_h
+# ============== RUTA PARA ELIMINAR DOCUMENTOS DE LA DB ==============
 @app.route('/delete/<string:id_plano>')
 def delete(id_plano):
-    # CAMBIO: eliminamos archivo del disco si existe
     try:
         cursor = db.database.cursor()
+        # consulta del archivo a eliminar
         cursor.execute("SELECT archivo_path FROM planos WHERE id_plano=%s", (id_plano,))
         row = cursor.fetchone()
-        if row and row[0]:
+
+        if row and row[0]: # si existe un archivo asociado se elimina del sistema
             try:
-                os.remove(os.path.join(UPLOAD_FOLDER, row[0]))
+                os.remove(os.path.join(UPLOAD_FOLDER, row[0])) # eliminamos el archivo del sistema
             except FileNotFoundError:
                 pass
         cursor.close()
     except Exception:
         pass
 
+    # eliminacion de la db
     cursor = db.database.cursor()
     sql = "DELETE FROM planos WHERE id_plano=%s"
     data = (id_plano,)
@@ -296,20 +323,25 @@ def delete(id_plano):
     cursor.close()  
     return redirect(url_for('home'))
 
-# CAMBIO: ruta para ver archivo en el navegador
+# ================= RUTA PARA VER ARCHIVO EN EL NAVEGADOR =================
 @app.route('/file/view/<string:id_plano>')
 def view_file(id_plano: str):
     cursor = db.database.cursor()
+    # consulta de ruta y tipo del archivo
     cursor.execute("SELECT archivo_path, archivo_mime FROM planos WHERE id_plano=%s", (id_plano,))
     row = cursor.fetchone()
     cursor.close()
+    # verificacion de existencia del archivo
     if not row or not row[0]:
         abort(404)
+
     file_on_disk = row[0]
     mime_type = row[1] if row[1] else None
+    
+    # servir el archivo
     return send_from_directory(UPLOAD_FOLDER, file_on_disk, mimetype=mime_type)
 
-# CAMBIO: ruta para descargar archivo
+# ================= RUTA PARA DESCARGAR ARCHIVO =================
 @app.route('/file/download/<string:id_plano>')
 def download_file(id_plano: str):
     cursor = db.database.cursor()
@@ -325,3 +357,4 @@ def download_file(id_plano: str):
 # Lanzamos la app
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug=True, port=4000)  # host=0.0.0.0 para acceso externo
+    

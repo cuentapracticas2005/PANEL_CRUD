@@ -1,174 +1,136 @@
+----------------------------------- TABLAS DE LA DATA BASE ----------------------------
+CREATE DATABASE IF NOT EXISTS `archivos_h`;
 
-CREATE TABLE `archivos` (
-  `id_archivos` int(10) NOT NULL,
-  `archivo_nombre` varchar(255) DEFAULT NULL,
-  `archivo_path` varchar(300) DEFAULT NULL,
-  `archivo_mime` varchar(100) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `num_plano`
---
-
-CREATE TABLE `num_plano` (
-  `id_num_plano` int(10) NOT NULL,
-  `num_plano` varchar(10) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `planos`
---
+USE `archivos_h`;
 
 CREATE TABLE `planos` (
-  `id_plano` int(10) NOT NULL,
-  `identificador_plano` varchar(20) DEFAULT NULL,
-  `descripcion` varchar(300) DEFAULT NULL,
-  `dibujante` varchar(100) DEFAULT NULL,
-  `fecha` date DEFAULT NULL,
-  `tipo_plano` int(3) DEFAULT NULL,
-  `num_plano` int(10) DEFAULT NULL,
-  `tamanio` int(2) DEFAULT NULL,
-  `version` int(2) DEFAULT NULL,
-  `archivo` int(2) DEFAULT NULL
+  `id_plano` int(10) PRIMARY KEY AUTO_INCREMENT,
+  `identificador_plano` varchar(20),
+  `descripcion` varchar(400),
+  `dibujante` varchar(100),
+  `fecha` date,
+  `id_tipo_plano` int(3),
+  `id_num_plano` int(10),
+  `id_tamanio` int(2),
+  `id_revision` int(2),
+  `id_sub_revision` int(2),
+  `id_archivo` int(2),
+  `archivo_nombre` varchar(255),
+  `archivo_path` varchar(300),
+  `archivo_mime` varchar(100)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `tamanio`
---
-
-CREATE TABLE `tamanio` (
-  `id_tamanio` int(2) NOT NULL,
-  `tamanio` varchar(2) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `tipo_plano`
---
 
 CREATE TABLE `tipo_plano` (
-  `id_tplano` int(3) NOT NULL,
-  `tipo_plano` varchar(100) DEFAULT NULL
+  `id_tipo_plano` int(3) PRIMARY KEY AUTO_INCREMENT,
+  `tipo_plano` varchar(100),
+  `cod_tipo_plano` int(3) 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE `num_plano` (
+  `id_num_plano` int(10) PRIMARY KEY AUTO_INCREMENT,
+  `num_plano` varchar(10) AUTO_INCREMENT=30000
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE `tamanio` (
+  `id_tamanio` int(2) PRIMARY KEY AUTO_INCREMENT,
+  `tamanio` varchar(2) 
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE `revision` (
+  `id_revision` int(2) PRIMARY KEY AUTO_INCREMENT,
+  `revision` varchar(2) 
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE `sub_revision` (
+  `id_sub_revision` int(2) PRIMARY KEY AUTO_INCREMENT,
+  `sub_revision` int(2) 
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE `archivos` (
+  `id_archivo` int(10) PRIMARY KEY AUTO_INCREMENT,
+  `archivo_nombre` varchar(255),
+  `archivo_path` varchar(300),
+  `archivo_mime` varchar(100)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+------------------------------- DATOS INSERTADOS -----------------------------
+
+INSERT INTO `tamanio` (`id_tamanio`, `tamanio`) VALUES
+(1, '0'),
+(2, '1'),
+(3, '2'),
+(4, '3'),
+(5, '4');
 
 -- --------------------------------------------------------
 
---
--- Estructura de tabla para la tabla `version`
---
+INSERT INTO `tipo_plano` (`id_tplano`, `tipo_plano`, `cod_tplano`) VALUES
+(1, 'ESQUEMA GENERAL', 4),
+(2, 'TABLAS DE PRODUCCIÓN', 6),
+(3, 'CONJUNTO P.HIDRÁULICA', 11),
+(4, 'PIEZAS P.HIDRÁULICA', 12),
+(5, 'CURVAS HIDRÁULICAS', 14),
+(6, 'CONJUNTO P.SOPORTE', 21),
+(7, 'PIEZA P.SOPORTE', 22),
+(8, 'CONJUNTO CCMM', 31),
+(9, 'PIEZAS CCMM', 32),
+(10, 'CROQUIS DE CONJUNTOS', 41),
+(11, 'CROQUIS DE PIEZAS', 42),
+(12, 'TERCEROS GENERAL', 50),
+(13, 'CONJUNTO TERCEROS', 51),
+(14, 'PIEZAS TERCEROS', 52),
+(15, 'CROQUIS TERCEROS', 53),
+(16, 'MODELO TERCEROS', 54),
+(17, 'FUNDA TERCEROS', 55),
+(18, 'MODELO HIDROSTAL', 56),
+(19, 'DESARROLLO CONJUNTOS', 71),
+(20, 'DESARROLLO PIEZAS', 72),
+(21, 'CONTROL DE INTERNAMIENTO', 0),
+(22, 'LABORATORIO DE PRUEBAS', 0),
+(23, 'TURBINA SUMERGIBLE', 0),
+(24, 'OTRO', 0);
 
-CREATE TABLE `version` (
-  `id_version` int(2) NOT NULL,
-  `version` varchar(2) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+-- --------------------------------------------------------
 
---
--- Índices para tablas volcadas
---
+INSERT INTO `version` (`id_version`, `version`) VALUES
+(1, '_'),
+(2, 'Z'),
+(3, 'Y'),
+(4, 'X'),
+(5, 'W'),
+(6, 'V'),
+(7, 'U'),
+(8, 'T'),
+(9, 'S'),
+(10, 'R'),
+(11, 'Q'),
+(12, 'P'),
+(13, 'O'),
+(14, 'N'),
+(15, 'M'),
+(16, 'L'),
+(17, 'K'),
+(18, 'J'),
+(19, 'I'),
+(20, 'H'),
+(21, 'G'),
+(22, 'F'),
+(23, 'E'),
+(24, 'D'),
+(25, 'C'),
+(26, 'B'),
+(27, 'A');
 
---
--- Indices de la tabla `archivos`
---
-ALTER TABLE `archivos`
-  ADD PRIMARY KEY (`id_archivos`);
-
---
--- Indices de la tabla `num_plano`
---
-ALTER TABLE `num_plano`
-  ADD PRIMARY KEY (`id_num_plano`);
-
---
--- Indices de la tabla `planos`
---
 ALTER TABLE `planos`
-  ADD PRIMARY KEY (`id_plano`),
-  ADD KEY `version` (`version`),
+  ADD KEY `version` (`revision`),
   ADD KEY `archivo` (`archivo`),
   ADD KEY `num_plano` (`num_plano`),
   ADD KEY `tipo_plano` (`tipo_plano`),
   ADD KEY `tamanio` (`tamanio`);
 
---
--- Indices de la tabla `tamanio`
---
-ALTER TABLE `tamanio`
-  ADD PRIMARY KEY (`id_tamanio`);
-
---
--- Indices de la tabla `tipo_plano`
---
-ALTER TABLE `tipo_plano`
-  ADD PRIMARY KEY (`id_tplano`);
-
---
--- Indices de la tabla `version`
---
-ALTER TABLE `version`
-  ADD PRIMARY KEY (`id_version`);
-
---
--- AUTO_INCREMENT de las tablas volcadas
---
-
---
--- AUTO_INCREMENT de la tabla `archivos`
---
-ALTER TABLE `archivos`
-  MODIFY `id_archivos` int(10) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT de la tabla `num_plano`
---
-ALTER TABLE `num_plano`
-  MODIFY `id_num_plano` int(10) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT de la tabla `planos`
---
 ALTER TABLE `planos`
-  MODIFY `id_plano` int(10) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT de la tabla `tamanio`
---
-ALTER TABLE `tamanio`
-  MODIFY `id_tamanio` int(2) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT de la tabla `tipo_plano`
---
-ALTER TABLE `tipo_plano`
-  MODIFY `id_tplano` int(3) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT de la tabla `version`
---
-ALTER TABLE `version`
-  MODIFY `id_version` int(2) NOT NULL AUTO_INCREMENT;
-
---
--- Restricciones para tablas volcadas
---
-
---
--- Filtros para la tabla `planos`
---
-ALTER TABLE `planos`
-  ADD CONSTRAINT `planos_ibfk_1` FOREIGN KEY (`version`) REFERENCES `version` (`id_version`),
+  ADD CONSTRAINT `planos_ibfk_1` FOREIGN KEY (`revision`) REFERENCES `version` (`id_version`),
   ADD CONSTRAINT `planos_ibfk_2` FOREIGN KEY (`archivo`) REFERENCES `archivos` (`id_archivos`),
   ADD CONSTRAINT `planos_ibfk_3` FOREIGN KEY (`num_plano`) REFERENCES `num_plano` (`id_num_plano`),
   ADD CONSTRAINT `planos_ibfk_4` FOREIGN KEY (`tipo_plano`) REFERENCES `tipo_plano` (`id_tplano`),
   ADD CONSTRAINT `planos_ibfk_5` FOREIGN KEY (`tamanio`) REFERENCES `tamanio` (`id_tamanio`);
 COMMIT;
-
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
