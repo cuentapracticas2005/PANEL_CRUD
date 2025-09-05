@@ -17,63 +17,40 @@ app = Flask(
 
 # =========== CONFIGURACION DE SUBIDA DE ARCHIVOS ==============
 def get_upload_folder():
+    # 1. Intentar obtener la ruta de una variable de entorno
     upload_path = os.environ.get('UPLOAD_FOLDER')
-    
+
+    # 2. Si no está definida, usar carpeta local por defecto
     if not upload_path:
-        # carpeta por defecto si no se define UPLOAD_FOLDER
         upload_path = os.path.join(os.path.dirname(__file__), 'uploads')
-        print("⚠️  UPLOAD_FOLDER no definido, usando carpeta local")
+        print("⚠️ UPLOAD_FOLDER no definido, usando carpeta local")
 
-    # verificar que la carpeta existe y es accesible
     try:
-        os.makedirs(upload_path, exist_ok=True) # crea carpeta si no existe
-        # Prueba de escritura para validar permisos
-        test_file = os.path.join(upload_path, 'test_write.tmp')
-        with open(test_file, 'w') as f:
-            f.write('test')
-        os.remove(test_file) # elimina archivo de prueba
-        print(f"✅ Carpeta de uploads configurada: {upload_path}")
-    except PermissionError:
-        print(f"❌ Sin permisos de escritura en: {upload_path}")
-        raise
-    except Exception as e:
-        print(f"❌ Error al acceder a la carpeta: {e}")
-        raise
-    
-    return upload_path
-
-# FUNCION PARA VERIFICAR PERMISOS
-""" verifica los permisos de lectura y escritura en la carpeta especificada.
-
-    el propósito de esta función va a ser la verificar la configuración de la carpeta de uploads
-    importante cuando se desarrolla el trabajo en carpetas compartidas de red
-"""
-def verificarPermisos(folder_path):
-    try:
-        # verificar permisos de lectura
-        os.listdir(folder_path)
-        print(f"✅ Permisos de lectura OK en: {folder_path}")
-
-        # Verificar permisos de escritura
-        test_file = os.path.join(folder_path, 'permission_test.tmp')
+        # 3. Crear carpeta si no existe
+        os.makedirs(upload_path, exist_ok=True)
+        # 4. Verificar permisos de lectura
+        os.listdir(upload_path) 
+        print(f"✅ Permisos de lectura OK en: {upload_path}")
+        # 5. Verificar permisos de escritura
+        test_file = os.path.join(upload_path, 'permission_test.tmp')
         with open(test_file, 'w') as f:
             f.write('test')
         os.remove(test_file)
-        print(f"✅ Permisos de escritura OK en: {folder_path}")
-        
-        return True
+        print(f"✅ Permisos de escritura OK en: {upload_path}")
+
     except PermissionError as e:
-        print(f"❌ Error de permisos en {folder_path}: {e}")
-        return False
+        print(f"❌ Sin permisos en {upload_path}: {e}")
+        raise
     except Exception as e:
-        print(f"❌ Error al verificar {folder_path}: {e}")
-        return False
+        print(f"❌ Error inesperado en {upload_path}: {e}")
+        raise
+
+    return upload_path
+
 
 # CONFIGURACION DE UPLOADS
 UPLOAD_FOLDER = get_upload_folder()             # carpeta donde se almacenaran los archivos subidos
-verificarPermisos(UPLOAD_FOLDER)                # verificar permisos de la carpeta
 ALLOWED_EXTENSIONS = {"pdf", "png", "jpg", "jpeg"}
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)       # crear carpeta uploads si no existe
 
 # =========== CONFIGURACION DE BASE DE DATOS PARA ALMACENAR ARCHIVOS =============
 try:
