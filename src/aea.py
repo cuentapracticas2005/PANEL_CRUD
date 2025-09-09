@@ -4,7 +4,6 @@ from dotenv import load_dotenv
 import database as db
 from werkzeug.utils import secure_filename
 import uuid
-
 load_dotenv()
 
 app = Flask(
@@ -12,7 +11,7 @@ app = Flask(
     static_folder = os.path.join(os.path.dirname(__file__),'static'),
     template_folder = os.path.join(os.path.dirname(__file__),'templates')
 )
-
+# ======================= CONFIGURACION DE SUBIDA DE ARCHIVOS =======================
 def comprobar_archivos():
     ubi_archivos = os.environ.get('UPLOAD_FOLDER')
 
@@ -46,38 +45,64 @@ def comprobar_archivos():
 UBI_ARCHIVO = comprobar_archivos()
 ALL_EXTENSIONS = {"pdf","png","jpg","jpeg"}
 
-try:
-    cursor = db.database.cursor()
-    cursor.execute(
-        """
-            ALTER TABLE planos
-            ADD COLUMN IF NOT EXISTS archivo_nombre VARCHAR(255) NULL,
-            ADD COLUMN IF NOT EXISTS archivo_path VARCHAR(300) NULL,
-            ADD COLUMN IF NOT EXISTS archivo_mime VARCHAR(100) NULL
-        """
-    )
-    db.database.commit()
-    cursor.close()
-except Exception:
-    try:
-        cursor = db.database.cursor()
-        for stm in[
-            'ALTER TABLE planos ADD COLUMN archivo_nombre VARCHAR(255) NULL',
-            'ALTER TABLE planos ADD COLUMN archivo_path VARCHAR(300) NULL',
-            'ALTER TABLE planos ADD COLUMN archivo_mime VARCHAR(100) NULL',
-        ]:
-            try:  
-                cursor.execute(stm)
-                db.database.commit()
-            except Exception:
-                pass
-        cursor.close()
-    except Exception:
-        pass
-
 def validar_archivo(filename: str)->bool:
     valor = '.' in filename and filename.rsplit('.', 1)[1].lower() in ALL_EXTENSIONS
     return valor
+
+# ======== FUNCIONES PARA EL MANEJO DE TABLAS RELACIONADAS ==========
+def obtener_tipo_plano(cod_tipo_plano):
+    cursor = db.database.cursor()
+    cursor.execute("SELECT id_tipo_plano FROM tipo_plano WHERE cod_tipo_plano = %s", (cod_tipo_plano))
+    result = cursor.fetchone()
+    cursor.close()
+    return result[0] if result else None
+
+def obtener_siguiente_numero():
+    cursor = db.database.cursor()
+    cursor.execute("INSERT INTO num_plano (num_plano) VALUES (NULL)")
+    db.database.commit()
+    id_num_plano = cursor.lastrowid
+
+    cursor.execute("SELECT num_plano FROM num_plano WHERE id_num_plano = %s", (id_num_plano))
+    num_plano = cursor.fetchone()
+
+    cursor.close()
+    return id_num_plano, num_plano
+
+def obtener_tamanio(tamanio):
+    cursor = db.database.cursor()
+    cursor.execute("SELECT id_tamanio FROM tamanio WHERE tamanio = %s", (tamanio,))
+    result = cursor.fetchone()
+    cursor.close()
+    return result[0] if result else None
+
+def obtener_revision(revision):
+    cursor = db.database.cursor()
+    cursor.execute("SELECT id_revision FROM revision WHERE revision = %s", (revision,))
+    result = cursor.fetchone()
+    cursor.close()
+    return result[0] if result else None
+
+def obtener_sub_revision(sub_revision):
+    cursor = db.database.cursor()
+    cursor.execute("SELECT id_sub_revision FROM sub_revision WHERE sub_revision = %s", (sub_revision))
+    result = cursor.fetchone()
+    return result[0] if result else None
+
+def guardar_archivo_info(archivo_nombre, archivo_path, archivo_mime, archivo_token):
+    cursor = db.database.cursor()
+    cursor.execute("""INSERT INTO archivos (archivo_nombre, archivo_path, archivo_mime, archivo_token)
+                    VALUES (%s,%s,%s,%s)""",
+                    (archivo_nombre, archivo_path, archivo_mime, archivo_token))
+    db.database.commit()
+    id_archivo = cursor.lastrowid
+    return id_archivo
+
+def generar_identificador_plano(cod_tipo_plano, num_plano, tamanio, revision, sub_revision):
+    identificador = f"{cod_tipo_plano}-{num_plano}-{tamanio}{revision}"
+    if sub_revision and sub_revision !='0':
+        identificador += str(sub_revision)
+    return identificador
 
 # ==================== RUTAS DE LA APP ============================
 
@@ -333,7 +358,6 @@ def download_file(id_plano: str):
     file_name = row[1] if row[1] else file_on_disk
 
     return row and send_from_directory(UBI_ARCHIVO, file_on_disk, as_attachemet=True, download_name=file_name)
-
 
 # LAZAMOS APP
 if __name__ == '__main__':
