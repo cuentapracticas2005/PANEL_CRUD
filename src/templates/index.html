@@ -123,7 +123,7 @@
                         <td class="border px-4 py-2 text-center">
                             {# CAMBIO: mostrar enlace Ver si hay archivo #}
                             {% if d.archivo_path %}
-                            <a href="{{ url_for('view_file', id_plano=d.id_plano) }}" target="_blank"
+                            <a href="{{ url_for('view_file', archivo_token=d.archivo_token) }}" target="_blank"
                                 class="text-blue-600 underline">Ver</a>
                             {% else %}
                             <span class="text-gray-400">-</span>
@@ -132,7 +132,7 @@
                         <td class="border px-4 py-2 text-center">
                             {# CAMBIO: mostrar enlace Descargar si hay archivo #}
                             {% if d.archivo_path %}
-                            <a href="{{ url_for('download_file', id_plano=d.id_plano) }}"
+                            <a href="{{ url_for('download_file', archivo_token=d.archivo_token) }}"
                                 class="text-green-600 underline">Descargar</a>
                             {% else %}
                             <span class="text-gray-400">-</span>

@@ -265,7 +265,7 @@ def addUser():
         print("Faltan datos obligatorios")
         return redirect(url_for('home'))
     
-    # Obtener o crear IDs de las tablas relacionadas
+    # Obtener IDs de las tablas relacionadas
     id_tipo_plano = obtener_tipo_plano(tipo_plano, cod_tipo_plano)
     id_num_plano, num_plano = obtener_siguiente_numero_plano()
     id_tamanio = obtener_tamanio(tamanio)
@@ -369,7 +369,7 @@ def edit(id_plano):
     id_num_plano_actual = result[1]
     id_archivo_actual = result[2]
 
-    # Obtener o crear IDs de las tablas relacionadas
+    # Obtener IDs de las tablas relacionadas
     id_tipo_plano = obtener_tipo_plano(tipo_plano, cod_tipo_plano) if tipo_plano and cod_tipo_plano else None
     id_tamanio = obtener_tamanio(tamanio) if tamanio else None
     id_revision = obtener_revision(revision) if revision else None
