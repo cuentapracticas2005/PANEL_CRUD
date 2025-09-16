@@ -52,22 +52,21 @@ def validar_archivo(filename: str)->bool:
 # ======== FUNCIONES PARA EL MANEJO DE TABLAS RELACIONADAS ==========
 def obtener_tipo_plano(cod_tipo_plano):
     cursor = db.database.cursor()
-    cursor.execute("SELECT id_tipo_plano FROM tipo_plano WHERE cod_tipo_plano = %s", (cod_tipo_plano))
+    cursor.execute("SELECT id_tipo_plano FROM tipo_plano WHERE cod_tipo_plano = %s", (cod_tipo_plano,))
     result = cursor.fetchone()
     cursor.close()
     return result[0] if result else None
 
 def obtener_siguiente_numero():
     cursor = db.database.cursor()
-    cursor.execute("INSERT INTO num_plano (num_plano) VALUES (NULL)")
+    cursor.execute("INSERT INTO num_plano (id_num_plano) VALUES (NULL)")
     db.database.commit()
     id_num_plano = cursor.lastrowid
 
-    cursor.execute("SELECT num_plano FROM num_plano WHERE id_num_plano = %s", (id_num_plano))
-    num_plano = cursor.fetchone()
-
+    cursor.execute("SELECT id_num_plano FROM num_plano WHERE id_num_plano = %s", (id_num_plano,))
+    x = cursor.fetchone()
     cursor.close()
-    return id_num_plano, num_plano
+    return id_num_plano
 
 def obtener_tamanio(tamanio):
     cursor = db.database.cursor()
@@ -85,7 +84,7 @@ def obtener_revision(revision):
 
 def obtener_sub_revision(sub_revision):
     cursor = db.database.cursor()
-    cursor.execute("SELECT id_sub_revision FROM sub_revision WHERE sub_revision = %s", (sub_revision))
+    cursor.execute("SELECT id_sub_revision FROM sub_revision WHERE sub_revision = %s", (sub_revision,))
     result = cursor.fetchone()
     return result[0] if result else None
 
@@ -108,51 +107,63 @@ def generar_identificador_plano(cod_tipo_plano, num_plano, tamanio, revision, su
 
 @app.route('/')
 def home():
-    fecha = request.form.get('fecha','').strip()
-    descripcion = request.form.get('descripcion','').strip()
-    identificador = request.form.get('identificador_plano','').strip()
-    dibujante = request.form.get('dibujante','').strip()
+    fecha = request.args.get('fecha','').strip()
+    descripcion = request.args.get('descripcion','').strip()
+    identificador = request.args.get('identificador_plano','').strip()
+    dibujante = request.args.get('dibujante','').strip()
+    revision = request.args.get('revision','').strip()
+    sub_revision = request.args.get('sub_revision','').strip()
+    tamanio = request.args.get('tamano','').strip()
 
     query = """
         SELECT 
-            p.id_plano,
-            p.identificador_plano,
-            p.descripcion,
-            p.dibujante,
-            p.fecha,
+            r.id_registro,
+            r.identificador_plano,
+            r.descripcion,
+            r.dibujante,
+            r.fecha,
             tp.tipo_plano,
             tp.cod_tipo_plano,
-            np.numero_plano,
+            np.id_num_plano,
             t.tamanio,
-            r.revision,
+            v.revision,
             sr.sub_revision,
             a.archivo_nombre,
             a.archivo_token
-        FROM planos p
-        LEFT JOIN tipo_plano tp ON p.id_tipo_plano = tp.id_tipo_plano
-        LEFT JOIN num_plano np ON p.id_num_plano = np.id_num_plano
-        LEFT JOIN tamanio t ON p.id_tamio = t.id_tamanio
-        LEFT JOIN revision r ON p.revision = r.id_revision
-        LEFT JOIN sub_revision sr ON p.id_sub_revision = sr.id_sub_revision
-        LEFT JOIN archivos a ON p.id_archivo = a.id_archivo
+        FROM registros r
+        LEFT JOIN tipo_plano tp ON r.id_tipo_plano = tp.id_tipo_plano
+        LEFT JOIN num_plano np ON r.id_num_plano = np.id_num_plano
+        LEFT JOIN tamanio t ON r.id_tamanio = t.id_tamanio
+        LEFT JOIN revision v ON r.id_revision = v.id_revision
+        LEFT JOIN sub_revision sr ON r.id_sub_revision = sr.id_sub_revision
+        LEFT JOIN archivos a ON r.id_archivo = a.id_archivo
         WHERE 1=1
     """
     params = []
 
     if fecha:
-        query += " AND p.fecha = %s"
+        query += " AND r.fecha = %s"
         params.append(fecha)
     if descripcion:
-        query += " AND p.descripcion LIKE %s"
+        query += " AND r.descripcion LIKE %s"
         params.append(f"%{descripcion}%")
     if identificador:
-        query += " AND identificador_plano LIKE %s"
+        query += " AND r.identificador_plano LIKE %s"
         params.append(f"%{identificador}%")
     if dibujante:
-        query += " AND dibujante LIKE %s"
+        query += " AND r.dibujante LIKE %s"
         params.append(f"%{dibujante}%")
+    if revision:
+        query += " AND v.revision = %s"
+        params.append(revision)
+    if sub_revision:
+        query += " AND sr.sub_revision = %s"
+        params.append(sub_revision)
+    if tamanio:
+        query += " AND t.tamanio = %s"
+        params.append(tamanio)
 
-    query += " ORDER BY p.id_plano DESC"
+    query += " ORDER BY r.id_registro DESC"
     cursor = db.database.cursor()
     cursor.execute(query, tuple(params))
     tuplas = cursor.fetchall()
@@ -166,40 +177,73 @@ def home():
         union.append(dict(zip(nameColums, x)))
 
     cursor.close()
-    return render_template('index.html', data=union)
 
-# RUTA PARA GUARDAR DATOS
-@app.route('user', methods=['POST'])
+    # Seleccion de registros e identificadores_plano para mostrar mensaje si se repite un registro con JS
+    cursor = db.database.cursor()
+    cursor.execute("SELECT id_registro, identificador_plano FROM registros")
+    registros = cursor.fetchall()
+    lista_identificadores = [{"id": r[0], "identificador": r[1]} for r in registros]
+    cursor.close()
+
+    return render_template('home.html', data=union, lista_identificadores=lista_identificadores)
+
+# RUTA PARA GUARDAR/REUTILIZAR REGISTROS
+@app.route('/user', methods=['POST'])
 def addUser():
     fecha = request.form.get('fecha','').strip()
     descripcion = request.form.get('descripcion','').strip()
+    numero_plano_rep = request.form.get('numero_plano','').strip()
+    identificador_plano_rep = request.form.get('identificador_plano','').strip()
     cod_tipo_plano = request.form.get('tipo_plano','').strip()
-    tamanio = request.form.get('tamanio','').strip()
+    tamanio = request.form.get('tamano','').strip()
     revision = request.form.get('revision','').strip()
     sub_revision = request.form.get('sub_revision','').strip()
     dibujante = request.form.get('dibujante','').strip()
-
+    
     print(f"DATOS RECIBIDOS: ")
     print(f"fecha: {fecha}")
+    print(f"numero_plano: {numero_plano_rep}")
     print(f"descripcion: {descripcion}")
     print(f"tipo_plano: {cod_tipo_plano}")
     print(f"tamanio: {tamanio}")
     print(f"revision: {revision}")
     print(f"sub_revision: {sub_revision}")
     print(f"dibujante: {dibujante}")
-
+    
     if not all([fecha, descripcion, cod_tipo_plano, tamanio, revision, dibujante]):
         print("Faltan datos")
         return redirect(url_for('home'))
     
     id_tipo_plano = obtener_tipo_plano(cod_tipo_plano)
-    id_num_plano, num_plano = obtener_siguiente_numero()
+    
     id_tamanio = obtener_tamanio(tamanio)
     id_revision = obtener_revision(revision)
     id_sub_revision = obtener_sub_revision(sub_revision) if sub_revision else None
 
-    identificador_plano = generar_identificador_plano(cod_tipo_plano, num_plano, tamanio, revision, sub_revision)
+    # ---------------------------------------- PARA DIFERENCIA: num_plano ---------------------------------------------
     
+    cursor = db.database.cursor()
+    cursor.execute("SELECT id_num_plano FROM num_plano")
+    x = cursor.fetchall()
+    contenedor = False
+    identificador_plano = None
+    id_num_plano = None
+    for y in x:
+        if str(numero_plano_rep) == str(y[0]):
+            contenedor = True
+            break
+        else:
+            contenedor = False
+    if contenedor:
+        identificador_plano = generar_identificador_plano(cod_tipo_plano, numero_plano_rep, tamanio, revision, sub_revision)
+        id_num_plano = numero_plano_rep
+    else:
+        id_num_plano_nuevo = obtener_siguiente_numero()
+        identificador_plano = generar_identificador_plano(cod_tipo_plano, id_num_plano_nuevo, tamanio, revision, sub_revision)
+        id_num_plano = id_num_plano_nuevo
+    
+    # -------------------------------------------------------------------------------------
+
     archivo_name = None
     archivo_path = None
     archivo_mime = None
@@ -231,26 +275,31 @@ def addUser():
         archivo_mime = mime
 
         id_archivo = guardar_archivo_info(archivo_name, archivo_path, archivo_mime, archivo_token)
-
+        
+    # --------------------------------------- PARA DIFERENCIA identificador_plano ----------------------------------------------
     cursor = db.database.cursor()
-    sql = """INSERT INTO planos
-            (identificador_plano, descripcion, dibujante, fecha, id_tipo_plano, id_tipo_plano,
-             id_num_plano, id_tamanio, id_revision, id_sub_revision, id_archivo)
-            VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
+    cursor.execute("SELECT identificador_plano FROM registros")
+    x = cursor.fetchall()
+    for y in x:
+        if str(identificador_plano).strip() == str(identificador_plano_rep):
+            print("ESTE IDENTIFICADOR DE PLANO YA EXISTE")
+            break
+        else:
+            sql = """INSERT INTO registros
+                    (identificador_plano, descripcion, dibujante, fecha, id_tipo_plano,
+                    id_num_plano, id_tamanio, id_revision, id_sub_revision, id_archivo)
+                    VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
+            data = (identificador_plano, descripcion, dibujante, fecha, id_tipo_plano,
+                    id_num_plano, id_tamanio, id_revision, id_sub_revision, id_archivo)
+            cursor.execute(sql, data)
+            db.database.commit()
+            cursor.close()
+            print(f"Plano e identificador insertado en la base de datos correctamente: {identificador_plano}")
+            return redirect(url_for('home'))
     
-    data = (identificador_plano, descripcion, dibujante, fecha, id_tipo_plano,
-            id_num_plano, id_tamanio, id_revision, id_sub_revision, id_archivo)
-    
-    cursor.execute(sql, data)
-    db.database.commit()
-    cursor.close()
-
-    print(f"Plano e identificador insertado en la base de datos correctamente: {identificador_plano}")
-    return redirect(url_for('home'))
-    
-# RUTA PARA ACTUALIZAR DATOS
-@app.route('/edit/<string:id_plano>', methods=['POST'])
-def edit(id_plano):
+# RUTA PARA ACTUALIZAR REGISTROS
+@app.route('/edit/<string:id_registro>', methods=['POST'])
+def edit(id_registro):
     fecha = request.form.get('fecha', '').strip()
     descripcion = request.form.get('descripcion', '').strip()
     cod_tipo_plano = request.form.get('tipo_plano', '').strip()
@@ -260,7 +309,7 @@ def edit(id_plano):
     dibujante = request.form.get('dibujante', '').strip()
 
     print(f"DATOS RECIBIDOS PARA ACTUALIZAR: ")
-    print(f"ID Plano: {id_plano}")
+    print(f"ID Plano: {id_registro}")
     print(f"Fecha: {fecha}")
     print(f"Descripcion: {descripcion}")
     print(f"Tipo de plano: {cod_tipo_plano}")
@@ -271,10 +320,10 @@ def edit(id_plano):
     print(f"Dibujante: {dibujante}")
 
     cursor = db.database.cursor()
-    cursor.execute("""SELECT np.num_plano, p.id_num_plano, p.id_archivo
-                   FROM planos p
-                   JOIN num_plano np ON p.id_num_plano = np.id_num_plano
-                   WHERE p.id_plano = %s""", (id_plano, ))
+    cursor.execute("""SELECT np.id_num_plano, r.id_num_plano, r.id_archivo
+                   FROM registros r
+                   JOIN num_plano np ON r.id_num_plano = np.id_num_plano
+                   WHERE r.id_registro = %s""", (id_registro, ))
     result = cursor.fetchone()
     cursor.close()
 
@@ -335,15 +384,28 @@ def edit(id_plano):
         archivo_mime = mime        
 
         id_archivo = guardar_archivo_info(archivo_nombre, archivo_path, archivo_mime, archivo_token)
+    
+    # Validar si se duplica registro antes de actualizar
+    cursor = db.database.cursor()
+    cursor.execute("""
+        SELECT COUNT(*) FROM registros
+        WHERE identificador_plano = %s AND id_registro != %s
+    """, (identificador_plano, id_registro))
+    existe = cursor.fetchone()[0]
+    cursor.close()
+
+    if existe > 0:
+        return redirect(url_for('home'))
+
     # Actualizar los planos de la base de datos
     if all([fecha, descripcion, dibujante]):
         cursor = db.database.cursor()
-        sql = """UPDATE planos SET
+        sql = """UPDATE registros SET
                 identificador_plano=%s, descripcion=%s, dibujante=%s, fecha=%s, 
                 id_tipo_plano=%s, id_tamanio=%s, id_revision=%s, id_sub_revision=%s, id_archivo=%s
-                WHERE id_plano=%s"""
+                WHERE id_registro=%s"""
         data = (identificador_plano, descripcion, dibujante, fecha, id_tipo_plano,
-                id_tamanio, id_revision, id_sub_revision, id_archivo, id_plano)
+                id_tamanio, id_revision, id_sub_revision, id_archivo, id_registro)
 
         cursor.execute(sql, data)
         db.database.commit()
@@ -352,16 +414,16 @@ def edit(id_plano):
     print(f"Plano actualizado correctamente: {identificador_plano}")
     return redirect(url_for('home'))
         
-# RUTA PARA ELIMINAR
-@app.route('/delete/<string:id_plano>')
-def delete(id_plano):
+# RUTA PARA ELIMINAR REGISTROS
+@app.route('/delete/<string:id_registro>')
+def delete(id_registro):
     try:
         cursor = db.database.cursor()
         # Obtenemos informacion del archivo
-        cursor.execute("""SELECT a.archivo_path, p.id_archivo
-                       FROM planos p
-                       LEFT JOIN archivos a ON p.id_archivos = a.id_archivo
-                       WHERE p.id_plano = %s""", (id_plano,))
+        cursor.execute("""SELECT a.archivo_path, r.id_archivo, a.id_archivo
+                       FROM registros r
+                       LEFT JOIN archivos a ON r.id_archivo = a.id_archivo
+                       WHERE r.id_registro = %s""", (id_registro,))
         row = cursor.fetchone()
         cursor.close()
         
@@ -372,24 +434,31 @@ def delete(id_plano):
             except FileNotFoundError as p:
                 print(f'Archivo no encontrado: {p}')
             # Eliminar de la base de datos
-            if row[1]:
+            try:
                 cursor = db.database.cursor()
-                cursor.execute("DELETE FROM archivos WHERE id_archivos = %s", (row[1],))
+                sql = "DELETE FROM registros WHERE id_registro = %s"
+                cursor.execute(sql, (id_registro,))
                 db.database.commit()
                 cursor.close()
-
+                if row[2]:
+                    cursor = db.database.cursor()
+                    cursor.execute("DELETE FROM archivos WHERE id_archivo = %s", (row[2],))
+                    db.database.commit()
+                    cursor.close()
+                    print(f"Se elimino correctamente {row[2]}")
+            except Exception as p:
+                print(f"Error eliminando datos de la DB: {p}")
+        else:
+            try:
+                cursor = db.database.cursor()
+                sql = "DELETE FROM registros WHERE id_registro = %s"
+                cursor.execute(sql, (id_registro,))
+                db.database.commit()
+                cursor.close()
+            except Exception as p:
+                print(f"Error eliminando datos de la DB: {p}")
     except Exception as p:
         print(f'Error: {p}')    
-
-    try:
-        # Eliminar plano de la base de datos
-        cursor = db.database.cursor()
-        sql = "DELETE FROM planos WHERE id_plano = %s"
-        cursor.execute(sql, (id_plano,))
-        db.database.commit()
-        cursor.close()
-    except Exception as p:
-        print(f"Error eliminando plano en la DB: {p}")
 
     return redirect(url_for('home'))
 
@@ -397,29 +466,35 @@ def delete(id_plano):
 @app.route('/file/view/<string:token>')
 def view_file(token: str):
     cursor = db.database.cursor()
-    cursor.execute("SELECT archivo_path, archivo_mame FROM planos WHERE archivo_token=%s", (token,))
+    cursor.execute("SELECT archivo_path, archivo_mime FROM archivos WHERE archivo_token = %s", (token,))
     row = cursor.fetchone()
+    cursor.close()
     if not row or not row[0]:
         abort(404)
     
     file_on_disk = row[0]
     mime_type = row[1] if row[1] else None
 
+    if row is None:
+        return None
     return send_from_directory(UBI_ARCHIVO, file_on_disk, mimetype=mime_type)
 
 # RUTA PARA DESCARGR ARCHIVO
 @app.route('/file/download/<string:token>')
 def download_file(token: str):
     cursor = db.database.cursor()
-    cursor.execute("SELECT archivo_path, archivo_nombre FROM archivos WHERE archivo_token=%s", (token,))
+    cursor.execute("""SELECT archivo_path, archivo_nombre FROM archivos WHERE archivo_token = %s""", (token,))
     row = cursor.fetchone()
     cursor.close()
     if not row or not row[0]:
         abort(404)
+
     file_on_disk = row[0]
     file_name = row[1] if row[1] else file_on_disk
 
-    return row and send_from_directory(UBI_ARCHIVO, file_on_disk, as_attachemet=True, download_name=file_name)
+    if row is None:
+        return None
+    return send_from_directory(UBI_ARCHIVO, file_on_disk, as_attachment=True, download_name=file_name)
 
 # LAZAMOS APP
 if __name__ == '__main__':

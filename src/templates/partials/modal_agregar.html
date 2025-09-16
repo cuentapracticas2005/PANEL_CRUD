@@ -1,0 +1,153 @@
+<!-- Modal: Agregar Documento -->
+<div id="modalAgregar" class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 hidden">
+    <div class="bg-white p-8 rounded-2xl shadow-lg w-full max-w-lg">
+        <button onclick="document.getElementById('modalAgregar').classList.add('hidden')"
+            class="absolute top-2 right-2 text-gray-500 hover:text-gray-800" aria-label="Cerrar">&times;</button>
+        <h2 class="text-xl font-semibold mb-4">Agregar Nuevo Documento</h2>
+
+        <form method="post" action="{{ url_for('addUser') }}" enctype="multipart/form-data">
+            <!-- Numero de plano -->
+            <div class="mb-2">
+                <label class="block text-sm font-medium mb-1">Número de Plano</label>
+                <input id="numero_plano" type="text" name="numero_plano" class="border rounded px-2 py-1 w-full" hidden>
+            </div>
+
+            <!-- Opciones para generar codigo de plano -->
+            <div class="space-y-2 border rounded p-3 bg-gray-50 mt-2">
+                <div>
+                    <label class="block text-sm font-medium mb-1">Tipo de Plano</label>
+                    <select id="tipo_plano" name="tipo_plano" class="border rounded px-2 py-1 w-full" required>
+                        <option value="">-- Seleccionar --</option>
+                        <option value="04">04 - ESQUEMA GENERAL</option>
+                        <option value="06">06 - TABLAS DE PRODUCCIÓN</option>
+                        <option value="11">11 - CONJUNTO P.HIDRÁULICA</option>
+                        <option value="12">12 - PIEZAS P.HIDRÁULICA</option>
+                        <option value="14">14 - CURVAS HIDRÁULICAS</option>
+                        <option value="21">21 - CONJUNTO P.SOPORTE</option>
+                        <option value="22">22 - PIEZA P.SOPORTE</option>
+                        <option value="31">31 - CONJUNTO CCMM</option>
+                        <option value="32">32 - PIEZAS CCMM</option>
+                        <option value="41">41 - CROQUIS DE CONJUNTOS</option>
+                        <option value="42">42 - CROQUIS DE PIEZAS</option>
+                        <option value="50">50 - TERCEROS GENERAL</option>
+                        <option value="51">51 - CONJUNTO TERCEROS</option>
+                        <option value="52">52 - PIEZAS TERCEROS</option>
+                        <option value="53">53 - CROQUIS TERCEROS</option>
+                        <option value="54">54 - MODELO TERCEROS</option>
+                        <option value="55">55 - FUNDA TERCEROS</option>
+                        <option value="56">56 - MODELO HIDROSTAL</option>
+                        <option value="71">71 - DESARROLLO CONJUNTOS</option>
+                        <option value="72">72 - DESARROLLO PIEZAS</option>
+                        <option value="CI">CI - CONTROL DE INTERNAMIENTO</option>
+                        <option value="LP">LP - LABORATORIO DE PRUEBAS</option>
+                        <option value="TS">TS - TURBINA SUMERGIBLE</option>
+                        <option value="Z0">Z0 - OTRO</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium mb-1">Tamaño</label>
+                    <select id="tamano" name="tamano" class="border rounded px-2 py-1 w-full" required>
+                        <option value="">-- Seleccionar --</option>
+                        <option value="0">0 - A0</option>
+                        <option value="1">1 - A1</option>
+                        <option value="2">2 - A2</option>
+                        <option value="3">3 - A3</option>
+                        <option value="4">4 - A4</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium mb-1">Revision</label>
+                    <select id="revision" name="revision" class="border rounded px-2 py-1 w-full" required>
+                        <option value="">-- Seleccionar --</option>
+                        <option value="_">_</option>
+                        <option value="Z">Z</option>
+                        <option value="Y">Y</option>
+                        <option value="X">X</option>
+                        <option value="W">W</option>
+                        <option value="V">V</option>
+                        <option value="U">U</option>
+                        <option value="T">T</option>
+                        <option value="S">S</option>
+                        <option value="R">R</option>
+                        <option value="Q">Q</option>
+                        <option value="P">P</option>
+                        <option value="O">O</option>
+                        <option value="N">N</option>
+                        <option value="M">M</option>
+                        <option value="L">L</option>
+                        <option value="K">K</option>
+                        <option value="J">J</option>
+                        <option value="I">I</option>
+                        <option value="H">H</option>
+                        <option value="G">G</option>
+                        <option value="F">F</option>
+                        <option value="E">E</option>
+                        <option value="D">D</option>
+                        <option value="C">C</option>
+                        <option value="B">B</option>
+                        <option value="A">A</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium mb-1">Sub-Revision</label>
+                    <select id="sub_revision" name="sub_revision" class="border rounded px-2 py-1 w-full" required>
+                        <option value=" ">Ninguno</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
+                        <option value="8">8</option>
+                        <option value="9">9</option>
+                        <option value="10">10</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Descripcion -->
+            <div class="mb-4">
+                <label class="block text-sm font-medium">Descripción</label>
+                <input type="text" name="descripcion" class="border rounded px-3 py-2 w-full">
+            </div>
+
+            <!--Dibujante -->
+            <div class="mb-2">
+                <label class="block text-sm font-medium mb-1">Nombre del Dibujante</label>
+                <input type="text" name="dibujante" class="border rounded px-2 py-1 w-full" required>
+            </div>
+
+            <!-- Fecha -->
+            <div class="mb-2">
+                <label class="block text-sm font-medium mb-1">Fecha</label>
+                <input id="fecha" type="text" name="fecha" class="border rounded px-2 py-1 w-full fecha-input"
+                    placeholder="YYYY-MM-DD" required>
+                <input type="checkbox" name="f_actual" id="f_actual" onchange="colocarFechaActual(this)">
+                <label class="text-sm text-gray-600">Usar fecha actual</label>
+            </div>
+
+            <!-- Archivo -->
+            <div class="mb-4">
+                <label class="block text-sm font-medium mb-1">Archivo PDF</label>
+                <input type="file" name="pdf" accept="application/pdf" class="border rounded px-2 py-1 w-full">
+                <label class="block text-sm font-medium mb-1">Imagen</label>
+                <input type="file" name="imagen" accept="image/*" class="border rounded px-2 py-1 w-full">
+            </div>
+
+            <!-- Botones -->
+            <div class="flex justify-end gap-2">
+                <button type="button" class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
+                    onclick="document.getElementById('modalAgregar').classList.add('hidden')">
+                    Cancelar
+                </button>
+                <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">
+                    Guardar
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

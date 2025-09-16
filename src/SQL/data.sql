@@ -1,22 +1,21 @@
-CREATE DATABASE IF NOT EXISTS `archivos_h`;
-USE `archivos_h`;
+CREATE DATABASE IF NOT EXISTS `registros_h`;
+USE `registros_h`;
 
 -- TABLAS PRINCIPALES
 CREATE TABLE `tipo_plano` (
   `id_tipo_plano` INT(3) PRIMARY KEY AUTO_INCREMENT,
   `tipo_plano` VARCHAR(100),
-  `cod_tipo_plano` INT(3)
+  `cod_tipo_plano` VARCHAR(4)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE `num_plano` (
-  `id_num_plano` INT(10) PRIMARY KEY AUTO_INCREMENT,
-  `num_plano` INT(10) UNIQUE
+  `id_num_plano` INT(10) PRIMARY KEY AUTO_INCREMENT
 ) ENGINE=InnoDB AUTO_INCREMENT=3000 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE `tamanio` (
   `id_tamanio` INT(2) PRIMARY KEY AUTO_INCREMENT,
   `tamanio` VARCHAR(2)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci; 
 
 CREATE TABLE `revision` (
   `id_revision` INT(2) PRIMARY KEY AUTO_INCREMENT,
@@ -25,7 +24,7 @@ CREATE TABLE `revision` (
 
 CREATE TABLE `sub_revision` (
   `id_sub_revision` INT(2) PRIMARY KEY AUTO_INCREMENT,
-  `sub_revision` INT(2)
+  `sub_revision` VARCHAR(2)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE `archivos` (
@@ -37,8 +36,8 @@ CREATE TABLE `archivos` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- TABLA PLANOS (SE CREA AL FINAL PARA QUE EXISTAN TODAS LAS TABLAS REFERENCIADAS)
-CREATE TABLE `planos` (
-  `id_plano` INT(10) PRIMARY KEY AUTO_INCREMENT,
+CREATE TABLE `registros` (
+  `id_registro` INT(10) PRIMARY KEY AUTO_INCREMENT,
   `identificador_plano` VARCHAR(20),
   `descripcion` VARCHAR(500),
   `dibujante` VARCHAR(100),
@@ -49,11 +48,12 @@ CREATE TABLE `planos` (
   `id_revision` INT(2),
   `id_sub_revision` INT(2),
   `id_archivo` INT(10),
-  CONSTRAINT `planos_ibfk_1` FOREIGN KEY (`id_revision`) REFERENCES `revision` (`id_revision`),
-  CONSTRAINT `planos_ibfk_2` FOREIGN KEY (`id_archivo`) REFERENCES `archivos` (`id_archivo`),
-  CONSTRAINT `planos_ibfk_3` FOREIGN KEY (`id_num_plano`) REFERENCES `num_plano` (`id_num_plano`),
-  CONSTRAINT `planos_ibfk_4` FOREIGN KEY (`id_tipo_plano`) REFERENCES `tipo_plano` (`id_tipo_plano`),
-  CONSTRAINT `planos_ibfk_5` FOREIGN KEY (`id_tamanio`) REFERENCES `tamanio` (`id_tamanio`)
+  CONSTRAINT `registros_ibfk_1` FOREIGN KEY (`id_tipo_plano`) REFERENCES `tipo_plano` (`id_tipo_plano`),
+  CONSTRAINT `registros_ibfk_2` FOREIGN KEY (`id_num_plano`) REFERENCES `num_plano` (`id_num_plano`),
+  CONSTRAINT `registros_ibfk_3` FOREIGN KEY (`id_tamanio`) REFERENCES `tamanio` (`id_tamanio`),
+  CONSTRAINT `registros_ibfk_4` FOREIGN KEY (`id_revision`) REFERENCES `revision` (`id_revision`),
+  CONSTRAINT `registros_ibfk_5` FOREIGN KEY (`id_sub_revision`) REFERENCES `sub_revision` (`id_sub_revision`),
+  CONSTRAINT `registros_ibfk_6` FOREIGN KEY (`id_archivo`) REFERENCES `archivos` (`id_archivo`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- INSERTS
@@ -61,30 +61,30 @@ INSERT INTO `tamanio` (`id_tamanio`, `tamanio`) VALUES
 (1, '0'), (2, '1'), (3, '2'), (4, '3'), (5, '4');
 
 INSERT INTO `tipo_plano` (`id_tipo_plano`, `tipo_plano`, `cod_tipo_plano`) VALUES
-(1, 'ESQUEMA GENERAL', 4),
-(2, 'TABLAS DE PRODUCCIÓN', 6),
-(3, 'CONJUNTO P.HIDRÁULICA', 11),
-(4, 'PIEZAS P.HIDRÁULICA', 12),
-(5, 'CURVAS HIDRÁULICAS', 14),
-(6, 'CONJUNTO P.SOPORTE', 21),
-(7, 'PIEZA P.SOPORTE', 22),
-(8, 'CONJUNTO CCMM', 31),
-(9, 'PIEZAS CCMM', 32),
-(10, 'CROQUIS DE CONJUNTOS', 41),
-(11, 'CROQUIS DE PIEZAS', 42),
-(12, 'TERCEROS GENERAL', 50),
-(13, 'CONJUNTO TERCEROS', 51),
-(14, 'PIEZAS TERCEROS', 52),
-(15, 'CROQUIS TERCEROS', 53),
-(16, 'MODELO TERCEROS', 54),
-(17, 'FUNDA TERCEROS', 55),
-(18, 'MODELO HIDROSTAL', 56),
-(19, 'DESARROLLO CONJUNTOS', 71),
-(20, 'DESARROLLO PIEZAS', 72),
-(21, 'CONTROL DE INTERNAMIENTO', 0),
-(22, 'LABORATORIO DE PRUEBAS', 0),
-(23, 'TURBINA SUMERGIBLE', 0),
-(24, 'OTRO', 0);
+(1, '04 - ESQUEMA GENERAL','04'),
+(2, '06 - TABLAS DE PRODUCCIÓN','06'),
+(3, '11 - CONJUNTO P.HIDRÁULICA', '11'),
+(4, '12 - PIEZAS P.HIDRÁULICA', '12'),
+(5, '14 - CURVAS HIDRÁULICAS', '14'),
+(6, '21 - CONJUNTO P.SOPORTE', '21'),
+(7, '22 - PIEZA P.SOPORTE', '22'),
+(8, '31 - CONJUNTO CCMM', '31'),
+(9, '32 - PIEZAS CCMM', '32'),
+(10, '41 - CROQUIS DE CONJUNTOS', '41'),
+(11, '42 - CROQUIS DE PIEZAS', '42'),
+(12, '50 - TERCEROS GENERAL', '50'),
+(13, '51 - CONJUNTO TERCEROS', '51'),
+(14, '52 - PIEZAS TERCEROS', '52'),
+(15, '53 - CROQUIS TERCEROS', '53'),
+(16, '54 - MODELO TERCEROS', '54'),
+(17, '55 - FUNDA TERCEROS', '55'),
+(18, '56 - MODELO HIDROSTAL', '56'),
+(19, '71 - DESARROLLO CONJUNTOS', '71'),
+(20, '72 - DESARROLLO PIEZAS', '72'),
+(21, 'CI - CONTROL DE INTERNAMIENTO', 'CI'),
+(22, 'LP - LABORATORIO DE PRUEBAS', 'LP'),
+(23, 'TS - TURBINA SUMERGIBLE', 'TS'),
+(24, 'Z0 - OTRO', 'Z0');
 
 INSERT INTO `revision` (`id_revision`, `revision`) VALUES
 (1, '_'), (2, 'Z'), (3, 'Y'), (4, 'X'), (5, 'W'),
@@ -95,6 +95,6 @@ INSERT INTO `revision` (`id_revision`, `revision`) VALUES
 (26, 'B'), (27, 'A');
 
 INSERT INTO `sub_revision` (`id_sub_revision`, `sub_revision`) VALUES
-(1,1), (2,2), (3,3), (4,4), (5,5), (6,6), (7,7), (8,8), (9,9), (10,10);
+(1,'1'), (2,'2'), (3,'3'), (4,'4'), (5,'5'), (6,'6'), (7,'7'), (8,'8'), (9,'9'), (10,'10');
 
 COMMIT;

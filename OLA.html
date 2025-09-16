@@ -10,7 +10,6 @@
 
 <body class="bg-gray-50 p-8">
 
-    <!--Barra de Navegación-->
     <nav class="bg-white shadow-lg mb-8">
         <div class="max-w-7xl mx-auto px-4">
             <div class="flex justify-between h-16">
@@ -35,16 +34,12 @@
         </div>
     </nav>
     <div class="max-w-7x2 mx-auto">
-
-        <!-- Botones de administración -->
         <div class="flex gap-4 mb-4">
             <button class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 hover:scale-105 transition-all"
                 onclick="document.getElementById('modalAgregar').classList.remove('hidden')">
                 Agregar Nuevo Documento
             </button>
         </div>
-
-        <!-- Filtros -->
         <form class="bg-white p-6 rounded shadow mb-8 flex flex-wrap gap-4 items-end">
             <div>
                 <label class="block text-sm font-medium mb-1">Fecha</label>
@@ -77,30 +72,6 @@
                     <option value="_">_</option>
                     <option value="Z">Z</option>
                     <option value="Y">Y</option>
-                    <option value="X">X</option>
-                    <option value="W">W</option>
-                    <option value="V">V</option>
-                    <option value="U">U</option>
-                    <option value="T">T</option>
-                    <option value="S">S</option>
-                    <option value="R">R</option>
-                    <option value="Q">Q</option>
-                    <option value="P">P</option>
-                    <option value="O">O</option>
-                    <option value="N">N</option>
-                    <option value="M">M</option>
-                    <option value="L">L</option>
-                    <option value="K">K</option>
-                    <option value="J">J</option>
-                    <option value="I">I</option>
-                    <option value="H">H</option>
-                    <option value="G">G</option>
-                    <option value="F">F</option>
-                    <option value="E">E</option>
-                    <option value="D">D</option>
-                    <option value="C">C</option>
-                    <option value="B">B</option>
-                    <option value="A">A</option>
                 </select>
             </div>
             <div>
@@ -109,14 +80,6 @@
                     <option value=" ">Ninguno</option>
                     <option value="1">1</option>
                     <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5">5</option>
-                    <option value="6">6</option>
-                    <option value="7">7</option>
-                    <option value="8">8</option>
-                    <option value="9">9</option>
-                    <option value="10">10</option>
                 </select>
             </div>
             <div>
@@ -130,8 +93,6 @@
                     class="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400 hover:scale-105 transition-all">Limpiar</button>
             </div>
         </form>
-
-        <!-- Tabla de resultados -->
         <div class="overflow-x-auto">
             <table class="min-w-full bg-white rounded shadow">
                 <thead>
@@ -175,19 +136,16 @@
                             {% endif %}
                         </td>
                         <td class="border px-4 py-2 text-center">
-                            <!-- BOTON EDITAR -->
                             <button
                                 class="bg-blue-600 text-white px-2 py-1 rounded hover:bg-blue-700 hover:scale-105 transition-all"
                                 onclick="document.getElementById('modal{{d.id_registro}}').classList.remove('hidden')">
                                 Editar
                             </button>
-                            <!-- BOTON REUTILIZAR -->
                             <button
                                 class="bg-yellow-600 text-white px-2 py-1 rounded hover:bg-yellow-700 hover:scale-105 transition-all"
                                 onclick="document.getElementById('modalReutilizar{{d.id_registro}}').classList.remove('hidden')">
                                 Reutilizar
                             </button>
-                            <!-- BOTON ELIMINAR -->
                             <button
                                 class="bg-red-600 text-white px-2 py-1 rounded hover:bg-red-700 hover:scale-105 transition-all"
                                 onclick="document.getElementById('modalEliminar{{d.id_registro}}').classList.remove('hidden')">
@@ -195,8 +153,7 @@
                             </button>
                         </td>
                     </tr>
-
-                    <!---------- Modal para agregar nuevo documento ------->
+<!--modal agregar-->
                     <div id="modalAgregar"
                         class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 hidden modal">
                         <div class="bg-white p-8 rounded shadow-lg w-full max-w-lg relative">
@@ -206,14 +163,11 @@
                             <h2 class="text-xl font-bold mb-4">Agregar Nuevo Documento</h2>
 
                             <form action="/user" method="POST" enctype="multipart/form-data">
-                                <!-- Numero de plano -->
                                 <div class="mb-2">
                                     <label class="block text-sm font-medium mb-1">Número de Plano</label>
                                     <input id="numero_plano" type="text" name="numero_plano"
                                         class="border rounded px-2 py-1 w-full" hidden>
                                 </div>
-
-                                <!-- Opciones para generar codigo de plano -->
                                 <div class="space-y-2 border rounded p-3 bg-gray-50 mt-2">
                                     <div>
                                         <label class="block text-sm font-medium mb-1">Tipo de Plano</label>
@@ -223,27 +177,6 @@
                                             <option value="04">04 - ESQUEMA GENERAL</option>
                                             <option value="06">06 - TABLAS DE PRODUCCIÓN</option>
                                             <option value="11">11 - CONJUNTO P.HIDRÁULICA</option>
-                                            <option value="12">12 - PIEZAS P.HIDRÁULICA</option>
-                                            <option value="14">14 - CURVAS HIDRÁULICAS</option>
-                                            <option value="21">21 - CONJUNTO P.SOPORTE</option>
-                                            <option value="22">22 - PIEZA P.SOPORTE</option>
-                                            <option value="31">31 - CONJUNTO CCMM</option>
-                                            <option value="32">32 - PIEZAS CCMM</option>
-                                            <option value="41">41 - CROQUIS DE CONJUNTOS</option>
-                                            <option value="42">42 - CROQUIS DE PIEZAS</option>
-                                            <option value="50">50 - TERCEROS GENERAL</option>
-                                            <option value="51">51 - CONJUNTO TERCEROS</option>
-                                            <option value="52">52 - PIEZAS TERCEROS</option>
-                                            <option value="53">53 - CROQUIS TERCEROS</option>
-                                            <option value="54">54 - MODELO TERCEROS</option>
-                                            <option value="55">55 - FUNDA TERCEROS</option>
-                                            <option value="56">56 - MODELO HIDROSTAL</option>
-                                            <option value="71">71 - DESARROLLO CONJUNTOS</option>
-                                            <option value="72">72 - DESARROLLO PIEZAS</option>
-                                            <option value="CI">CI - CONTROL DE INTERNAMIENTO</option>
-                                            <option value="LP">LP - LABORATORIO DE PRUEBAS</option>
-                                            <option value="TS">TS - TURBINA SUMERGIBLE</option>
-                                            <option value="Z0">Z0 - OTRO</option>
                                         </select>
                                     </div>
 
@@ -268,30 +201,6 @@
                                             <option value="_">_</option>
                                             <option value="Z">Z</option>
                                             <option value="Y">Y</option>
-                                            <option value="X">X</option>
-                                            <option value="W">W</option>
-                                            <option value="V">V</option>
-                                            <option value="U">U</option>
-                                            <option value="T">T</option>
-                                            <option value="S">S</option>
-                                            <option value="R">R</option>
-                                            <option value="Q">Q</option>
-                                            <option value="P">P</option>
-                                            <option value="O">O</option>
-                                            <option value="N">N</option>
-                                            <option value="M">M</option>
-                                            <option value="L">L</option>
-                                            <option value="K">K</option>
-                                            <option value="J">J</option>
-                                            <option value="I">I</option>
-                                            <option value="H">H</option>
-                                            <option value="G">G</option>
-                                            <option value="F">F</option>
-                                            <option value="E">E</option>
-                                            <option value="D">D</option>
-                                            <option value="C">C</option>
-                                            <option value="B">B</option>
-                                            <option value="A">A</option>
                                         </select>
                                     </div>
 
@@ -302,33 +211,22 @@
                                             <option value=" ">Ninguno</option>
                                             <option value="1">1</option>
                                             <option value="2">2</option>
-                                            <option value="3">3</option>
-                                            <option value="4">4</option>
-                                            <option value="5">5</option>
-                                            <option value="6">6</option>
-                                            <option value="7">7</option>
-                                            <option value="8">8</option>
-                                            <option value="9">9</option>
-                                            <option value="10">10</option>
                                         </select>
                                     </div>
                                 </div>
 
-                                <!-- Descripción -->
                                 <div class="mb-2 mt-4">
                                     <label class="block text-sm font-medium mb-1">Descripción</label>
                                     <input type="text" name="descripcion" class="border rounded px-2 py-1 w-full"
                                         required>
                                 </div>
 
-                                <!-- Dibujante -->
                                 <div class="mb-2">
                                     <label class="block text-sm font-medium mb-1">Nombre del Dibujante</label>
                                     <input type="text" name="dibujante" class="border rounded px-2 py-1 w-full"
                                         required>
                                 </div>
 
-                                <!-- Fecha -->
                                 <div class="mb-2">
                                     <label class="block text-sm font-medium mb-1">Fecha</label>
                                     <input id="fecha" type="text" name="fecha"
@@ -339,7 +237,6 @@
                                     <label class="text-sm text-gray-600">Usar fecha actual</label>
                                 </div>
 
-                                <!-- Archivo -->
                                 <div class="mb-4">
                                     <label class="block text-sm font-medium mb-1">Archivo PDF</label>
                                     <input type="file" name="pdf" accept="application/pdf"
@@ -349,7 +246,6 @@
                                         class="border rounded px-2 py-1 w-full">
                                 </div>
 
-                                <!-- Botones -->
                                 <div class="flex justify-end gap-2">
                                     <button type="button"
                                         onclick="document.getElementById('modalAgregar').classList.add('hidden')"
@@ -362,7 +258,7 @@
                     </div>
 
 
-                    <!------------ Modal para editar documento ----------->
+<!--modal editar-->>
                     <div id="modal{{d.id_registro}}"
                         class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 hidden modal">
                         <div class="bg-white p-8 rounded shadow-lg w-full max-w-lg relative">
@@ -370,7 +266,6 @@
                                 class="absolute top-2 right-2 text-gray-500 hover:text-gray-800"
                                 aria-label="Cerrar">&times;</button>
                             <h2 class="text-xl font-bold mb-4">Editar Documento</h2>
-
                             <form action="/edit/{{d.id_registro}}" method="post" enctype="multipart/form-data"
                                 onsubmit="return validarIdentificadorEdit('{{d.cod_tipo_plano}}',
                                         '{{d.id_num_plano}}',
@@ -425,30 +320,6 @@
                                         <option value="_" {% if d.revision=="_" %}selected{% endif %}>_</option>
                                         <option value="Z" {% if d.revision=="Z" %}selected{% endif %}>Z</option>
                                         <option value="Y" {% if d.revision=="Y" %}selected{% endif %}>Y</option>
-                                        <option value="X" {% if d.revision=="X" %}selected{% endif %}>X</option>
-                                        <option value="W" {% if d.revision=="W" %}selected{% endif %}>W</option>
-                                        <option value="V" {% if d.revision=="V" %}selected{% endif %}>V</option>
-                                        <option value="U" {% if d.revision=="U" %}selected{% endif %}>U</option>
-                                        <option value="T" {% if d.revision=="T" %}selected{% endif %}>T</option>
-                                        <option value="S" {% if d.revision=="S" %}selected{% endif %}>S</option>
-                                        <option value="R" {% if d.revision=="R" %}selected{% endif %}>R</option>
-                                        <option value="Q" {% if d.revision=="Q" %}selected{% endif %}>Q</option>
-                                        <option value="P" {% if d.revision=="P" %}selected{% endif %}>P</option>
-                                        <option value="O" {% if d.revision=="O" %}selected{% endif %}>O</option>
-                                        <option value="N" {% if d.revision=="N" %}selected{% endif %}>N</option>
-                                        <option value="M" {% if d.revision=="M" %}selected{% endif %}>M</option>
-                                        <option value="L" {% if d.revision=="L" %}selected{% endif %}>L</option>
-                                        <option value="K" {% if d.revision=="K" %}selected{% endif %}>K</option>
-                                        <option value="J" {% if d.revision=="J" %}selected{% endif %}>J</option>
-                                        <option value="I" {% if d.revision=="I" %}selected{% endif %}>I</option>
-                                        <option value="H" {% if d.revision=="H" %}selected{% endif %}>H</option>
-                                        <option value="G" {% if d.revision=="G" %}selected{% endif %}>G</option>
-                                        <option value="F" {% if d.revision=="F" %}selected{% endif %}>F</option>
-                                        <option value="E" {% if d.revision=="E" %}selected{% endif %}>E</option>
-                                        <option value="D" {% if d.revision=="D" %}selected{% endif %}>D</option>
-                                        <option value="C" {% if d.revision=="C" %}selected{% endif %}>C</option>
-                                        <option value="B" {% if d.revision=="B" %}selected{% endif %}>B</option>
-                                        <option value="A" {% if d.revision=="A" %}selected{% endif %}>A</option>
                                     </select>
 
                                 </div>
@@ -460,14 +331,6 @@
                                         </option>
                                         <option value="1" {% if d.sub_revision=="1" %}selected{% endif %}>1</option>
                                         <option value="2" {% if d.sub_revision=="2" %}selected{% endif %}>2</option>
-                                        <option value="3" {% if d.sub_revision=="3" %}selected{% endif %}>3</option>
-                                        <option value="4" {% if d.sub_revision=="4" %}selected{% endif %}>4</option>
-                                        <option value="5" {% if d.sub_revision=="5" %}selected{% endif %}>5</option>
-                                        <option value="6" {% if d.sub_revision=="6" %}selected{% endif %}>6</option>
-                                        <option value="7" {% if d.sub_revision=="7" %}selected{% endif %}>7</option>
-                                        <option value="8" {% if d.sub_revision=="8" %}selected{% endif %}>8</option>
-                                        <option value="9" {% if d.sub_revision=="9" %}selected{% endif %}>9</option>
-                                        <option value="10" {% if d.sub_revision=="10" %}selected{% endif %}>10</option>
                                     </select>
                                 </div>
 
@@ -497,7 +360,7 @@
                         </div>
                     </div>
 
-                    <!--------- Modal para reutilizar documento ---------->
+<!--modal reutilizar-->
                     <div id="modalReutilizar{{d.id_registro}}"
                         class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 hidden modal">
                         <div class="bg-white p-8 rounded shadow-lg w-full max-w-lg relative">
@@ -509,7 +372,6 @@
 
                             <form action="/user" method="POST" enctype="multipart/form-data"
                                 onsubmit="return validarReutilizacion('{{d.id_registro}}', '{{d.tamanio}}', '{{d.revision}}', '{{d.sub_revision}}')">
-                                <!-- Numero de plano -->
                                 <input type="text" id="numero_plano_reutilizar" name="identificador_plano"
                                     value="{{d.identificador_plano}}" hidden>
                                 <div>
@@ -526,8 +388,6 @@
                                     <input type="text" id="numero_plano_reutilizar" name="numero_plano"
                                         value="{{d.id_num_plano}}" hidden>
                                 </div>
-
-                                <!-- Botón para mostrar más opciones -->
                                 <div class="space-y-2 border rounded p-3 bg-gray-50 mt-2">
 
                                     <div>
@@ -550,30 +410,6 @@
                                             <option value="_" {% if d.revision=="_" %}selected{% endif %}>_</option>
                                             <option value="Z" {% if d.revision=="Z" %}selected{% endif %}>Z</option>
                                             <option value="Y" {% if d.revision=="Y" %}selected{% endif %}>Y</option>
-                                            <option value="X" {% if d.revision=="X" %}selected{% endif %}>X</option>
-                                            <option value="W" {% if d.revision=="W" %}selected{% endif %}>W</option>
-                                            <option value="V" {% if d.revision=="V" %}selected{% endif %}>V</option>
-                                            <option value="U" {% if d.revision=="U" %}selected{% endif %}>U</option>
-                                            <option value="T" {% if d.revision=="T" %}selected{% endif %}>T</option>
-                                            <option value="S" {% if d.revision=="S" %}selected{% endif %}>S</option>
-                                            <option value="R" {% if d.revision=="R" %}selected{% endif %}>R</option>
-                                            <option value="Q" {% if d.revision=="Q" %}selected{% endif %}>Q</option>
-                                            <option value="P" {% if d.revision=="P" %}selected{% endif %}>P</option>
-                                            <option value="O" {% if d.revision=="O" %}selected{% endif %}>O</option>
-                                            <option value="N" {% if d.revision=="N" %}selected{% endif %}>N</option>
-                                            <option value="M" {% if d.revision=="M" %}selected{% endif %}>M</option>
-                                            <option value="L" {% if d.revision=="L" %}selected{% endif %}>L</option>
-                                            <option value="K" {% if d.revision=="K" %}selected{% endif %}>K</option>
-                                            <option value="J" {% if d.revision=="J" %}selected{% endif %}>J</option>
-                                            <option value="I" {% if d.revision=="I" %}selected{% endif %}>I</option>
-                                            <option value="H" {% if d.revision=="H" %}selected{% endif %}>H</option>
-                                            <option value="G" {% if d.revision=="G" %}selected{% endif %}>G</option>
-                                            <option value="F" {% if d.revision=="F" %}selected{% endif %}>F</option>
-                                            <option value="E" {% if d.revision=="E" %}selected{% endif %}>E</option>
-                                            <option value="D" {% if d.revision=="D" %}selected{% endif %}>D</option>
-                                            <option value="C" {% if d.revision=="C" %}selected{% endif %}>C</option>
-                                            <option value="B" {% if d.revision=="B" %}selected{% endif %}>B</option>
-                                            <option value="A" {% if d.revision=="A" %}selected{% endif %}>A</option>
                                         </select>
                                     </div>
 
@@ -585,34 +421,20 @@
                                             </option>
                                             <option value="1" {% if d.sub_revision=="1" %}selected{% endif %}>1</option>
                                             <option value="2" {% if d.sub_revision=="2" %}selected{% endif %}>2</option>
-                                            <option value="3" {% if d.sub_revision=="3" %}selected{% endif %}>3</option>
-                                            <option value="4" {% if d.sub_revision=="4" %}selected{% endif %}>4</option>
-                                            <option value="5" {% if d.sub_revision=="5" %}selected{% endif %}>5</option>
-                                            <option value="6" {% if d.sub_revision=="6" %}selected{% endif %}>6</option>
-                                            <option value="7" {% if d.sub_revision=="7" %}selected{% endif %}>7</option>
-                                            <option value="8" {% if d.sub_revision=="8" %}selected{% endif %}>8</option>
-                                            <option value="9" {% if d.sub_revision=="9" %}selected{% endif %}>9</option>
-                                            <option value="10" {% if d.sub_revision=="10" %}selected{% endif %}>10
                                             </option>
                                         </select>
                                     </div>
                                 </div>
-
-                                <!-- Descripción -->
                                 <div class="mb-2 mt-4">
                                     <label class="block text-sm font-medium mb-1">Descripción</label>
                                     <input type="text" name="descripcion" class="border rounded px-2 py-1 w-full"
                                         value="{{ d.descripcion }}" required>
                                 </div>
-
-                                <!-- Dibujante -->
                                 <div class="mb-2">
                                     <label class="block text-sm font-medium mb-1">Nombre del Dibujante</label>
                                     <input type="text" name="dibujante" class="border rounded px-2 py-1 w-full"
                                         value="{{ d.dibujante }}">
                                 </div>
-
-                                <!-- Fecha -->
                                 <div class="mb-2">
                                     <label class="block text-sm font-medium mb-1">Fecha</label>
                                     <input id="fecha" type="text" name="fecha"
@@ -622,15 +444,11 @@
                                         onchange="colocarFechaActual(this)">
                                     <label class="text-sm text-gray-600">Usar fecha actual</label>
                                 </div>
-
-                                <!-- Archivo -->
                                 <div class="mb-4">
                                     <label class="block text-sm font-medium mb-1">Archivo PDF</label>
                                     <input type="file" name="pdf" accept="application/pdf"
                                         class="border rounded px-2 py-1 w-full" value="{{d.archivo_path}}">
                                 </div>
-
-                                <!-- Botones -->
                                 <div class="flex justify-end gap-2">
                                     <button type="button"
                                         onclick="document.getElementById('modalReutilizar{{d.id_registro}}').classList.add('hidden')"
@@ -641,7 +459,6 @@
                             </form>
                         </div>
                     </div>
-                    <!---------- Modal para eliminar documento ---------->
                     <div id="modalEliminar{{d.id_registro}}"
                         class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 hidden modal">
                         <div class="bg-white rounded-lg shadow-lg p-8 w-full max-w-md relative">
@@ -672,5 +489,4 @@
         const identificadoresExistentes = JSON.parse('{{ lista_identificadores | tojson | safe }}');
     </script>
 </body>
-
-</html>
+</html> TODO ESTE ES MI HTML, QUE ME RECOMIENDAS SI LE VOY A QUERER AGREGAR UN SISTEMA DE LOGEO Y ROLES Y PARA UNA MEJOR ESCALABILIDAD?

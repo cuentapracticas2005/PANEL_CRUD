@@ -1,0 +1,127 @@
+<!-- Modal: Editar Documento -->
+<div id="modal{{ d.id_registro }}"
+    class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 hidden">
+    <div class="bg-white p-8 rounded-2xl shadow-lg w-full max-w-lg">
+        <button onclick="document.getElementById('modal{{d.id_registro}}').classList.add('hidden')"
+            class="absolute top-2 right-2 text-gray-500 hover:text-gray-800" aria-label="Cerrar">&times;</button>
+        <h2 class="text-xl font-semibold mb-4">Editar Documento</h2>
+
+        <form method="post" action="{{ url_for('edit', id_registro=d.id_registro) }}"
+            onsubmit="return validarIdentificadorEdit('{{d.cod_tipo_plano}}', '{{d.id_num_plano}}', this.tamanio.value, this.revision.value, this.sub_revision.value, '{{d.id_registro}}')">
+            <!-- {{ form.hidden_tag() }} -->
+
+            <div class="mb-2">
+                <label class="block text-sm font-medium mb-1">Fecha</label>
+                <input type="text" name="fecha" class="border rounded px-2 py-1 w-full" value="{{d.fecha}}" required>
+            </div>
+            <div class="mb-2">
+                <label class="block text-sm font-medium mb-1">Descripción</label>
+                <input type="text" name="descripcion" class="border rounded px-2 py-1 w-full" value="{{d.descripcion}}"
+                    required>
+            </div>
+
+            <div class="mb-2">
+                <label class="block text-sm font-medium mb-1">Número de Plano</label>
+                <input id="numero_plano_edit" type="text" class="border rounded px-2 py-1 w-full"
+                    value="{{d.id_num_plano}}" disabled>
+                <input id="numero_plano_edit" type="text" name="numero_plano" value="{{d.id_num_plano}}" hidden>
+            </div>
+
+            <div class="mb-2">
+                <label class="block text-sm font-medium mb-1">Tipo de Plano</label>
+                <input id="cod_tipo_plano{{d.id_registro}}" type="text" class="border rounded px-2 py-1 w-full"
+                    value="{{d.tipo_plano}}" disabled>
+                <input type="text" name="tipo_plano" id="cod_tipo_plano{{d.id_registro}}" value="{{d.cod_tipo_plano}}"
+                    hidden>
+            </div>
+
+            <div class="mb-2">
+                <label class="block text-sm font-medium mb-1">Tamaño</label>
+                <select name="tamanio" class="border rounded px-2 py-1 w-full" id="tamano_edit{{d.id_registro}}"
+                    required>
+                    <option value="0" {% if d.tamanio=="0" %}selected{% endif %}>A0</option>
+                    <option value="1" {% if d.tamanio=="1" %}selected{% endif %}>A1</option>
+                    <option value="2" {% if d.tamanio=="2" %}selected{% endif %}>A2</option>
+                    <option value="3" {% if d.tamanio=="3" %}selected{% endif %}>A3</option>
+                    <option value="4" {% if d.tamanio=="4" %}selected{% endif %}>A4</option>
+                </select>
+            </div>
+
+            <div class="mb-2">
+                <label class="block text-sm font-medium mb-1">Revision</label>
+                <select name="revision" id="revision_edit{{d.id_registro}}" class="border rounded px-2 py-1 w-full">
+                    <option value="">-- Seleccionar --</option>
+                    <option value="_" {% if d.revision=="_" %}selected{% endif %}>_</option>
+                    <option value="Z" {% if d.revision=="Z" %}selected{% endif %}>Z</option>
+                    <option value="Y" {% if d.revision=="Y" %}selected{% endif %}>Y</option>
+                    <option value="X" {% if d.revision=="X" %}selected{% endif %}>X</option>
+                    <option value="W" {% if d.revision=="W" %}selected{% endif %}>W</option>
+                    <option value="V" {% if d.revision=="V" %}selected{% endif %}>V</option>
+                    <option value="U" {% if d.revision=="U" %}selected{% endif %}>U</option>
+                    <option value="T" {% if d.revision=="T" %}selected{% endif %}>T</option>
+                    <option value="S" {% if d.revision=="S" %}selected{% endif %}>S</option>
+                    <option value="R" {% if d.revision=="R" %}selected{% endif %}>R</option>
+                    <option value="Q" {% if d.revision=="Q" %}selected{% endif %}>Q</option>
+                    <option value="P" {% if d.revision=="P" %}selected{% endif %}>P</option>
+                    <option value="O" {% if d.revision=="O" %}selected{% endif %}>O</option>
+                    <option value="N" {% if d.revision=="N" %}selected{% endif %}>N</option>
+                    <option value="M" {% if d.revision=="M" %}selected{% endif %}>M</option>
+                    <option value="L" {% if d.revision=="L" %}selected{% endif %}>L</option>
+                    <option value="K" {% if d.revision=="K" %}selected{% endif %}>K</option>
+                    <option value="J" {% if d.revision=="J" %}selected{% endif %}>J</option>
+                    <option value="I" {% if d.revision=="I" %}selected{% endif %}>I</option>
+                    <option value="H" {% if d.revision=="H" %}selected{% endif %}>H</option>
+                    <option value="G" {% if d.revision=="G" %}selected{% endif %}>G</option>
+                    <option value="F" {% if d.revision=="F" %}selected{% endif %}>F</option>
+                    <option value="E" {% if d.revision=="E" %}selected{% endif %}>E</option>
+                    <option value="D" {% if d.revision=="D" %}selected{% endif %}>D</option>
+                    <option value="C" {% if d.revision=="C" %}selected{% endif %}>C</option>
+                    <option value="B" {% if d.revision=="B" %}selected{% endif %}>B</option>
+                    <option value="A" {% if d.revision=="A" %}selected{% endif %}>A</option>
+                </select>
+
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium mb-1">Sub-revision</label>
+                <select name="sub_revision" class="border rounded px-2 py-1 w-full">
+                    <option value=" " {% if d.sub_revision==" " %}selected{% endif %}>Ninguno
+                    </option>
+                    <option value="1" {% if d.sub_revision=="1" %}selected{% endif %}>1</option>
+                    <option value="2" {% if d.sub_revision=="2" %}selected{% endif %}>2</option>
+                    <option value="3" {% if d.sub_revision=="3" %}selected{% endif %}>3</option>
+                    <option value="4" {% if d.sub_revision=="4" %}selected{% endif %}>4</option>
+                    <option value="5" {% if d.sub_revision=="5" %}selected{% endif %}>5</option>
+                    <option value="6" {% if d.sub_revision=="6" %}selected{% endif %}>6</option>
+                    <option value="7" {% if d.sub_revision=="7" %}selected{% endif %}>7</option>
+                    <option value="8" {% if d.sub_revision=="8" %}selected{% endif %}>8</option>
+                    <option value="9" {% if d.sub_revision=="9" %}selected{% endif %}>9</option>
+                    <option value="10" {% if d.sub_revision=="10" %}selected{% endif %}>10</option>
+                </select>
+            </div>
+
+            <div class="mb-2">
+                <label class="block text-sm font-medium mb-1">Nombre del Dibujante</label>
+                <input type="text" name="dibujante" class="border rounded px-2 py-1 w-full" value="{{d.dibujante}}"
+                    required>
+            </div>
+
+            <div class="mb-4">
+                <label class="block text-sm font-medium mb-1">Actualizar PDF</label>
+                <input type="file" name="pdf" accept="application/pdf" class="border rounded px-2 py-1 w-full">
+                <p class="text-sm text-gray-500 mt-1">Dejar en blanco para mantener el PDF actual
+                </p>
+            </div>
+
+            <div class="flex justify-end gap-2">
+                <button type="button" class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
+                    onclick="document.getElementById('modal{{ d.id_registro }}').classList.add('hidden')">
+                    Cancelar
+                </button>
+                <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+                    Guardar Cambios
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
