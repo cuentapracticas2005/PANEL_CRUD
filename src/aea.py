@@ -1,9 +1,12 @@
-from flask import Flask, request, render_template, redirect, url_for, abort, send_from_directory
-import os
+from flask import Flask, request, render_template, redirect, url_for, abort, send_from_directory, session
 from dotenv import load_dotenv
-import database as db
 from werkzeug.utils import secure_filename
+from flask_login import LoginManager, login_user, logout_user, login_required, current_user
+from werkzeug.security import generate_password_hash, check_password_hash
+from models import User
 import uuid
+import database as db
+import os
 load_dotenv()
 
 app = Flask(
@@ -11,6 +14,16 @@ app = Flask(
     static_folder = os.path.join(os.path.dirname(__file__),'static'),
     template_folder = os.path.join(os.path.dirname(__file__),'templates')
 )
+
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 's5d4fd474fd5frf117481gjh74uk77i4lo5jm581j189ju4mk78ui')
+
+# Inicializar LoginManager
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'login'  # Ruta a donde redirigir si no está autenticado
+login_manager.login_message = 'Por favor, inicia sesión para acceder a esta página.'
+login_manager.login_message_category = 'warning'  # Para usar con flash messages
+
 # ======================= CONFIGURACION DE SUBIDA DE ARCHIVOS =======================
 def comprobar_archivos():
     ubi_archivos = os.environ.get('UPLOAD_FOLDER')
@@ -103,9 +116,90 @@ def generar_identificador_plano(cod_tipo_plano, num_plano, tamanio, revision, su
         identificador += str(sub_revision)
     return identificador
 
-# ==================== RUTAS DE LA APP ============================
+# ==================== RUTAS DE LA APP =============================
 
+# RUTA DE AUTENTICACION DE USUARIO
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    """Ruta para el inicio de sesión"""
+    # Si el usuario ya está autenticado, redirigir al home
+    if current_user.is_authenticated:
+        return redirect(url_for('home'))
+    
+    if request.method == 'POST':
+        username = request.form.get('username', '').strip()
+        password = request.form.get('password', '').strip()
+        remember = request.form.get('remember', False)  # Checkbox "recordarme"
+        
+        # Validación básica
+        if not username or not password:
+            # Aquí podrías usar flash() para mostrar mensajes
+            return render_template('login.html', error='Por favor, completa todos los campos')
+        
+        # Buscar usuario en la base de datos
+        try:
+            user_data = User.get_by_username(username)
+        except Exception as e:
+            print(f'ERROR : {e}')
+            return render_template('login.html', error='Error interno')
+        
+        if user_data and check_password_hash(user_data['password_hash'], password):
+            session.clear()
+            # Login exitoso
+            login_user(user_data['user'], remember=bool(remember))
+            
+            # Redirigir a la página que el usuario intentaba acceder o al home
+            next_page = request.args.get('next')
+            if not next_page or not next_page.startswith('/'):
+                next_page = url_for('home')
+            
+            return redirect(next_page)
+        else:
+            # Login fallido
+            return render_template('login.html', error='Usuario o contraseña incorrectos')
+    
+    return render_template('login.html')
+
+@app.route('/logout')
+@login_required
+def logout():
+    """Ruta para cerrar sesión"""
+    logout_user()
+    return redirect(url_for('login'))
+
+# RUTA PARA REGISTRAR USUARIOS
+@app.route('/registro', methods=['GET', 'POST'])
+def registro():
+    """Ruta para registrar nuevos usuarios (opcional)"""
+    if request.method == 'POST':
+        username = request.form.get('username', '').strip()
+        password = request.form.get('password', '').strip()
+        # Validaciones
+        if not all([username, password]):
+            return render_template('registro.html', error='Todos los campos son obligatorios')
+        
+        # Generar hash de la contraseña
+        password_hash = generate_password_hash(password)
+        
+        try:
+            cursor = db.database.cursor()
+            cursor.execute("""
+                INSERT INTO usuarios (username, password_hash)
+                VALUES (%s, %s)
+            """, (username, password_hash))
+            db.database.commit()
+            cursor.close()
+            return redirect(url_for('login'))
+        except Exception as e:
+            # Manejar errores (usuario duplicado, etc.)
+            print(f"ERROR: {e}")
+            return render_template('registro.html', error='El usuario ya existe')
+    
+    return render_template('registro.html')
+
+# RUTA HOME
 @app.route('/')
+@login_required
 def home():
     fecha = request.args.get('fecha','').strip()
     descripcion = request.args.get('descripcion','').strip()
@@ -189,6 +283,7 @@ def home():
 
 # RUTA PARA GUARDAR/REUTILIZAR REGISTROS
 @app.route('/user', methods=['POST'])
+@login_required
 def addUser():
     fecha = request.form.get('fecha','').strip()
     descripcion = request.form.get('descripcion','').strip()
@@ -299,6 +394,7 @@ def addUser():
     
 # RUTA PARA ACTUALIZAR REGISTROS
 @app.route('/edit/<string:id_registro>', methods=['POST'])
+@login_required
 def edit(id_registro):
     fecha = request.form.get('fecha', '').strip()
     descripcion = request.form.get('descripcion', '').strip()
@@ -416,6 +512,7 @@ def edit(id_registro):
         
 # RUTA PARA ELIMINAR REGISTROS
 @app.route('/delete/<string:id_registro>')
+@login_required
 def delete(id_registro):
     try:
         cursor = db.database.cursor()
@@ -464,6 +561,7 @@ def delete(id_registro):
 
 # RUTA PARA VER ARCHIVO
 @app.route('/file/view/<string:token>')
+@login_required
 def view_file(token: str):
     cursor = db.database.cursor()
     cursor.execute("SELECT archivo_path, archivo_mime FROM archivos WHERE archivo_token = %s", (token,))
@@ -481,6 +579,7 @@ def view_file(token: str):
 
 # RUTA PARA DESCARGR ARCHIVO
 @app.route('/file/download/<string:token>')
+@login_required
 def download_file(token: str):
     cursor = db.database.cursor()
     cursor.execute("""SELECT archivo_path, archivo_nombre FROM archivos WHERE archivo_token = %s""", (token,))
@@ -496,6 +595,17 @@ def download_file(token: str):
         return None
     return send_from_directory(UBI_ARCHIVO, file_on_disk, as_attachment=True, download_name=file_name)
 
-# LAZAMOS APP
+# Callback de Flask-Login para cargar el usuario
+@login_manager.user_loader
+def load_user(user_id):
+    """
+    Esta función es llamada por Flask-Login en cada petición
+    para cargar el usuario actual desde la sesión.
+    """
+    return User.get_by_id(int(user_id))
+
+# LANZAMOS APP
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug=True, port=4000)
+
+# <!-- {{ form.hidden_tag() }} -->

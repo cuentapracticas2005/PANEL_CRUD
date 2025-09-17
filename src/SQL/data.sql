@@ -35,6 +35,16 @@ CREATE TABLE `archivos` (
   `archivo_token` VARCHAR(300)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+CREATE TABLE `usuarios` (
+    `id_usuario` INT PRIMARY KEY AUTO_INCREMENT,
+    `username` VARCHAR(80) UNIQUE NOT NULL,
+    `password_hash` VARCHAR(255) NOT NULL,
+    `nombre_completo` VARCHAR(150),
+    `activo` BOOLEAN NOT NULL DEFAULT TRUE,
+    `fecha_creacion` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    `rol` VARCHAR(2) NOT NULL DEFAULT 'user'
+ ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
 -- TABLA PLANOS (SE CREA AL FINAL PARA QUE EXISTAN TODAS LAS TABLAS REFERENCIADAS)
 CREATE TABLE `registros` (
   `id_registro` INT(10) PRIMARY KEY AUTO_INCREMENT,
@@ -48,13 +58,14 @@ CREATE TABLE `registros` (
   `id_revision` INT(2),
   `id_sub_revision` INT(2),
   `id_archivo` INT(10),
-  CONSTRAINT `registros_ibfk_1` FOREIGN KEY (`id_tipo_plano`) REFERENCES `tipo_plano` (`id_tipo_plano`),
-  CONSTRAINT `registros_ibfk_2` FOREIGN KEY (`id_num_plano`) REFERENCES `num_plano` (`id_num_plano`),
-  CONSTRAINT `registros_ibfk_3` FOREIGN KEY (`id_tamanio`) REFERENCES `tamanio` (`id_tamanio`),
-  CONSTRAINT `registros_ibfk_4` FOREIGN KEY (`id_revision`) REFERENCES `revision` (`id_revision`),
-  CONSTRAINT `registros_ibfk_5` FOREIGN KEY (`id_sub_revision`) REFERENCES `sub_revision` (`id_sub_revision`),
-  CONSTRAINT `registros_ibfk_6` FOREIGN KEY (`id_archivo`) REFERENCES `archivos` (`id_archivo`)
+  FOREIGN KEY (`id_tipo_plano`) REFERENCES `tipo_plano` (`id_tipo_plano`),
+  FOREIGN KEY (`id_num_plano`) REFERENCES `num_plano` (`id_num_plano`),
+  FOREIGN KEY (`id_tamanio`) REFERENCES `tamanio` (`id_tamanio`),
+  FOREIGN KEY (`id_revision`) REFERENCES `revision` (`id_revision`),
+  FOREIGN KEY (`id_sub_revision`) REFERENCES `sub_revision` (`id_sub_revision`),
+  FOREIGN KEY (`id_archivo`) REFERENCES `archivos` (`id_archivo`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
 
 -- INSERTS
 INSERT INTO `tamanio` (`id_tamanio`, `tamanio`) VALUES
@@ -96,5 +107,8 @@ INSERT INTO `revision` (`id_revision`, `revision`) VALUES
 
 INSERT INTO `sub_revision` (`id_sub_revision`, `sub_revision`) VALUES
 (1,'1'), (2,'2'), (3,'3'), (4,'4'), (5,'5'), (6,'6'), (7,'7'), (8,'8'), (9,'9'), (10,'10');
+
+INSERT INTO `roles` (`nombre`) VALUES 
+('trabajador'), ('dibujante'), ('admin');
 
 COMMIT;

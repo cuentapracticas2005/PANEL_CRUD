@@ -1,8 +1,10 @@
 from flask import Flask, request, render_template, redirect, url_for, abort, send_from_directory
+from flask_login import LoginManager, UserMixin, login_user, logout_user, current_user, login_required
 import os
 from dotenv import load_dotenv
 import database as db
 from werkzeug.utils import secure_filename
+from werkzeug.security import generate_password_hash, check_password_hash
 import uuid
 load_dotenv()
 
@@ -11,6 +13,12 @@ app = Flask(
     static_folder = os.path.join(os.path.dirname(__file__),'static'),
     template_folder = os.path.join(os.path.dirname(__file__),'templates')
 )
+
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = "login"  # redirige a /login si no está autenticado
+login_manager.login_message = "Debes iniciar sesión para acceder a esta página."
+
 # ======================= CONFIGURACION DE SUBIDA DE ARCHIVOS =======================
 def comprobar_archivos():
     ubi_archivos = os.environ.get('UPLOAD_FOLDER')
@@ -103,7 +111,7 @@ def generar_identificador_plano(cod_tipo_plano, num_plano, tamanio, revision, su
         identificador += str(sub_revision)
     return identificador
 
-# ==================== RUTAS DE LA APP ============================
+# ==================== RUTAS DE LA APP =============================
 
 @app.route('/')
 def home():
@@ -187,7 +195,7 @@ def home():
 
     return render_template('index.html', data=union, lista_identificadores=lista_identificadores)
 
-# RUTA PARA GUARDAR DATOS
+# RUTA PARA GUARDAR/REUTILIZAR REGISTROS
 @app.route('/user', methods=['POST'])
 def addUser():
     fecha = request.form.get('fecha','').strip()
@@ -297,7 +305,7 @@ def addUser():
             print(f"Plano e identificador insertado en la base de datos correctamente: {identificador_plano}")
             return redirect(url_for('home'))
     
-# RUTA PARA ACTUALIZAR DATOS
+# RUTA PARA ACTUALIZAR REGISTROS
 @app.route('/edit/<string:id_registro>', methods=['POST'])
 def edit(id_registro):
     fecha = request.form.get('fecha', '').strip()
@@ -414,7 +422,7 @@ def edit(id_registro):
     print(f"Plano actualizado correctamente: {identificador_plano}")
     return redirect(url_for('home'))
         
-# RUTA PARA ELIMINAR
+# RUTA PARA ELIMINAR REGISTROS
 @app.route('/delete/<string:id_registro>')
 def delete(id_registro):
     try:

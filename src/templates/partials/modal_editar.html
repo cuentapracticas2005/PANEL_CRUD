@@ -8,7 +8,6 @@
 
         <form method="post" action="{{ url_for('edit', id_registro=d.id_registro) }}"
             onsubmit="return validarIdentificadorEdit('{{d.cod_tipo_plano}}', '{{d.id_num_plano}}', this.tamanio.value, this.revision.value, this.sub_revision.value, '{{d.id_registro}}')">
-            <!-- {{ form.hidden_tag() }} -->
 
             <div class="mb-2">
                 <label class="block text-sm font-medium mb-1">Fecha</label>

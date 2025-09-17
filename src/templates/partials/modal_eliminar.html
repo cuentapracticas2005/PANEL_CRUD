@@ -3,8 +3,7 @@
     <div class="bg-white p-8 rounded-2xl shadow-lg w-full max-w-lg">
         <h2 class="text-xl font-semibold text-red-600 mb-4">Eliminar Documento</h2>
 
-        <form method="post" action="{{ url_for('eliminar_documento', id=d.id_registro) }}">
-            <!-- {{ form.hidden_tag() }} -->
+        <form method="post" action="{{ url_for('delete', id_registro=d.id_registro) }}">
 
             <p class="mb-4 text-gray-700">
                 ⚠️ ¿Seguro que quieres eliminar el documento <strong>{{ d.identificador_plano }}</strong>? Esta acción no se puede deshacer.
