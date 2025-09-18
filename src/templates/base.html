@@ -24,7 +24,10 @@
                     <div class="flex items-center space-x-4">
                         <a href="{{ url_for('home') }}"
                             class="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-blue-600">Inicio</a>
-                        <!-- Puedes agregar más enlaces aquí -->
+
+                        <a href="#" onclick="document.getElementById('modalAgregarUsuario').classList.remove('hidden')"
+                            class="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-blue-600">Registrar
+                            Usuario</a>
                     </div>
                 </div>
 
@@ -36,11 +39,6 @@
                         class="px-4 py-2 rounded text-sm font-medium text-white bg-red-600 hover:bg-red-700 hover:scale-105 transition-all">
                         Cerrar Sesión
                     </a>
-                    {% else %}
-                    <a href="{{ url_for('login') }}"
-                        class="px-4 py-2 rounded text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 hover:scale-105 transition-all">
-                        Iniciar Sesión
-                    </a>
                     {% endif %}
                 </div>
             </div>
@@ -48,7 +46,7 @@
     </nav>
 
     <!-- 📦 CONTENIDO DINÁMICO -->
-    <main class="max-w-7xl mx-auto">
+    <main class="bg-gray-50 p-8">
         {% block content %}{% endblock %}
     </main>
 

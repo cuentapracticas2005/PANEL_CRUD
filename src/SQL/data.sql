@@ -35,15 +35,22 @@ CREATE TABLE `archivos` (
   `archivo_token` VARCHAR(300)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-CREATE TABLE `usuarios` (
-    `id_usuario` INT PRIMARY KEY AUTO_INCREMENT,
-    `username` VARCHAR(80) UNIQUE NOT NULL,
-    `password_hash` VARCHAR(255) NOT NULL,
-    `nombre_completo` VARCHAR(150),
-    `activo` BOOLEAN NOT NULL DEFAULT TRUE,
-    `fecha_creacion` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    `rol` VARCHAR(2) NOT NULL DEFAULT 'user'
- ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+CREATE TABLE `roles` (
+  `id_rol` INT PRIMARY KEY AUTO_INCREMENT,
+  `rol` VARCHAR(20) UNIQUE NOT NULL
+ )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE `user` (
+  `id_user` INT PRIMARY KEY AUTO_INCREMENT,
+  `username` VARCHAR(80) UNIQUE NOT NULL,
+  `password_hash` VARCHAR(255) NOT NULL,
+  `nombre_completo` VARCHAR(300),
+  `activo` BOOLEAN NOT NULL DEFAULT TRUE,
+  `fecha_creacion` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  `id_rol` INT(3) NOT NULL DEFAULT 1,
+  FOREIGN KEY (`id_rol`) REFERENCES `roles` (`id_rol`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
 
 -- TABLA PLANOS (SE CREA AL FINAL PARA QUE EXISTAN TODAS LAS TABLAS REFERENCIADAS)
 CREATE TABLE `registros` (
@@ -110,5 +117,10 @@ INSERT INTO `sub_revision` (`id_sub_revision`, `sub_revision`) VALUES
 
 INSERT INTO `roles` (`nombre`) VALUES 
 ('trabajador'), ('dibujante'), ('admin');
+
+INSERT INTO `roles` (`id_rol`, `rol`) VALUES
+(1, 'admin'),
+(2, 'dibujante'),
+(3, 'trabajador');
 
 COMMIT;

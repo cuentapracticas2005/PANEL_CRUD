@@ -174,6 +174,8 @@ def registro():
     if request.method == 'POST':
         username = request.form.get('username', '').strip()
         password = request.form.get('password', '').strip()
+        rol = request.form.get('rol', 'user').strip()
+        nombre_completo = request.form.get('nombre_completo', None).strip()
         # Validaciones
         if not all([username, password]):
             return render_template('registro.html', error='Todos los campos son obligatorios')
@@ -184,9 +186,9 @@ def registro():
         try:
             cursor = db.database.cursor()
             cursor.execute("""
-                INSERT INTO usuarios (username, password_hash)
-                VALUES (%s, %s)
-            """, (username, password_hash))
+                INSERT INTO user (username, password_hash, id_rol, nombre_completo)
+                VALUES (%s, %s, %s, %s)
+            """, (username, password_hash, int(rol), nombre_completo))
             db.database.commit()
             cursor.close()
             return redirect(url_for('login'))

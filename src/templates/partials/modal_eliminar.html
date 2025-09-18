@@ -1,6 +1,6 @@
 <!-- Modal: Eliminar Documento -->
-<div id="modalEliminar{{ d.id_registro }}" class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 hidden">
-    <div class="bg-white p-8 rounded-2xl shadow-lg w-full max-w-lg">
+<div id="modalEliminar{{ d.id_registro }}" class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 hidden modal">
+    <div class="bg-white p-8 rounded-2xl shadow-lg w-full max-w-lg relative">
         <h2 class="text-xl font-semibold text-red-600 mb-4">Eliminar Documento</h2>
 
         <form method="post" action="{{ url_for('delete', id_registro=d.id_registro) }}">

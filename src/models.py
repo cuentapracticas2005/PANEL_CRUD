@@ -22,9 +22,15 @@ class User(UserMixin):
         """Buscar usuario por username en la base de datos"""
         cursor = db.database.cursor()
         cursor.execute("""
-            SELECT id_usuario, username, nombre_completo, password_hash, rol
-            FROM usuarios 
-            WHERE username = %s AND activo = TRUE
+            SELECT 
+                u.id_user, 
+                u.username, 
+                u.nombre_completo, 
+                u.password_hash, 
+                r.rol
+            FROM user u
+            JOIN roles r ON u.id_rol = r.id_rol
+            WHERE u.username = %s AND u.activo = TRUE
         """, (username,))
         user_data = cursor.fetchone()
         cursor.close()
@@ -41,9 +47,10 @@ class User(UserMixin):
         """Buscar usuario por ID (usado por Flask-Login)"""
         cursor = db.database.cursor()
         cursor.execute("""
-            SELECT id_usuario, username, nombre_completo, rol
-            FROM usuarios 
-            WHERE id_usuario = %s AND activo = TRUE
+            SELECT u.id_user, u.username, u.nombre_completo, r.rol
+            FROM user u
+            JOIN roles r ON u.id_rol = r.id_rol
+            WHERE u.id_user = %s AND u.activo = TRUE
         """, (user_id,))
         user_data = cursor.fetchone()
         cursor.close()
