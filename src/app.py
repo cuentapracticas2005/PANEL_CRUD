@@ -15,7 +15,7 @@ app = Flask(
     template_folder = os.path.join(os.path.dirname(__file__),'templates')
 )
 
-app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 's5d4fd474fd5frf117481gjh74uk77i4lo5jm581j189ju4mk78ui')
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'para-desarrollo')
 
 # Inicializar LoginManager
 login_manager = LoginManager()
@@ -213,8 +213,8 @@ def home():
 
     # Paginación
     page = int(request.args.get('page', 1))  # Página actual
-    per_page = 15  # Número de registros por página
-    offset = (page - 1) * per_page
+    max_registros = 100  # Número de registros por página
+    offset = (page - 1) * max_registros
 
     # Construcción de la query
     base_query = """
@@ -273,14 +273,20 @@ def home():
     
     # Agregar paginación a la consulta
     base_query += " ORDER BY r.id_registro DESC LIMIT %s OFFSET %s"
-    params.extend([per_page, offset])
-
+    params.extend([max_registros, offset])
     cursor.execute(base_query, tuple(params))
     tuplas = cursor.fetchall()
-    nameColums = [x[0] for x in cursor.description]
-    union = [dict(zip(nameColums, x)) for x in tuplas]
-    cursor.close()
+    nameColums = []
+    for x in cursor.description:
+        nameColums.append(x[0])
 
+    # Se ordena todo en una lista de diccionarios 
+    union = []
+    for x in tuplas:
+        fila = dict(zip(nameColums, x))
+        union.append(fila)
+    cursor.close()
+    
     # Para la validación de identificadores duplicados
     cursor = db.database.cursor()
     cursor.execute("SELECT id_registro, identificador_plano FROM registros")
@@ -288,7 +294,7 @@ def home():
     lista_identificadores = [{"id": r[0], "identificador": r[1]} for r in registros]
     cursor.close()
 
-    total_pages = (total + per_page - 1) // per_page  # redondeo hacia arriba
+    total_pages = (total + max_registros - 1) // max_registros  # redondeo hacia arriba
 
     return render_template(
         'home.html',
@@ -354,7 +360,7 @@ def addUser():
         identificador_plano = generar_identificador_plano(cod_tipo_plano, id_num_plano_nuevo, tamanio, revision, sub_revision)
         id_num_plano = id_num_plano_nuevo
     
-    # -------------------------------------------------------------------------------------
+    # -----------------------------------------------------------------------------------------------------------------
 
     archivo_name = None
     archivo_path = None
@@ -614,7 +620,7 @@ def download_file(token: str):
         return None
     return send_from_directory(UBI_ARCHIVO, file_on_disk, as_attachment=True, download_name=file_name)
 
-# Callback de Flask-Login para cargar el usuario
+# CALLBACK PARA CARGAR EL USUARIO
 @login_manager.user_loader
 def load_user(user_id):
     """
@@ -623,7 +629,7 @@ def load_user(user_id):
     """
     return User.get_by_id(int(user_id))
 
-# LANZAMOS APP
+# LANZAR APP
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug=True, port=4000)
 

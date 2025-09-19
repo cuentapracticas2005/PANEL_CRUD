@@ -273,4 +273,26 @@ def home():
 
     cursor.execute([base_query, tuple(params)])
     tuplas = cursor.fetchall()
+
+    # Anterior
     nameColums = [x[0] for x in cursor.description]
+
+    # Nuevo
+    nameColums = []
+    for x in cursor.description:
+        nameColums.append(x[0])
+
+
+    # Anterior
+    union = [dict(zip(nameColums, x)) for x in tuplas]
+    cursor.close()
+    # Nuevo
+    union = []
+    for x in tuplas:
+        fila = dict(zip(nameColums, x))
+        union.append(fila)
+    registros = x
+    lista_identificadores = []
+    for r in registros:
+        x = {"id": r[0], "identificador": r[1]}
+        lista_identificadores.append(x)

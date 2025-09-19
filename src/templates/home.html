@@ -112,8 +112,8 @@
                 <th class="px-4 py-2">Sub-revision</th>
                 <th class="px-4 py-2">Nombre del Dibujante</th>
                 <th class="px-4 py-2">Ver</th>
-                <th class="px-4 py-2">Descargar</th>
-                <th class="px-4 py-2">Operaciones</th>
+                {% if current_user.is_authenticated and current_user.rol in ["admin", "dibujante"] %}<th class="px-4 py-2">Descargar</th>
+                <th class="px-4 py-2">Operaciones</th>{% endif %}
             </tr>
         </thead>
         <tbody>
@@ -134,6 +134,7 @@
                     <span class="text-gray-400">-</span>
                     {% endif %}
                 </td>
+                {% if current_user.is_authenticated and current_user.rol in ["admin", "dibujante"] %}
                 <td class="border px-4 py-2 text-center">
                     {% if d.archivo_token %}
                     <a href="{{ url_for('download_file', token=d.archivo_token) }}"
@@ -144,7 +145,6 @@
                 </td>
                 <td class="border px-4 py-2 text-center">
                     <!-- 🔑 Solo mostrar si el usuario tiene permisos -->
-                    {% if current_user.is_authenticated and current_user.rol in ["admin", "dibujante"] %}
                     <button
                         class="bg-blue-600 text-white px-2 py-1 rounded hover:bg-blue-700 hover:scale-105 transition-all"
                         onclick="document.getElementById('modal{{ d.id_registro }}').classList.remove('hidden')">
@@ -162,8 +162,8 @@
                         onclick="document.getElementById('modalEliminar{{ d.id_registro }}').classList.remove('hidden')">
                         Eliminar
                     </button>
-                    {% endif %}
                 </td>
+                {% endif %}
             </tr>
             <!-- Aquí van los modales: modalAgregar, modalEditar, modalReutilizar, modalEliminar -->
             {% include "partials/modal_agregar.html" %}
