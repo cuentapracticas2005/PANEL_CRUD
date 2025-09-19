@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Sistema de Planos{% endblock %}</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="icon" href="{{url_for ('static', filename='img/icono.png')}}" type="image/png">
 </head>
 
 <body class="bg-gray-50 p-8">
@@ -24,10 +25,13 @@
                     <div class="flex items-center space-x-4">
                         <a href="{{ url_for('home') }}"
                             class="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-blue-600">Inicio</a>
-
+                        {% if current_user.is_authenticated and current_user.rol in ["admin"] %}
                         <a href="#" onclick="document.getElementById('modalAgregarUsuario').classList.remove('hidden')"
                             class="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-blue-600">Registrar
                             Usuario</a>
+                        <a href="#" onclick="document.getElementById(' ').classList.remove('hidden')"
+                            class="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-blue-600">Administrar Usuario</a>
+                        {% endif %}
                     </div>
                 </div>
 

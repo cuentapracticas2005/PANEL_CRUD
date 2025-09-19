@@ -158,7 +158,7 @@ def login():
             # Login fallido
             return render_template('login.html', error='Usuario o contraseña incorrectos')
     
-    return render_template('login.html')
+    return render_template('home.html')
 
 @app.route('/logout')
 @login_required

@@ -6,7 +6,7 @@
             class="absolute top-2 right-2 text-gray-500 hover:text-gray-800" aria-label="Cerrar">&times;</button>
         <h2 class="text-xl font-semibold mb-4">Editar Documento</h2>
 
-        <form method="post" action="{{ url_for('edit', id_registro=d.id_registro) }}"
+        <form method="post" action="{{ url_for('edit', id_registro=d.id_registro) }}" enctype="multipart/form-data"
             onsubmit="return validarIdentificadorEdit('{{d.cod_tipo_plano}}', '{{d.id_num_plano}}', this.tamanio.value, this.revision.value, this.sub_revision.value, '{{d.id_registro}}')">
 
             <div class="mb-2">
@@ -113,11 +113,11 @@
             </div>
 
             <div class="flex justify-end gap-2">
-                <button type="button" class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
+                <button type="button" class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400 hover:scale-105 transition-all"
                     onclick="document.getElementById('modal{{ d.id_registro }}').classList.add('hidden')">
                     Cancelar
                 </button>
-                <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+                <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 hover:scale-105 transition-all">
                     Guardar Cambios
                 </button>
             </div>

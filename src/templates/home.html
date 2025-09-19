@@ -3,7 +3,7 @@
 
 {% block content %}
 <!-- 🔑 Solo mostrar el botón si el usuario tiene rol ADMIN o EDITOR -->
-{% if current_user.is_authenticated and current_user.rol in ["admin", "editor"] %}
+{% if current_user.is_authenticated and current_user.rol in ["admin", "dibujante"] %}
 <div class="flex gap-4 mb-4">
     <button class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 hover:scale-105 transition-all"
         onclick="document.getElementById('modalAgregar').classList.remove('hidden')">
@@ -144,7 +144,7 @@
                 </td>
                 <td class="border px-4 py-2 text-center">
                     <!-- 🔑 Solo mostrar si el usuario tiene permisos -->
-                    {% if current_user.is_authenticated and current_user.rol in ["admin", "editor"] %}
+                    {% if current_user.is_authenticated and current_user.rol in ["admin", "dibujante"] %}
                     <button
                         class="bg-blue-600 text-white px-2 py-1 rounded hover:bg-blue-700 hover:scale-105 transition-all"
                         onclick="document.getElementById('modal{{ d.id_registro }}').classList.remove('hidden')">
@@ -165,7 +165,6 @@
                     {% endif %}
                 </td>
             </tr>
-
             <!-- Aquí van los modales: modalAgregar, modalEditar, modalReutilizar, modalEliminar -->
             {% include "partials/modal_agregar.html" %}
             {% include "partials/modal_editar.html" %}
@@ -175,6 +174,78 @@
             {% endfor %}
         </tbody>
     </table>
+
+    {% if total_pages > 1 %}
+    <div class="flex justify-center items-center gap-2 mt-4 flex-wrap">
+
+        <!-- Botón Anterior -->
+        {% if page > 1 %}
+        <a href="{{ url_for('home', page=page-1,
+        fecha=request.args.get('fecha',''),
+        descripcion=request.args.get('descripcion',''),
+        identificador_plano=request.args.get('identificador_plano',''),
+        dibujante=request.args.get('dibujante',''),
+        revision=request.args.get('revision',''),
+        sub_revision=request.args.get('sub_revision',''),
+        tamano=request.args.get('tamano','')) }}" class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300">«</a>
+        {% endif %}
+
+        <!-- Páginas con rango dinámico -->
+        {% set start = page - 2 if page - 2 > 1 else 1 %}
+        {% set end = page + 2 if page + 2 < total_pages else total_pages %} {% if start> 1 %}
+            <a href="{{ url_for('home', page=1,
+            fecha=request.args.get('fecha',''),
+            descripcion=request.args.get('descripcion',''),
+            identificador_plano=request.args.get('identificador_plano',''),
+            dibujante=request.args.get('dibujante',''),
+            revision=request.args.get('revision',''),
+            sub_revision=request.args.get('sub_revision',''),
+            tamano=request.args.get('tamano','')) }}" class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300">1</a>
+            {% if start > 2 %}
+            <span class="px-2">...</span>
+            {% endif %}
+            {% endif %}
+
+            {% for p in range(start, end + 1) %}
+            <a href="{{ url_for('home', page=p,
+            fecha=request.args.get('fecha',''),
+            descripcion=request.args.get('descripcion',''),
+            identificador_plano=request.args.get('identificador_plano',''),
+            dibujante=request.args.get('dibujante',''),
+            revision=request.args.get('revision',''),
+            sub_revision=request.args.get('sub_revision',''),
+            tamano=request.args.get('tamano','')) }}"
+                class="px-3 py-1 rounded {{ 'bg-blue-600 text-white' if p == page else 'bg-gray-200 hover:bg-gray-300' }}">
+                {{ p }}
+            </a>
+            {% endfor %}
+
+            {% if end < total_pages %} {% if end < total_pages - 1 %} <span class="px-2">...</span>
+                {% endif %}
+                <a href="{{ url_for('home', page=total_pages,
+            fecha=request.args.get('fecha',''),
+            descripcion=request.args.get('descripcion',''),
+            identificador_plano=request.args.get('identificador_plano',''),
+            dibujante=request.args.get('dibujante',''),
+            revision=request.args.get('revision',''),
+            sub_revision=request.args.get('sub_revision',''),
+            tamano=request.args.get('tamano','')) }}" class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300">{{
+                    total_pages }}</a>
+                {% endif %}
+
+                <!-- Botón Siguiente -->
+                {% if page < total_pages %} <a href="{{ url_for('home', page=page+1,
+        fecha=request.args.get('fecha',''),
+        descripcion=request.args.get('descripcion',''),
+        identificador_plano=request.args.get('identificador_plano',''),
+        dibujante=request.args.get('dibujante',''),
+        revision=request.args.get('revision',''),
+        sub_revision=request.args.get('sub_revision',''),
+        tamano=request.args.get('tamano','')) }}" class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300">»</a>
+                    {% endif %}
+    </div>
+    {% endif %}
+    
 </div>
 {% endblock %}
 

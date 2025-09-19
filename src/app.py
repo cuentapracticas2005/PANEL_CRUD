@@ -130,7 +130,6 @@ def login():
         username = request.form.get('username', '').strip()
         password = request.form.get('password', '').strip()
         remember = request.form.get('remember', False)  # Checkbox "recordarme"
-        
         # Validación básica
         if not username or not password:
             # Aquí podrías usar flash() para mostrar mensajes
@@ -147,7 +146,7 @@ def login():
             session.clear()
             # Login exitoso
             login_user(user_data['user'], remember=bool(remember))
-            
+
             # Redirigir a la página que el usuario intentaba acceder o al home
             next_page = request.args.get('next')
             if not next_page or not next_page.startswith('/'):
@@ -160,6 +159,7 @@ def login():
     
     return render_template('login.html')
 
+# RUTA PARA CERRAR SESION
 @app.route('/logout')
 @login_required
 def logout():
@@ -211,7 +211,13 @@ def home():
     sub_revision = request.args.get('sub_revision','').strip()
     tamanio = request.args.get('tamano','').strip()
 
-    query = """
+    # Paginación
+    page = int(request.args.get('page', 1))  # Página actual
+    per_page = 15  # Número de registros por página
+    offset = (page - 1) * per_page
+
+    # Construcción de la query
+    base_query = """
         SELECT 
             r.id_registro,
             r.identificador_plano,
@@ -238,50 +244,59 @@ def home():
     params = []
 
     if fecha:
-        query += " AND r.fecha = %s"
+        base_query += " AND r.fecha = %s"
         params.append(fecha)
     if descripcion:
-        query += " AND r.descripcion LIKE %s"
+        base_query += " AND r.descripcion LIKE %s"
         params.append(f"%{descripcion}%")
     if identificador:
-        query += " AND r.identificador_plano LIKE %s"
+        base_query += " AND r.identificador_plano LIKE %s"
         params.append(f"%{identificador}%")
     if dibujante:
-        query += " AND r.dibujante LIKE %s"
+        base_query += " AND r.dibujante LIKE %s"
         params.append(f"%{dibujante}%")
     if revision:
-        query += " AND v.revision = %s"
+        base_query += " AND v.revision = %s"
         params.append(revision)
     if sub_revision:
-        query += " AND sr.sub_revision = %s"
+        base_query += " AND sr.sub_revision = %s"
         params.append(sub_revision)
     if tamanio:
-        query += " AND t.tamanio = %s"
+        base_query += " AND t.tamanio = %s"
         params.append(tamanio)
 
-    query += " ORDER BY r.id_registro DESC"
+    # Obtener total de registros sin LIMIT
     cursor = db.database.cursor()
-    cursor.execute(query, tuple(params))
-    tuplas = cursor.fetchall()
-
-    nameColums = []
-    for x in cursor.description:
-        nameColums.append(x[0])
+    count_query = "SELECT COUNT(*) FROM (" + base_query + ") AS total"
+    cursor.execute(count_query, tuple(params))
+    total = cursor.fetchone()[0]
     
-    union = []
-    for x in tuplas:
-        union.append(dict(zip(nameColums, x)))
+    # Agregar paginación a la consulta
+    base_query += " ORDER BY r.id_registro DESC LIMIT %s OFFSET %s"
+    params.extend([per_page, offset])
 
+    cursor.execute(base_query, tuple(params))
+    tuplas = cursor.fetchall()
+    nameColums = [x[0] for x in cursor.description]
+    union = [dict(zip(nameColums, x)) for x in tuplas]
     cursor.close()
 
-    # Seleccion de registros e identificadores_plano para mostrar mensaje si se repite un registro con JS
+    # Para la validación de identificadores duplicados
     cursor = db.database.cursor()
     cursor.execute("SELECT id_registro, identificador_plano FROM registros")
     registros = cursor.fetchall()
     lista_identificadores = [{"id": r[0], "identificador": r[1]} for r in registros]
     cursor.close()
 
-    return render_template('home.html', data=union, lista_identificadores=lista_identificadores)
+    total_pages = (total + per_page - 1) // per_page  # redondeo hacia arriba
+
+    return render_template(
+        'home.html',
+        data=union,
+        lista_identificadores=lista_identificadores,
+        page=page,
+        total_pages=total_pages
+    )
 
 # RUTA PARA GUARDAR/REUTILIZAR REGISTROS
 @app.route('/user', methods=['POST'])
@@ -317,7 +332,7 @@ def addUser():
     id_revision = obtener_revision(revision)
     id_sub_revision = obtener_sub_revision(sub_revision) if sub_revision else None
 
-    # ---------------------------------------- PARA DIFERENCIA: num_plano ---------------------------------------------
+    # ---------------------------------------- PARA DIFERENCIAR: num_plano ---------------------------------------------
     
     cursor = db.database.cursor()
     cursor.execute("SELECT id_num_plano FROM num_plano")
@@ -450,6 +465,19 @@ def edit(id_registro):
     elif 'imagen' in request.files and request.files['imagen'] and request.files['imagen'].filename:
         file = request.files['imagen']
 
+    # Validar si se duplica registro antes de actualizar
+    cursor = db.database.cursor()
+    cursor.execute("""
+        SELECT COUNT(*) FROM registros
+        WHERE identificador_plano = %s AND id_registro != %s
+    """, (identificador_plano, id_registro))
+    existe = cursor.fetchone()[0]
+    cursor.close()
+
+    if existe > 0:
+        return redirect(url_for('home'))
+
+    # Si es que hay un archivo se procede a hacer la actualizacion
     if file and file.filename and validar_archivo(file.filename):
         # Eliminar archivo anterior si existe
         if id_archivo_actual:
@@ -481,25 +509,14 @@ def edit(id_registro):
         archivo_token = uuid.uuid4().hex
         archivo_mime = mime        
 
+        # Se actualiza la tabla archivos
         id_archivo = guardar_archivo_info(archivo_nombre, archivo_path, archivo_mime, archivo_token)
     
-    # Validar si se duplica registro antes de actualizar
-    cursor = db.database.cursor()
-    cursor.execute("""
-        SELECT COUNT(*) FROM registros
-        WHERE identificador_plano = %s AND id_registro != %s
-    """, (identificador_plano, id_registro))
-    existe = cursor.fetchone()[0]
-    cursor.close()
-
-    if existe > 0:
-        return redirect(url_for('home'))
-
     # Actualizar los planos de la base de datos
     if all([fecha, descripcion, dibujante]):
         cursor = db.database.cursor()
         sql = """UPDATE registros SET
-                identificador_plano=%s, descripcion=%s, dibujante=%s, fecha=%s, 
+                identificador_plano=%s, descripcion=%s, dibujante=%s, fecha=%s,
                 id_tipo_plano=%s, id_tamanio=%s, id_revision=%s, id_sub_revision=%s, id_archivo=%s
                 WHERE id_registro=%s"""
         data = (identificador_plano, descripcion, dibujante, fecha, id_tipo_plano,

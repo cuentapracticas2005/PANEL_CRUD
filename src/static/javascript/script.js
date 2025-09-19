@@ -13,6 +13,7 @@ function colocarFechaActual(checkbox) {
     }
 }
 
+// FUNCION PARA SALIR DE MODALS CON TECLA DE ESCAPE
 document.addEventListener("keydown", (event) => {
     if (event.key === "Escape") {
         const modales = document.querySelectorAll(".modal");
@@ -24,6 +25,7 @@ document.addEventListener("keydown", (event) => {
     }
 });
 
+// FUNCION PARA VERIFICAR QUE EL IDENTIFICADOR DEL PLANO NO SEA IGUAL QUE UNO QUE ESTA EN LA BASE DE DATOS
 function validarReutilizacion(id_registro, tamanioOriginal, revisionOriginal, subRevisionOriginal) {
     const tamano = document.getElementById(`tamano_reutilizar${id_registro}`).value;
     const revision = document.getElementById(`revision_reutilizar${id_registro}`).value;
@@ -36,6 +38,7 @@ function validarReutilizacion(id_registro, tamanioOriginal, revisionOriginal, su
     return true;
 }
 
+// FUNCION PARA VERIFICAR QUE EL IDENTIFICADOR DEL PLANO NO SEA IGUAL QUE UNO QUE ESTA EN LA BASE DE DATOS A EXCEPCION DE EL MISMO
 function validarIdentificadorEdit(codTipo, numPlano, tamanio, revision, subRevision, idActual) {
     let identificador = `${codTipo}-${numPlano}-${tamanio}${revision}`;
     if (subRevision && subRevision !== "0" && subRevision.trim() !== "") {
