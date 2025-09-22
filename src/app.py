@@ -304,6 +304,12 @@ def home():
         total_pages=total_pages
     )
 
+# RUTA PARA ADMINISTRAR USUARIOS
+@app.route('/admin')
+@login_required
+def admin_users():
+    return render_template('pages/admin_users.html')
+
 # RUTA PARA GUARDAR/REUTILIZAR REGISTROS
 @app.route('/user', methods=['POST'])
 @login_required

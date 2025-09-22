@@ -26,10 +26,7 @@
                         <a href="{{ url_for('home') }}"
                             class="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-blue-600">Inicio</a>
                         {% if current_user.is_authenticated and current_user.rol in ["admin"] %}
-                        <a href="#" onclick="document.getElementById('modalAgregarUsuario').classList.remove('hidden')"
-                            class="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-blue-600">Registrar
-                            Usuario</a>
-                        <a href="#" onclick="document.getElementById(' ').classList.remove('hidden')"
+                        <a href="{{ url_for('admin_users') }}"
                             class="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-blue-600">Administrar Usuario</a>
                         {% endif %}
                     </div>
