@@ -1,0 +1,256 @@
+{% extends "base.html" %}
+{% block title %}Inicio - Sistema de Planos{% endblock %}
+
+{% block content %}
+<!-- 🔑 Solo mostrar el botón si el usuario tiene rol ADMIN o EDITOR -->
+{% if current_user.is_authenticated and current_user.rol in ["admin", "dibujante"] %}
+<div class="flex gap-4 mb-4">
+    <button class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 hover:scale-105 transition-all"
+        onclick="document.getElementById('modalAgregar').classList.remove('hidden')">
+        Agregar Nuevo Documento
+    </button>
+</div>
+{% endif %}
+
+<!-- 🔍 Formulario de búsqueda -->
+<form class="bg-white p-6 rounded shadow mb-8 flex flex-wrap gap-4 items-end" method="get"
+    action="{{ url_for('main.home') }}">
+    <div>
+        <label class="block text-sm font-medium mb-1">Fecha</label>
+        <input type="text" name="fecha" class="border rounded px-2 py-1 w-40" placeholder="YYYY-MM-DD">
+    </div>
+    <div>
+        <label class="block text-sm font-medium mb-1">Descripción</label>
+        <input type="text" name="descripcion" class="border rounded px-2 py-1 w-40" placeholder="Descripción">
+    </div>
+    <div>
+        <label class="block text-sm font-medium mb-1">Identificador de Plano</label>
+        <input type="text" name="identificador_plano" class="border rounded px-2 py-1 w-32" placeholder="Identificador">
+    </div>
+    <div>
+        <label class="block text-sm font-medium mb-1">Tamaño</label>
+        <select name="tamano" class="border rounded px-2 py-1 w-46">
+            <option value="" disabled selected>Selecciona tamaño</option>
+            <option value="0">A0</option>
+            <option value="1">A1</option>
+            <option value="2">A2</option>
+            <option value="3">A3</option>
+            <option value="4">A4</option>
+        </select>
+    </div>
+    <div>
+        <label class="block text-sm font-medium mb-1">Revision</label>
+        <select name="revision" class="border rounded px-2 py-1 w-full">
+            <option value="">Seleccionar Revision</option>
+            <option value="_">_</option>
+            <option value="Z">Z</option>
+            <option value="Y">Y</option>
+            <option value="X">X</option>
+            <option value="W">W</option>
+            <option value="V">V</option>
+            <option value="U">U</option>
+            <option value="T">T</option>
+            <option value="S">S</option>
+            <option value="R">R</option>
+            <option value="Q">Q</option>
+            <option value="P">P</option>
+            <option value="O">O</option>
+            <option value="N">N</option>
+            <option value="M">M</option>
+            <option value="L">L</option>
+            <option value="K">K</option>
+            <option value="J">J</option>
+            <option value="I">I</option>
+            <option value="H">H</option>
+            <option value="G">G</option>
+            <option value="F">F</option>
+            <option value="E">E</option>
+            <option value="D">D</option>
+            <option value="C">C</option>
+            <option value="B">B</option>
+            <option value="A">A</option>
+        </select>
+    </div>
+    <div>
+        <label class="block text-sm font-medium mb-1">Sub-revision</label>
+        <select id="sub_revision" name="sub_revision" class="border rounded px-2 py-1 w-full">
+            <option value=" ">Ninguno</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="10">10</option>
+        </select>
+    </div>
+    <div>
+        <label class="block text-sm font-medium mb-1">Nombre del Dibujante</label>
+        <input type="text" name="dibujante" class="border rounded px-2 py-1 w-40" placeholder="Dibujante">
+    </div>
+    <div class="flex gap-2">
+        <button type="submit"
+            class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 hover:scale-105 transition-all">Buscar</button>
+        <button type="reset"
+            class="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400 hover:scale-105 transition-all">Limpiar</button>
+    </div>
+</form>
+
+<!-- 📋 Tabla de resultados -->
+<div class="overflow-x-auto">
+    <table class="min-w-full bg-white rounded shadow">
+        <thead>
+            <tr class="bg-gray-200 text-gray-700">
+                <th class="px-4 py-2">Fecha</th>
+                <th class="px-4 py-2">Descripción</th>
+                <th class="px-4 py-2">Identificador de Plano</th>
+                <th class="px-4 py-2">Tamaño</th>
+                <th class="px-4 py-2">Revision</th>
+                <th class="px-4 py-2">Sub-revision</th>
+                <th class="px-4 py-2">Nombre del Dibujante</th>
+                <th class="px-4 py-2">Ver</th>
+                {% if current_user.is_authenticated and current_user.rol in ["admin", "dibujante"] %}<th class="px-4 py-2">Descargar</th>
+                <th class="px-4 py-2">Operaciones</th>{% endif %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for d in data %}
+            <tr>
+                <td class="border px-4 py-2">{{ d.fecha }}</td>
+                <td class="border px-4 py-2">{{ d.descripcion }}</td>
+                <td class="border px-4 py-2">{{ d.identificador_plano }}</td>
+                <td class="border px-4 py-2">A{{ d.tamanio }}</td>
+                <td class="border px-4 py-2">{{ d.revision }}</td>
+                <td class="border px-4 py-2">{{ d.sub_revision }}</td>
+                <td class="border px-4 py-2">{{ d.dibujante }}</td>
+                <td class="border px-4 py-2 text-center">
+                    {% if d.archivo_token %}
+                    <a href="{{ url_for('archivos.view_file', token=d.archivo_token) }}" target="_blank"
+                        class="text-blue-600 underline">Ver</a>
+                    {% else %}
+                    <span class="text-gray-400">-</span>
+                    {% endif %}
+                </td>
+                {% if current_user.is_authenticated and current_user.rol in ["admin", "dibujante"] %}
+                <td class="border px-4 py-2 text-center">
+                    {% if d.archivo_token %}
+                    <a href="{{ url_for('archivos.download_file', token=d.archivo_token) }}"
+                        class="text-green-600 underline">Descargar</a>
+                    {% else %}
+                    <span class="text-gray-400">-</span>
+                    {% endif %}
+                </td>
+                <td class="border px-4 py-2 text-center">
+                    <!-- 🔑 Solo mostrar si el usuario tiene permisos -->
+                    <button
+                        class="bg-blue-600 text-white px-2 py-1 rounded hover:bg-blue-700 hover:scale-105 transition-all"
+                        onclick="document.getElementById('modal{{ d.id_registro }}').classList.remove('hidden')">
+                        Editar
+                    </button>
+                    <button
+                        class="bg-yellow-600 text-white px-2 py-1 rounded hover:bg-yellow-700 hover:scale-105 transition-all"
+                        onclick="document.getElementById('modalReutilizar{{ d.id_registro }}').classList.remove('hidden')">
+                        Reutilizar
+                    </button>
+                    {% endif %}
+                    {% if current_user.is_authenticated and current_user.rol == "admin" %}
+                    <button
+                        class="bg-red-600 text-white px-2 py-1 rounded hover:bg-red-700 hover:scale-105 transition-all"
+                        onclick="document.getElementById('modalEliminar{{ d.id_registro }}').classList.remove('hidden')">
+                        Eliminar
+                    </button>
+                </td>
+                {% endif %}
+            </tr>
+            <!-- Aquí van los modales: modalAgregar, modalEditar, modalReutilizar, modalEliminar -->
+            {% include "partials/modal_agregar.html" %}
+            {% include "partials/modal_editar.html" %}
+            {% include "partials/modal_reutilizar.html" %}
+            {% include "partials/modal_eliminar.html" %}
+            {% include "partials/modal_registrar_usuarios.html" %}
+            {% endfor %}
+        </tbody>
+    </table>
+
+    {% if total_pages > 1 %}
+    <div class="flex justify-center items-center gap-2 mt-4 flex-wrap">
+
+        <!-- Botón Anterior -->
+        {% if page > 1 %}
+        <a href="{{ url_for('main.home', page=page-1,
+        fecha=request.args.get('fecha',''),
+        descripcion=request.args.get('descripcion',''),
+        identificador_plano=request.args.get('identificador_plano',''),
+        dibujante=request.args.get('dibujante',''),
+        revision=request.args.get('revision',''),
+        sub_revision=request.args.get('sub_revision',''),
+        tamano=request.args.get('tamano','')) }}" class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300">«</a>
+        {% endif %}
+
+        <!-- Páginas con rango dinámico -->
+        {% set start = page - 2 if page - 2 > 1 else 1 %}
+        {% set end = page + 2 if page + 2 < total_pages else total_pages %} {% if start> 1 %}
+            <a href="{{ url_for('main.home', page=1,
+            fecha=request.args.get('fecha',''),
+            descripcion=request.args.get('descripcion',''),
+            identificador_plano=request.args.get('identificador_plano',''),
+            dibujante=request.args.get('dibujante',''),
+            revision=request.args.get('revision',''),
+            sub_revision=request.args.get('sub_revision',''),
+            tamano=request.args.get('tamano','')) }}" class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300">1</a>
+            {% if start > 2 %}
+            <span class="px-2">...</span>
+            {% endif %}
+            {% endif %}
+
+            {% for p in range(start, end + 1) %}
+            <a href="{{ url_for('main.home', page=p,
+            fecha=request.args.get('fecha',''),
+            descripcion=request.args.get('descripcion',''),
+            identificador_plano=request.args.get('identificador_plano',''),
+            dibujante=request.args.get('dibujante',''),
+            revision=request.args.get('revision',''),
+            sub_revision=request.args.get('sub_revision',''),
+            tamano=request.args.get('tamano','')) }}"
+                class="px-3 py-1 rounded {{ 'bg-blue-600 text-white' if p == page else 'bg-gray-200 hover:bg-gray-300' }}">
+                {{ p }}
+            </a>
+            {% endfor %}
+
+            {% if end < total_pages %} {% if end < total_pages - 1 %} <span class="px-2">...</span>
+                {% endif %}
+                <a href="{{ url_for('main.home', page=total_pages,
+            fecha=request.args.get('fecha',''),
+            descripcion=request.args.get('descripcion',''),
+            identificador_plano=request.args.get('identificador_plano',''),
+            dibujante=request.args.get('dibujante',''),
+            revision=request.args.get('revision',''),
+            sub_revision=request.args.get('sub_revision',''),
+            tamano=request.args.get('tamano','')) }}" class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300">{{
+                    total_pages }}</a>
+                {% endif %}
+
+                <!-- Botón Siguiente -->
+                {% if page < total_pages %} <a href="{{ url_for('main.home', page=page+1,
+        fecha=request.args.get('fecha',''),
+        descripcion=request.args.get('descripcion',''),
+        identificador_plano=request.args.get('identificador_plano',''),
+        dibujante=request.args.get('dibujante',''),
+        revision=request.args.get('revision',''),
+        sub_revision=request.args.get('sub_revision',''),
+        tamano=request.args.get('tamano','')) }}" class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300">»</a>
+                    {% endif %}
+    </div>
+    {% endif %}
+    
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    const identificadoresExistentes = JSON.parse('{{ lista_identificadores | tojson | safe }}');
+</script>
+{% endblock %}
