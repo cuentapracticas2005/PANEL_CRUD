@@ -39,7 +39,6 @@ def get_upload_folder():
     return comprobar_archivos()
 
 def validar_archivo(filename: str) -> bool:
-    """Valida si el archivo tiene una extensión permitida"""
     ALLOWED_EXTENSIONS = current_app.config.get('ALLOWED_EXTENSIONS', 
                                                 {'pdf', 'png', 'jpg', 'jpeg'})
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS

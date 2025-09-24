@@ -1,5 +1,5 @@
 import database as db
-import uuid
+
 
 def obtener_tipo_plano(cod_tipo_plano):
     cursor = db.database.cursor()

@@ -32,7 +32,7 @@ function validarReutilizacion(id_registro, tamanioOriginal, revisionOriginal, su
     const subRevision = document.getElementById(`sub_revision_reutilizar${id_registro}`).value;
 
     if (tamano === tamanioOriginal && revision === revisionOriginal && subRevision === subRevisionOriginal) {
-        alert("⚠️ ESO NO SE HACE 🧏‍♂️: \nEL IDENTIFICADOR DE PLANO DEBE SER DIFERENTE \nCAMBIA LA MENOS TAMAÑO, REVISION O SUB-REVISION.");
+        alert("ESO NO SE HACE : \nEL IDENTIFICADOR DE PLANO DEBE SER DIFERENTE \nCAMBIA LA MENOS TAMAÑO, REVISION O SUB-REVISION.");
         return false;
     }
     return true;
@@ -52,7 +52,7 @@ function validarIdentificadorEdit(codTipo, numPlano, tamanio, revision, subRevis
     );
 
     if (existeDuplicado) {
-        alert(`⚠️ El identificador ${identificador} ya existe en otro registro.`);
+        alert(`El identificador ${identificador} ya existe en otro registro.`);
         return false;
     }
     return true;

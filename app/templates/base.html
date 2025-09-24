@@ -10,8 +10,6 @@
 </head>
 
 <body class="bg-gray-50 p-8">
-
-    <!-- 🔑 NAVBAR (visible en todas las páginas) -->
     <nav class="bg-white shadow-lg mb-8">
         <div class="max-w-7xl mx-auto px-4">
             <div class="flex justify-between h-16">
@@ -31,8 +29,6 @@
                         {% endif %}
                     </div>
                 </div>
-
-                <!-- 🔑 Si el usuario está logueado -->
                 <div class="flex items-center space-x-4">
                     {% if current_user.is_authenticated %}
                     <span class="text-gray-700 text-sm">👤 {{ current_user.username }}</span>
@@ -45,13 +41,9 @@
             </div>
         </div>
     </nav>
-
-    <!-- 📦 CONTENIDO DINÁMICO -->
     <main class="bg-gray-50 p-8">
         {% block content %}{% endblock %}
     </main>
-
-    <!-- 📜 Scripts globales -->
     <script src="{{ url_for('static', filename='javascript/script.js') }}"></script>
     {% block scripts %}{% endblock %}
 </body>

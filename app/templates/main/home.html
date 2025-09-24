@@ -2,7 +2,6 @@
 {% block title %}Inicio - Sistema de Planos{% endblock %}
 
 {% block content %}
-<!-- 🔑 Solo mostrar el botón si el usuario tiene rol ADMIN o EDITOR -->
 {% if current_user.is_authenticated and current_user.rol in ["admin", "dibujante"] %}
 <div class="flex gap-4 mb-4">
     <button class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 hover:scale-105 transition-all"
@@ -12,7 +11,6 @@
 </div>
 {% endif %}
 
-<!-- 🔍 Formulario de búsqueda -->
 <form class="bg-white p-6 rounded shadow mb-8 flex flex-wrap gap-4 items-end" method="get"
     action="{{ url_for('main.home') }}">
     <div>
@@ -99,7 +97,6 @@
     </div>
 </form>
 
-<!-- 📋 Tabla de resultados -->
 <div class="overflow-x-auto">
     <table class="min-w-full bg-white rounded shadow">
         <thead>
@@ -112,7 +109,8 @@
                 <th class="px-4 py-2">Sub-revision</th>
                 <th class="px-4 py-2">Nombre del Dibujante</th>
                 <th class="px-4 py-2">Ver</th>
-                {% if current_user.is_authenticated and current_user.rol in ["admin", "dibujante"] %}<th class="px-4 py-2">Descargar</th>
+                {% if current_user.is_authenticated and current_user.rol in ["admin", "dibujante"] %}<th
+                    class="px-4 py-2">Descargar</th>
                 <th class="px-4 py-2">Operaciones</th>{% endif %}
             </tr>
         </thead>
@@ -144,7 +142,6 @@
                     {% endif %}
                 </td>
                 <td class="border px-4 py-2 text-center">
-                    <!-- 🔑 Solo mostrar si el usuario tiene permisos -->
                     <button
                         class="bg-blue-600 text-white px-2 py-1 rounded hover:bg-blue-700 hover:scale-105 transition-all"
                         onclick="document.getElementById('modal{{ d.id_registro }}').classList.remove('hidden')">
@@ -245,7 +242,7 @@
                     {% endif %}
     </div>
     {% endif %}
-    
+
 </div>
 {% endblock %}
 

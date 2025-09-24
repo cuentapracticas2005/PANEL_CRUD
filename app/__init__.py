@@ -2,19 +2,25 @@ from flask import Flask
 from dotenv import load_dotenv
 import os
 
-def create_app(config_name='development'):
+def create_app(config_name=None):
     load_dotenv()
+
+    if config_name is None:
+        config_name = os.getenv('FLASK_ENV', 'development')
+
+    print(f"Usando configuración: {config_name}")
     
     app = Flask(__name__)
     
     # Configuración
-    from app.config import config
-    app.config.from_object(config[config_name])
+    from app.config import config # traemos app/config 
+    app.config.from_object(config[config_name])# cargar las configuracion a Flask
+
     
     # Inicializar extensiones
     from app.extensions import login_manager
     login_manager.init_app(app)
-    login_manager.login_view = 'auth.login'
+    login_manager.login_view = 'auth.login' # ruta donde redirigir si no esta autenticado
     login_manager.login_message = 'Por favor, inicia sesión para acceder a esta página.'
     login_manager.login_message_category = 'warning'
     

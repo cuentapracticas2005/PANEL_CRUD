@@ -22,6 +22,7 @@ def view_file(token: str):
     
     return send_from_directory(UBI_ARCHIVO, file_on_disk, mimetype=mime_type)
 
+
 @archivos_bp.route('/download/<string:token>')
 @login_required
 def download_file(token: str):
