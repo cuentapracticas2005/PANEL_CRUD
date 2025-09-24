@@ -8,13 +8,15 @@
         <p class="text-sm text-gray-600">Gestion de usuarios:</p>
     </div>
     <div class="flex items-center gap-3">
-        <form action="/buscar" method="GET" class="flex">
-            <input name="q" placeholder="Buscar usuario..."
+        <form action="{{ url_for('admin.admin_users') }}" method="GET" class="flex">
+            <input name="username" placeholder="Buscar usuario..."
                 class="px-3 py-2 border rounded-l-md border-gray-300 bg-white" />
-            <button class="px-3 py-2 bg-indigo-600 text-white rounded-r-md">Buscar</button>
+            <button
+                class="px-3 py-2 bg-indigo-600 text-white rounded-r-md hover:scale-105 transition-all">Buscar</button>
         </form>
         <a href="#" onclick="document.getElementById('modalAgregarUsuario').classList.remove('hidden')"
-            class="px-4 py-2 bg-green-600 text-white rounded-md shadow">Agregar usuario</a>
+            class="px-4 py-2 bg-green-600 text-white rounded-md shadow hover:scale-105 transition-all">Agregar
+            usuario</a>
     </div>
 </div>
 
@@ -42,26 +44,37 @@
                 {% for d in data %}
                 <tr>
                     <td class="px-6 py-4 whitespace-nowrap text-sm">{{ d.id_user }}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">{{ d.nombre_comppleto }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">{{ d.nombre_completo }}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm">{{ d.username }}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm">{{ d.rol }}</td>
 
+                    {% if d.activo==1 %}
                     <td class="px-6 py-4 whitespace-nowrap text-sm">
-                        <form action="/usuarios/toggle_status" method="POST" class="inline">
-                            <input type="hidden" name="id" value="1" />
+                        <form action="{{ url_for('admin.estado_user', id_user=d.id_user) }}" method="POST"
+                            class="inline">
+                            <input type="hidden" name="estado" value="0" />
                             <button type="submit"
-                                class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800 border border-green-200">Activo</button>
+                                class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800 border border-green-200 hover:scale-105 transition-all">Habilitado</button>
                         </form>
                     </td>
-
+                    {% else %}
+                    <td class="px-6 py-4 whitespace-nowrap text-sm">
+                        <form action="{{ url_for('admin.estado_user', id_user=d.id_user) }}" method="POST"
+                            class="inline">
+                            <input type="hidden" name="estado" value="1" />
+                            <button type="submit"
+                                class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-red-100 text-red-800 border border-red-200 hover:scale-105 transition-all">Inactivo</button>
+                        </form>
+                    </td>
+                    {% endif %}
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-right space-x-2">
                         <button type="submit"
-                            class="inline-flex items-center px-3 py-1 rounded-md border border-gray-200 bg-white hover:bg-gray-50"
+                            class="bg-blue-600 text-white px-2 py-1 rounded hover:bg-blue-700 hover:scale-105 transition-all"
                             onclick="document.getElementById('modalEditUser{{ d.id_user }}').classList.remove('hidden')">
                             Editar
                         </button>
                         <button type="submit"
-                            class="inline-flex items-center px-3 py-1 rounded-md bg-red-600 text-white"
+                            class="inline-flex items-center px-3 py-1 rounded-md bg-red-600 text-white hover:scale-105 transition-all"
                             onclick="document.getElementById('modalEliminarUser{{ d.id_user }}').classList.remove('hidden')">
                             Eliminar</button>
                     </td>
@@ -74,4 +87,5 @@
             </tbody>
         </table>
     </div>
-    {% endblock %}
+</div>
+{% endblock %}

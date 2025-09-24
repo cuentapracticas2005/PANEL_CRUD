@@ -1,6 +1,6 @@
 <!-- Modal: Reutilizar Documento -->
 <div id="modalReutilizar{{ d.id_registro }}"
-    class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 hidden modal">
+    class="fixed inset-0 bg-black/20 backdrop-blur-sm flex items-center justify-center z-50 hidden modal">
     <div class="bg-white p-8 rounded-2xl shadow-lg w-full max-w-lg relative"><button
             onclick="document.getElementById('modalReutilizar{{d.id_registro}}').classList.add('hidden')"
             class="absolute top-2 right-2 text-gray-500 hover:text-gray-800" aria-label="Cerrar">&times;</button>
@@ -13,14 +13,14 @@
                 hidden>
             <div>
                 <label class="block text-sm font-medium mb-1">Tipo de Plano</label>
-                <input type="text" class="border rounded px-2 py-1 w-full" id="tipo_plano_reutilizar{{d.id_registro}}"
+                <input type="text" class="w-full px-4 py-1 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 bg-gray-50 focus:bg-white" id="tipo_plano_reutilizar{{d.id_registro}}"
                     value="{{d.tipo_plano}}" disabled>
                 <input type="text" id="tipo_plano_reutilizar{{d.id_registro}}" name="tipo_plano"
                     value="{{d.cod_tipo_plano}}" hidden>
             </div>
             <div class="mb-2">
                 <label class="block text-sm font-medium mb-1">Número de Plano</label>
-                <input id="numero_plano_reutilizar" type="text" class="border rounded px-2 py-1 w-full"
+                <input id="numero_plano_reutilizar" type="text" class="w-full px-4 py-1 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 bg-gray-50 focus:bg-white"
                     value="{{d.id_num_plano}}" disabled>
                 <input type="text" id="numero_plano_reutilizar" name="numero_plano" value="{{d.id_num_plano}}" hidden>
             </div>
@@ -31,7 +31,7 @@
                 <div>
                     <label class="block text-sm font-medium mb-1">Tamaño</label>
                     <select id="tamano_reutilizar{{d.id_registro}}" name="tamano"
-                        class="border rounded px-2 py-1 w-full">
+                        class="w-full px-4 py-1 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 bg-gray-50 focus:bg-white">
                         <option value="0" {% if d.tamanio=="0" %}selected{% endif %}>A0</option>
                         <option value="1" {% if d.tamanio=="1" %}selected{% endif %}>A1</option>
                         <option value="2" {% if d.tamanio=="2" %}selected{% endif %}>A2</option>
@@ -43,7 +43,7 @@
                 <div>
                     <label class="block text-sm font-medium mb-1">Revision</label>
                     <select id="revision_reutilizar{{d.id_registro}}" name="revision"
-                        class="border rounded px-2 py-1 w-full">
+                        class="w-full px-4 py-1 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 bg-gray-50 focus:bg-white">
                         <option value="">-- Seleccionar --</option>
                         <option value="_" {% if d.revision=="_" %}selected{% endif %}>_</option>
                         <option value="Z" {% if d.revision=="Z" %}selected{% endif %}>Z</option>
@@ -78,7 +78,7 @@
                 <div>
                     <label class="block text-sm font-medium mb-1">Sub-Revision</label>
                     <select id="sub_revision_reutilizar{{d.id_registro}}" name="sub_revision"
-                        class="border rounded px-2 py-1 w-full">
+                        class="w-full px-4 py-1 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 bg-gray-50 focus:bg-white">
                         <option value=" " {% if d.sub_revision==" " %}selected{% endif %}>Ninguno
                         </option>
                         <option value="1" {% if d.sub_revision=="1" %}selected{% endif %}>1</option>
@@ -99,20 +99,20 @@
             <!-- Descripción -->
             <div class="mb-2 mt-4">
                 <label class="block text-sm font-medium mb-1">Descripción</label>
-                <input type="text" name="descripcion" class="border rounded px-2 py-1 w-full"
+                <input type="text" name="descripcion" class="w-full px-4 py-1 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 bg-gray-50 focus:bg-white"
                     value="{{ d.descripcion }}" required>
             </div>
 
             <!-- Dibujante -->
             <div class="mb-2">
                 <label class="block text-sm font-medium mb-1">Nombre del Dibujante</label>
-                <input type="text" name="dibujante" class="border rounded px-2 py-1 w-full" value="{{ d.dibujante }}">
+                <input type="text" name="dibujante" class="w-full px-4 py-1 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 bg-gray-50 focus:bg-white" value="{{ d.dibujante }}">
             </div>
 
             <!-- Fecha -->
             <div class="mb-2">
                 <label class="block text-sm font-medium mb-1">Fecha</label>
-                <input id="fecha" type="text" name="fecha" class="border rounded px-2 py-1 w-full fecha-input"
+                <input id="fecha" type="text" name="fecha" class="w-full px-4 py-1 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 bg-gray-50 focus:bg-white fecha-input"
                     placeholder="YYYY-MM-DD" value="{{ d.fecha }}" required>
                 <input type="checkbox" name="f_actual" id="f_actual" onchange="colocarFechaActual(this)">
                 <label class="text-sm text-gray-600">Usar fecha actual</label>
@@ -121,7 +121,7 @@
             <!-- Archivo -->
             <div class="mb-4">
                 <label class="block text-sm font-medium mb-1">Archivo PDF</label>
-                <input type="file" name="pdf" accept="application/pdf" class="border rounded px-2 py-1 w-full"
+                <input type="file" name="pdf" accept="application/pdf" class="w-full px-4 py-1 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 bg-gray-50 focus:bg-white"
                     value="{{d.archivo_path}}">
             </div>
 

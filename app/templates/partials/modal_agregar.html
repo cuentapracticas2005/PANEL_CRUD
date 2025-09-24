@@ -1,5 +1,5 @@
 <!-- Modal: Agregar Documento -->
-<div id="modalAgregar" class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 hidden modal">
+<div id="modalAgregar" class="fixed inset-0 bg-black/20 backdrop-blur-sm flex items-center justify-center z-50 hidden modal">
     <div class="bg-white p-8 rounded-2xl shadow-lg w-full max-w-lg relative">
         <button onclick="document.getElementById('modalAgregar').classList.add('hidden')"
             class="absolute top-2 right-2 text-gray-500 hover:text-gray-800" aria-label="Cerrar">&times;</button>
@@ -9,14 +9,14 @@
             <!-- Numero de plano -->
             <div class="mb-2">
                 <label class="block text-sm font-medium mb-1">Número de Plano</label>
-                <input id="numero_plano" type="text" name="numero_plano" class="border rounded px-2 py-1 w-full" hidden>
+                <input id="numero_plano" type="text" name="numero_plano" class="w-full px-4 py-1 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 bg-gray-50 focus:bg-white" hidden>
             </div>
 
             <!-- Opciones para generar codigo de plano -->
             <div class="space-y-2 border rounded p-3 bg-gray-50 mt-2">
                 <div>
                     <label class="block text-sm font-medium mb-1">Tipo de Plano</label>
-                    <select id="tipo_plano" name="tipo_plano" class="border rounded px-2 py-1 w-full" required>
+                    <select id="tipo_plano" name="tipo_plano" class="w-full px-4 py-1 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 bg-gray-50 focus:bg-white" required>
                         <option value="">-- Seleccionar --</option>
                         <option value="04">04 - ESQUEMA GENERAL</option>
                         <option value="06">06 - TABLAS DE PRODUCCIÓN</option>
@@ -47,7 +47,7 @@
 
                 <div>
                     <label class="block text-sm font-medium mb-1">Tamaño</label>
-                    <select id="tamano" name="tamano" class="border rounded px-2 py-1 w-full" required>
+                    <select id="tamano" name="tamano" class="w-full px-4 py-1 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 bg-gray-50 focus:bg-white" required>
                         <option value="">-- Seleccionar --</option>
                         <option value="0">0 - A0</option>
                         <option value="1">1 - A1</option>
@@ -59,7 +59,7 @@
 
                 <div>
                     <label class="block text-sm font-medium mb-1">Revision</label>
-                    <select id="revision" name="revision" class="border rounded px-2 py-1 w-full" required>
+                    <select id="revision" name="revision" class="w-full px-4 py-1 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 bg-gray-50 focus:bg-white" required>
                         <option value="">-- Seleccionar --</option>
                         <option value="_">_</option>
                         <option value="Z">Z</option>
@@ -93,7 +93,7 @@
 
                 <div>
                     <label class="block text-sm font-medium mb-1">Sub-Revision</label>
-                    <select id="sub_revision" name="sub_revision" class="border rounded px-2 py-1 w-full" required>
+                    <select id="sub_revision" name="sub_revision" class="w-full px-4 py-1 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 bg-gray-50 focus:bg-white" required>
                         <option value=" ">Ninguno</option>
                         <option value="1">1</option>
                         <option value="2">2</option>
@@ -112,19 +112,19 @@
             <!-- Descripcion -->
             <div class="mb-4">
                 <label class="block text-sm font-medium">Descripción</label>
-                <input type="text" name="descripcion" class="border rounded px-3 py-2 w-full">
+                <input type="text" name="descripcion" class="w-full px-4 py-1 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 bg-gray-50 focus:bg-white">
             </div>
 
             <!--Dibujante -->
             <div class="mb-2">
                 <label class="block text-sm font-medium mb-1">Nombre del Dibujante</label>
-                <input type="text" name="dibujante" class="border rounded px-2 py-1 w-full" required>
+                <input type="text" name="dibujante" class="w-full px-4 py-1 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 bg-gray-50 focus:bg-white" required>
             </div>
 
             <!-- Fecha -->
             <div class="mb-2">
                 <label class="block text-sm font-medium mb-1">Fecha</label>
-                <input id="fecha" type="text" name="fecha" class="border rounded px-2 py-1 w-full fecha-input"
+                <input id="fecha" type="text" name="fecha" class="w-full px-4 py-1 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 bg-gray-50 focus:bg-white fecha-input"
                     placeholder="YYYY-MM-DD" required>
                 <input type="checkbox" name="f_actual" id="f_actual" onchange="colocarFechaActual(this)">
                 <label class="text-sm text-gray-600">Usar fecha actual</label>
@@ -133,9 +133,9 @@
             <!-- Archivo -->
             <div class="mb-4">
                 <label class="block text-sm font-medium mb-1">Archivo PDF</label>
-                <input type="file" name="pdf" accept="application/pdf" class="border rounded px-2 py-1 w-full">
+                <input type="file" name="pdf" accept="application/pdf" class="w-full px-4 py-1 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 bg-gray-50 focus:bg-white">
                 <!--<label class="block text-sm font-medium mb-1">Imagen</label>
-                <input type="file" name="imagen" accept="image/*" class="border rounded px-2 py-1 w-full">-->
+                <input type="file" name="imagen" accept="image/*" class="w-full px-4 py-1 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 bg-gray-50 focus:bg-white">-->
             </div>
 
             <!-- Botones -->

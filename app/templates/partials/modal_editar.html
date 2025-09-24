@@ -1,6 +1,6 @@
 <!-- Modal: Editar Documento -->
 <div id="modal{{ d.id_registro }}"
-    class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 hidden modal">
+    class="fixed inset-0 bg-black/20 backdrop-blur-sm flex items-center justify-center z-50 hidden modal">
     <div class="bg-white p-8 rounded-2xl shadow-lg w-full max-w-lg relative">
         <button onclick="document.getElementById('modal{{d.id_registro}}').classList.add('hidden')"
             class="absolute top-2 right-2 text-gray-500 hover:text-gray-800" aria-label="Cerrar">&times;</button>
@@ -11,24 +11,24 @@
 
             <div class="mb-2">
                 <label class="block text-sm font-medium mb-1">Fecha</label>
-                <input type="text" name="fecha" class="border rounded px-2 py-1 w-full" value="{{d.fecha}}" required>
+                <input type="text" name="fecha" class="w-full px-4 py-1 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 bg-gray-50 focus:bg-white" value="{{d.fecha}}" required>
             </div>
             <div class="mb-2">
                 <label class="block text-sm font-medium mb-1">Descripción</label>
-                <input type="text" name="descripcion" class="border rounded px-2 py-1 w-full" value="{{d.descripcion}}"
+                <input type="text" name="descripcion" class="w-full px-4 py-1 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 bg-gray-50 focus:bg-white" value="{{d.descripcion}}"
                     required>
             </div>
 
             <div class="mb-2">
                 <label class="block text-sm font-medium mb-1">Número de Plano</label>
-                <input id="numero_plano_edit" type="text" class="border rounded px-2 py-1 w-full"
+                <input id="numero_plano_edit" type="text" class="w-full px-4 py-1 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 bg-gray-50 focus:bg-white"
                     value="{{d.id_num_plano}}" disabled>
                 <input id="numero_plano_edit" type="text" name="numero_plano" value="{{d.id_num_plano}}" hidden>
             </div>
 
             <div class="mb-2">
                 <label class="block text-sm font-medium mb-1">Tipo de Plano</label>
-                <input id="cod_tipo_plano{{d.id_registro}}" type="text" class="border rounded px-2 py-1 w-full"
+                <input id="cod_tipo_plano{{d.id_registro}}" type="text" class="w-full px-4 py-1 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 bg-gray-50 focus:bg-white"
                     value="{{d.tipo_plano}}" disabled>
                 <input type="text" name="tipo_plano" id="cod_tipo_plano{{d.id_registro}}" value="{{d.cod_tipo_plano}}"
                     hidden>
@@ -36,7 +36,7 @@
 
             <div class="mb-2">
                 <label class="block text-sm font-medium mb-1">Tamaño</label>
-                <select name="tamanio" class="border rounded px-2 py-1 w-full" id="tamano_edit{{d.id_registro}}"
+                <select name="tamanio" class="w-full px-4 py-1 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 bg-gray-50 focus:bg-white" id="tamano_edit{{d.id_registro}}"
                     required>
                     <option value="0" {% if d.tamanio=="0" %}selected{% endif %}>A0</option>
                     <option value="1" {% if d.tamanio=="1" %}selected{% endif %}>A1</option>
@@ -48,7 +48,7 @@
 
             <div class="mb-2">
                 <label class="block text-sm font-medium mb-1">Revision</label>
-                <select name="revision" id="revision_edit{{d.id_registro}}" class="border rounded px-2 py-1 w-full">
+                <select name="revision" id="revision_edit{{d.id_registro}}" class="w-full px-4 py-1 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 bg-gray-50 focus:bg-white">
                     <option value="">-- Seleccionar --</option>
                     <option value="_" {% if d.revision=="_" %}selected{% endif %}>_</option>
                     <option value="Z" {% if d.revision=="Z" %}selected{% endif %}>Z</option>
@@ -83,7 +83,7 @@
 
             <div>
                 <label class="block text-sm font-medium mb-1">Sub-revision</label>
-                <select name="sub_revision" class="border rounded px-2 py-1 w-full">
+                <select name="sub_revision" class="w-full px-4 py-1 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 bg-gray-50 focus:bg-white">
                     <option value=" " {% if d.sub_revision==" " %}selected{% endif %}>Ninguno
                     </option>
                     <option value="1" {% if d.sub_revision=="1" %}selected{% endif %}>1</option>
@@ -101,13 +101,13 @@
 
             <div class="mb-2">
                 <label class="block text-sm font-medium mb-1">Nombre del Dibujante</label>
-                <input type="text" name="dibujante" class="border rounded px-2 py-1 w-full" value="{{d.dibujante}}"
+                <input type="text" name="dibujante" class="w-full px-4 py-1 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 bg-gray-50 focus:bg-white" value="{{d.dibujante}}"
                     required>
             </div>
 
             <div class="mb-4">
                 <label class="block text-sm font-medium mb-1">Actualizar PDF</label>
-                <input type="file" name="pdf" accept="application/pdf" class="border rounded px-2 py-1 w-full">
+                <input type="file" name="pdf" accept="application/pdf" class="w-full px-4 py-1 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 bg-gray-50 focus:bg-white">
                 <p class="text-sm text-gray-500 mt-1">Dejar en blanco para mantener el PDF actual
                 </p>
             </div>
