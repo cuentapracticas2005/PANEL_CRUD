@@ -36,7 +36,7 @@ def add_plano():
         print("Faltan datos")
         return redirect(url_for('main.home'))
     
-    # Obtener IDs de tablas relacionadas
+    # Obtener ids de tablas relacionadas
     id_tipo_plano = obtener_tipo_plano(cod_tipo_plano)
     id_tamanio = obtener_tamanio(tamanio)
     id_revision = obtener_revision(revision)

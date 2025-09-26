@@ -10,7 +10,7 @@ CREATE TABLE `tipo_plano` (
 
 CREATE TABLE `num_plano` (
   `id_num_plano` INT(10) PRIMARY KEY AUTO_INCREMENT
-) ENGINE=InnoDB AUTO_INCREMENT=3000 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=30000 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE `tamanio` (
   `id_tamanio` INT(2) PRIMARY KEY AUTO_INCREMENT,
@@ -115,12 +115,22 @@ INSERT INTO `revision` (`id_revision`, `revision`) VALUES
 INSERT INTO `sub_revision` (`id_sub_revision`, `sub_revision`) VALUES
 (1,'1'), (2,'2'), (3,'3'), (4,'4'), (5,'5'), (6,'6'), (7,'7'), (8,'8'), (9,'9'), (10,'10');
 
-INSERT INTO `roles` (`nombre`) VALUES 
-('trabajador'), ('dibujante'), ('admin');
-
 INSERT INTO `roles` (`id_rol`, `rol`) VALUES
 (1, 'admin'),
 (2, 'dibujante'),
 (3, 'trabajador');
 
+# INFORMACION INSERTADA COMO PRIMER REGISTRO EN REGISTRO DE PLANOS:
+INSERT INTO `num_plano`(`id_num_plano`) VALUES
+  ('30000');
+
+INSERT INTO `registros`(`identificador_plano`, `descripcion`, `dibujante`, `fecha`, `id_tipo_plano`, `id_num_plano`, `id_tamanio`, `id_revision`, `id_sub_revision`) VALUES
+  ('xxxxxxx','descripcion01','dibujante01','2025-09-25','1','30000','1','1','1');
+
+# INFORMACION INSERTADA COMO PRIMER USUARIO ADMINISTRADOR
+INSERT INTO `user`(`username`, `password_hash`, `activo`, `id_rol`) VALUES
+  ('stuart','scrypt:32768:8:1$sqbQum2A9TzCPN2a$f0128f1866a65cf793fee60773e999ab69d90c779c8beb4f35a9353e4b642aee1632161279845cea329c290a8b55ba5e3d1c9e4d4a59faef9b264bb1b40cecf3',1,1),
+  ('julio','scrypt:32768:8:1$sqbQum2A9TzCPN2a$f0128f1866a65cf793fee60773e999ab69d90c779c8beb4f35a9353e4b642aee1632161279845cea329c290a8b55ba5e3d1c9e4d4a59faef9b264bb1b40cecf3',1,2);
+# username: stuart  /  password: 123
+# username: julio  /  password: 123
 COMMIT;

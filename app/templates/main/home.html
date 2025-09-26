@@ -4,7 +4,7 @@
 {% block content %}
 {% if current_user.is_authenticated and current_user.rol in ["admin", "dibujante"] %}
     <div class="flex gap-4 mb-4">
-        <button class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 hover:scale-105 transition-all"
+        <button class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 hover:scale-105 transition-all cursor-pointer"
             onclick="document.getElementById('modalAgregar').classList.remove('hidden')">
             Agregar Nuevo Documento
         </button>
@@ -102,9 +102,9 @@
     </div>
     <div class="flex gap-2">
         <button type="submit"
-            class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 hover:scale-105 transition-all">Buscar</button>
+            class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 hover:scale-105 transition-all cursor-pointer">Buscar</button>
         <button type="reset"
-            class="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400 hover:scale-105 transition-all">Limpiar</button>
+            class="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400 hover:scale-105 transition-all cursor-pointer">Limpiar</button>
     </div>
 </form>
 
@@ -163,19 +163,19 @@
                             </td>
                             <td class="px-4 py-2 text-center border-b border-r border-gray-300">
                                 <button
-                                    class="bg-blue-600 text-white px-2 py-1 rounded hover:bg-blue-700 hover:scale-105 transition-all"
+                                    class="bg-blue-600 text-white px-2 py-1 rounded hover:bg-blue-700 hover:scale-105 transition-all cursor-pointer"
                                     onclick="document.getElementById('modal{{ d.id_registro }}').classList.remove('hidden')">
                                     Editar
                                 </button>
                                 <button
-                                    class="bg-yellow-600 text-white px-2 py-1 rounded hover:bg-yellow-700 hover:scale-105 transition-all"
+                                    class="bg-yellow-600 text-white px-2 py-1 rounded hover:bg-yellow-700 hover:scale-105 transition-all cursor-pointer"
                                     onclick="document.getElementById('modalReutilizar{{ d.id_registro }}').classList.remove('hidden')">
                                     Reutilizar
                                 </button>
                         {% endif %}
                         {% if current_user.is_authenticated and current_user.rol == "admin" %}
                             <button
-                                class="bg-red-600 text-white px-2 py-1 rounded hover:bg-red-700 hover:scale-105 transition-all"
+                                class="bg-red-600 text-white px-2 py-1 rounded hover:bg-red-700 hover:scale-105 transition-all cursor-pointer"
                                 onclick="document.getElementById('modalEliminar{{ d.id_registro }}').classList.remove('hidden')">
                                 Eliminar
                             </button>

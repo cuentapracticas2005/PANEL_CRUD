@@ -640,3 +640,45 @@ if __name__ == '__main__':
     app.run(host='0.0.0.0', debug=True, port=4000)
 
 # <!-- {{ form.hidden_tag() }} -->
+
+
+
+
+
+
+def create_app(config_name=None):
+    from app.auth import auth_bp
+    from app.main import main_bp
+    from app.planos import planos_bp
+    from app.archivos import archivos_bp
+    from app.admin import admin_bp
+    from app.models.user import User
+    from app.extensions import login_manager
+    from app.config import config
+    from dotenv import load_dotenv
+    load_dotenv()
+
+    if config_name is None:
+        config_name = os.getenv('FLASK_ENV', 'development')
+
+    app = Flask(__name__)
+
+    app.config.from_object(config[config_name]) # carga de la configuracion que se establecio
+
+    login_manager.init_app(app)
+    login_manager.login_view = 'auth.login'
+    login_manager.login_message = 'Autenticate'
+    login_manager.login_message_category = 'warning'
+
+    app.register_blueprint(auth_bp, url_prefix='/auth')
+    app.register_blueprint(main_bp)
+    app.register_blueprint(planos_bp, utl_prefix='/planos')
+    app.register_blueprint(archivos_bp, url_prefix='/files')
+    app.register_blueprint(admin_bp, url_prefix='/admin')
+
+    # carga de usuario cada cambio de pagina
+    @login_manager.user_loader
+    def load_user(user_id):
+        return User.get_by_id(int(user_id))
+
+    return app

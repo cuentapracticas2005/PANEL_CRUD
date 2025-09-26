@@ -1,6 +1,5 @@
 import database as db
 
-
 def obtener_tipo_plano(cod_tipo_plano):
     cursor = db.database.cursor()
     cursor.execute("SELECT id_tipo_plano FROM tipo_plano WHERE cod_tipo_plano = %s", 
