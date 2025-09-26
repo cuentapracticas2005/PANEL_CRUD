@@ -3,6 +3,15 @@ from flask_login import login_required
 from app.admin import admin_bp
 from werkzeug.security import generate_password_hash
 import database as db
+"""
+CREACION DE RUTAS DE ADMINISTRACION DE USUARIOS:
+Funciones creadas en este modulo:
+    - admin_users()
+    - delete_user()
+    - edit_user()
+    - estado_user() -> habilitar o deshabilitar usuario
+    - register_user() -> registrar usuarios
+"""
 
 # Vista de usuarios
 @admin_bp.route('/users')
@@ -44,7 +53,7 @@ def delete_user(id_user):
 
     return redirect(url_for('admin.admin_users')) # <nombre_del_blueprint>.<nombre_de_la_función>
 
-#Editar usuario
+#Editar usuarios
 @admin_bp.route('/editar_user/<string:id_user>', methods=['GET','POST'])
 @login_required
 def edit_user(id_user):
@@ -92,7 +101,7 @@ def edit_user(id_user):
 
     return render_template('editar_user.html', usuario=usuario)
 
-# Estado de usuario
+# Estado de usuarios
 @admin_bp.route('/estado_user/<string:id_user>', methods=['POST'])
 @login_required
 def estado_user(id_user):
@@ -107,4 +116,30 @@ def estado_user(id_user):
     cursor.close()
     return redirect(url_for('admin.admin_users'))
 
-    
+# Registrar usuario
+@admin_bp.route('/registrar_usuario', methods=['GET','POST'])
+@login_required
+def register_user():
+    if request.method=='POST':
+        username = request.form.get('username', '').strip()
+        password = request.form.get('password', '').strip()
+        rol = request.form.get('rol', 'trabajador').strip()
+        nombre_completo = request.form.get('nombre_completo', None).strip()
+
+        if not all([username, password]):
+            return render_template('admin.admin_users',
+                                   error='Llenar todos los campos')
+        password_hash = generate_password_hash(password)
+
+        try:
+            cursor = db.database.cursor()
+            cursor.execute("""
+                INSERT INTO user (username, password_hash, id_rol, nombre_completo)
+                VALUES (%s, %s, %s, %s)
+            """,(username, password_hash, int(rol), nombre_completo))
+            db.database.commit()
+            cursor.close()
+            return redirect(url_for('admin.admin_users'))
+        except Exception as e:
+            return redirect(url_for('admin.admin_users'))
+    return redirect(url_for('admin.admin_users'))

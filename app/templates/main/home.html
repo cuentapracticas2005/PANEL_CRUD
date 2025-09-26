@@ -3,12 +3,12 @@
 
 {% block content %}
 {% if current_user.is_authenticated and current_user.rol in ["admin", "dibujante"] %}
-<div class="flex gap-4 mb-4">
-    <button class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 hover:scale-105 transition-all"
-        onclick="document.getElementById('modalAgregar').classList.remove('hidden')">
-        Agregar Nuevo Documento
-    </button>
-</div>
+    <div class="flex gap-4 mb-4">
+        <button class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 hover:scale-105 transition-all"
+            onclick="document.getElementById('modalAgregar').classList.remove('hidden')">
+            Agregar Nuevo Documento
+        </button>
+    </div>
 {% endif %}
 
 <form class="bg-white p-6 rounded shadow mb-8 flex flex-wrap gap-4 items-end" method="get"
@@ -121,138 +121,147 @@
                     <th class="px-4 py-2 text-center border-b border-gray-300">Sub-revision</th>
                     <th class="px-4 py-2 text-center border-b border-gray-300">Nombre del Dibujante</th>
                     <th class="px-4 py-2 text-center border-b border-gray-300">Ver</th>
-                    {% if current_user.is_authenticated and current_user.rol in ["admin", "dibujante"] %}<th
-                        class="px-4 py-2 text-center border-b border-gray-300">Descargar</th>
-                    <th class="px-4 py-2 text-center border-b border-gray-300">Operaciones</th>{% endif %}
+                    {% if current_user.is_authenticated and current_user.rol in ["admin", "dibujante"] %}
+                        <th class="px-4 py-2 text-center border-b border-gray-300">
+                            Descargar
+                        </th>
+                        <th class="px-4 py-2 text-center border-b border-gray-300">
+                            Operaciones
+                        </th>
+                    {% endif %}
                 </tr>
             </thead>
             <tbody>
                 {% for d in data %}
-                <tr>
-                    <td class="px-4 py-2 text-center border-b border-r border-gray-300">{{ d.fecha }}</td>
-                    <td class="px-4 py-2 text-center border-b border-r border-gray-300">{{ d.descripcion }}</td>
-                    <td class="px-4 py-2 text-center border-b border-r border-gray-300">{{ d.identificador_plano }}</td>
-                    <td class="px-4 py-2 text-center border-b border-r border-gray-300">A{{ d.tamanio }}</td>
-                    <td class="px-4 py-2 text-center border-b border-r border-gray-300">{{ d.revision }}</td>
-                    <td class="px-4 py-2 text-center border-b border-r border-gray-300">{{ d.sub_revision }}</td>
-                    <td class="px-4 py-2 text-center border-b border-r border-gray-300">{{ d.dibujante }}</td>
-                    <td class="px-4 py-2 text-center border-b border-r border-gray-300">
+                    <tr>
+                        <td class="px-4 py-2 text-center border-b border-r border-gray-300">{{ d.fecha }}</td>
+                        <td class="px-4 py-2 text-center border-b border-r border-gray-300">{{ d.descripcion }}</td>
+                        <td class="px-4 py-2 text-center border-b border-r border-gray-300">{{ d.identificador_plano }}</td>
+                        <td class="px-4 py-2 text-center border-b border-r border-gray-300">A{{ d.tamanio }}</td>
+                        <td class="px-4 py-2 text-center border-b border-r border-gray-300">{{ d.revision }}</td>
+                        <td class="px-4 py-2 text-center border-b border-r border-gray-300">{{ d.sub_revision }}</td>
+                        <td class="px-4 py-2 text-center border-b border-r border-gray-300">{{ d.dibujante }}</td>
+                        <td class="px-4 py-2 text-center border-b border-r border-gray-300">
                         {% if d.archivo_token %}
-                        <a href="{{ url_for('archivos.view_file', token=d.archivo_token) }}" target="_blank"
-                            class="text-blue-600 underline">Ver</a>
+                            <a href="{{ url_for('archivos.view_file', token=d.archivo_token) }}" target="_blank"
+                                class="text-blue-600 underline">
+                                Ver
+                            </a>
                         {% else %}
-                        <span class="text-gray-400">-</span>
+                            <span class="text-gray-400">-</span>
                         {% endif %}
-                    </td>
-                    {% if current_user.is_authenticated and current_user.rol in ["admin", "dibujante"] %}
-                    <td class="px-4 py-2 text-center border-b border-r border-gray-300">
-                        {% if d.archivo_token %}
-                        <a href="{{ url_for('archivos.download_file', token=d.archivo_token) }}"
-                            class="text-green-600 underline">Descargar</a>
-                        {% else %}
-                        <span class="text-gray-400">-</span>
-                        {% endif %}
-                    </td>
-                    <td class="px-4 py-2 text-center border-b border-r border-gray-300">
-                        <button
-                            class="bg-blue-600 text-white px-2 py-1 rounded hover:bg-blue-700 hover:scale-105 transition-all"
-                            onclick="document.getElementById('modal{{ d.id_registro }}').classList.remove('hidden')">
-                            Editar
-                        </button>
-                        <button
-                            class="bg-yellow-600 text-white px-2 py-1 rounded hover:bg-yellow-700 hover:scale-105 transition-all"
-                            onclick="document.getElementById('modalReutilizar{{ d.id_registro }}').classList.remove('hidden')">
-                            Reutilizar
-                        </button>
+                        </td>
+                        {% if current_user.is_authenticated and current_user.rol in ["admin", "dibujante"] %}
+                            <td class="px-4 py-2 text-center border-b border-r border-gray-300">
+                                {% if d.archivo_token %}
+                                    <a href="{{ url_for('archivos.download_file', token=d.archivo_token) }}" class="text-green-600 underline">
+                                        Descargar
+                                    </a>
+                                {% else %}
+                                    <span class="text-gray-400">-</span>
+                                {% endif %}
+                            </td>
+                            <td class="px-4 py-2 text-center border-b border-r border-gray-300">
+                                <button
+                                    class="bg-blue-600 text-white px-2 py-1 rounded hover:bg-blue-700 hover:scale-105 transition-all"
+                                    onclick="document.getElementById('modal{{ d.id_registro }}').classList.remove('hidden')">
+                                    Editar
+                                </button>
+                                <button
+                                    class="bg-yellow-600 text-white px-2 py-1 rounded hover:bg-yellow-700 hover:scale-105 transition-all"
+                                    onclick="document.getElementById('modalReutilizar{{ d.id_registro }}').classList.remove('hidden')">
+                                    Reutilizar
+                                </button>
                         {% endif %}
                         {% if current_user.is_authenticated and current_user.rol == "admin" %}
-                        <button
-                            class="bg-red-600 text-white px-2 py-1 rounded hover:bg-red-700 hover:scale-105 transition-all"
-                            onclick="document.getElementById('modalEliminar{{ d.id_registro }}').classList.remove('hidden')">
-                            Eliminar
-                        </button>
-                    </td>
-                    {% endif %}
-                </tr>
-                <!-- Aquí van los modales: modalAgregar, modalEditar, modalReutilizar, modalEliminar -->
-                {% include "partials/modal_agregar.html" %}
-                {% include "partials/modal_editar.html" %}
-                {% include "partials/modal_reutilizar.html" %}
-                {% include "partials/modal_eliminar.html" %}
-                {% include "partials/modal_registrar_usuarios.html" %}
+                            <button
+                                class="bg-red-600 text-white px-2 py-1 rounded hover:bg-red-700 hover:scale-105 transition-all"
+                                onclick="document.getElementById('modalEliminar{{ d.id_registro }}').classList.remove('hidden')">
+                                Eliminar
+                            </button>
+                            </td>
+                        {% endif %}
+                    </tr>
+                    <!-- Aquí van los modales: modalAgregar, modalEditar, modalReutilizar, modalEliminar -->
+                    {% include "partials/modal_agregar.html" %}
+                    {% include "partials/modal_editar.html" %}
+                    {% include "partials/modal_reutilizar.html" %}
+                    {% include "partials/modal_eliminar.html" %}
+                    {% include "partials/modal_registrar_usuarios.html" %}
                 {% endfor %}
             </tbody>
         </table>
 
         {% if total_pages > 1 %}
-        <div class="flex justify-center items-center gap-2 mt-4 flex-wrap">
+            <div class="flex justify-center items-center gap-2 mt-4 flex-wrap">
 
-            <!-- Botón Anterior -->
-            {% if page > 1 %}
-            <a href="{{ url_for('main.home', page=page-1,
-        fecha=request.args.get('fecha',''),
-        descripcion=request.args.get('descripcion',''),
-        identificador_plano=request.args.get('identificador_plano',''),
-        dibujante=request.args.get('dibujante',''),
-        revision=request.args.get('revision',''),
-        sub_revision=request.args.get('sub_revision',''),
-        tamano=request.args.get('tamano','')) }}" class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300">«</a>
-            {% endif %}
-
-            <!-- Páginas con rango dinámico -->
-            {% set start = page - 2 if page - 2 > 1 else 1 %}
-            {% set end = page + 2 if page + 2 < total_pages else total_pages %} {% if start> 1 %}
-                <a href="{{ url_for('main.home', page=1,
-            fecha=request.args.get('fecha',''),
-            descripcion=request.args.get('descripcion',''),
-            identificador_plano=request.args.get('identificador_plano',''),
-            dibujante=request.args.get('dibujante',''),
-            revision=request.args.get('revision',''),
-            sub_revision=request.args.get('sub_revision',''),
-            tamano=request.args.get('tamano','')) }}" class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300">1</a>
-                {% if start > 2 %}
-                <span class="px-2">...</span>
+                <!-- Botón Anterior -->
+                {% if page > 1 %}
+                    <a href="{{ url_for('main.home', page=page-1,
+                        fecha=request.args.get('fecha',''),
+                        descripcion=request.args.get('descripcion',''),
+                        identificador_plano=request.args.get('identificador_plano',''),
+                        dibujante=request.args.get('dibujante',''),
+                        revision=request.args.get('revision',''),
+                        sub_revision=request.args.get('sub_revision',''),
+                        tamano=request.args.get('tamano','')) }}" class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300">«</a>
                 {% endif %}
+                
+                <!-- Páginas con rango dinámico -->
+                {% set start = page - 2 if page - 2 > 1 else 1 %}
+                {% set end = page + 2 if page + 2 < total_pages else total_pages %} 
+                {% if start> 1 %}
+                    <a href="{{ url_for('main.home', page=1,
+                        fecha=request.args.get('fecha',''),
+                        descripcion=request.args.get('descripcion',''),
+                        identificador_plano=request.args.get('identificador_plano',''),
+                        dibujante=request.args.get('dibujante',''),
+                        revision=request.args.get('revision',''),
+                        sub_revision=request.args.get('sub_revision',''),
+                        tamano=request.args.get('tamano','')) }}" class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300">1</a>
+                    {% if start > 2 %}
+                        <span class="px-2">...</span>
+                    {% endif %}
                 {% endif %}
 
                 {% for p in range(start, end + 1) %}
-                <a href="{{ url_for('main.home', page=p,
-            fecha=request.args.get('fecha',''),
-            descripcion=request.args.get('descripcion',''),
-            identificador_plano=request.args.get('identificador_plano',''),
-            dibujante=request.args.get('dibujante',''),
-            revision=request.args.get('revision',''),
-            sub_revision=request.args.get('sub_revision',''),
-            tamano=request.args.get('tamano','')) }}"
-                    class="px-3 py-1 rounded {{ 'bg-blue-600 text-white' if p == page else 'bg-gray-200 hover:bg-gray-300' }}">
-                    {{ p }}
-                </a>
+                    <a href="{{ url_for('main.home', page=p,
+                        fecha=request.args.get('fecha',''),
+                        descripcion=request.args.get('descripcion',''),
+                        identificador_plano=request.args.get('identificador_plano',''),
+                        dibujante=request.args.get('dibujante',''),
+                        revision=request.args.get('revision',''),
+                        sub_revision=request.args.get('sub_revision',''),
+                        tamano=request.args.get('tamano','')) }}"
+                        class="px-3 py-1 rounded {{ 'bg-blue-600 text-white' if p == page else 'bg-gray-200 hover:bg-gray-300' }}">{{ p }}</a>
                 {% endfor %}
 
-                {% if end < total_pages %} {% if end < total_pages - 1 %} <span class="px-2">...</span>
+                {% if end < total_pages %} 
+                    {% if end < total_pages - 1 %} 
+                        <span class="px-2">...</span>
                     {% endif %}
                     <a href="{{ url_for('main.home', page=total_pages,
-            fecha=request.args.get('fecha',''),
-            descripcion=request.args.get('descripcion',''),
-            identificador_plano=request.args.get('identificador_plano',''),
-            dibujante=request.args.get('dibujante',''),
-            revision=request.args.get('revision',''),
-            sub_revision=request.args.get('sub_revision',''),
-            tamano=request.args.get('tamano','')) }}" class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300">{{
-                        total_pages }}</a>
-                    {% endif %}
+                        fecha=request.args.get('fecha',''),
+                        descripcion=request.args.get('descripcion',''),
+                        identificador_plano=request.args.get('identificador_plano',''),
+                        dibujante=request.args.get('dibujante',''),
+                        revision=request.args.get('revision',''),
+                        sub_revision=request.args.get('sub_revision',''),
+                        tamano=request.args.get('tamano','')) }}" class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300">{{total_pages }}</a>
+                {% endif %}
 
-                    <!-- Botón Siguiente -->
-                    {% if page < total_pages %} <a href="{{ url_for('main.home', page=page+1,
-        fecha=request.args.get('fecha',''),
-        descripcion=request.args.get('descripcion',''),
-        identificador_plano=request.args.get('identificador_plano',''),
-        dibujante=request.args.get('dibujante',''),
-        revision=request.args.get('revision',''),
-        sub_revision=request.args.get('sub_revision',''),
-        tamano=request.args.get('tamano','')) }}" class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300">»</a>
-                        {% endif %}
-        </div>
+                <!-- Botón Siguiente -->
+                {% if page < total_pages %}
+                    <a href="{{ url_for('main.home', page=page+1,
+                        fecha=request.args.get('fecha',''),
+                        descripcion=request.args.get('descripcion',''),
+                        identificador_plano=request.args.get('identificador_plano',''),
+                        dibujante=request.args.get('dibujante',''),
+                        revision=request.args.get('revision',''),
+                        sub_revision=request.args.get('sub_revision',''),
+                        tamano=request.args.get('tamano','')) }}" class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300">»</a>
+                {% endif %}
+            </div>
         {% endif %}
 
     </div>

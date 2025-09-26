@@ -10,12 +10,14 @@ from app.planos.utils import (
     obtener_sub_revision, 
     guardar_archivo_info, 
     generar_identificador_plano)
-from app.archivos.utils import validar_archivo, get_upload_folder
+from app.archivos.utils import validar_archivo, ubi_archivos
 import database as db
 import os
 import uuid
-UBI_ARCHIVO = get_upload_folder()
-
+UBI_ARCHIVO = ubi_archivos()
+"""
+Se implementa manejo de los registros como el agregar, editar y eliminar planos
+"""
 @planos_bp.route('/add', methods=['POST'])
 @login_required
 def add_plano():

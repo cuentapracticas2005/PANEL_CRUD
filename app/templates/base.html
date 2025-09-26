@@ -24,22 +24,22 @@
                         <a href="{{ url_for('main.home') }}"
                             class="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-blue-600">Inicio</a>
                         {% if current_user.is_authenticated and current_user.rol in ["admin"] %}
-                        <a href="{{ url_for('admin.admin_users') }}"
-                            class="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-blue-600">Administrar
-                            Usuario</a>
+                            <a href="{{ url_for('admin.admin_users') }}"
+                                class="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-blue-600">
+                                Administrar Usuario
+                            </a>
                         {% endif %}
                     </div>
                 </div>
                 <div class="flex items-center space-x-4">
                     {% if current_user.is_authenticated %}
-                    <span
-                        class="bg-gray-100 text-gray-800 text-sm font-semibold px-3 py-1 rounded-full shadow-sm border border-gray-300">
-                        USUARIO: {{ current_user.username }}
-                    </span>
-                    <a href="{{ url_for('auth.logout') }}"
-                        class="px-4 py-2 rounded-lg text-sm font-medium text-white bg-red-600 hover:bg-red-700 hover:scale-105 transition-all shadow">
-                        Cerrar Sesión
-                    </a>
+                        <span class="bg-gray-100 text-gray-800 text-sm font-semibold px-3 py-1 rounded-full shadow-sm border border-gray-300">
+                            USUARIO: {{ current_user.username }}
+                        </span>
+                        <a href="{{ url_for('auth.logout') }}"
+                            class="px-4 py-2 rounded-lg text-sm font-medium text-white bg-red-600 hover:bg-red-700 hover:scale-105 transition-all shadow">
+                            Cerrar Sesión
+                        </a>
                     {% endif %}
                 </div>
             </div>
